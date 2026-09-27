@@ -20,6 +20,8 @@ export const PLUGIN_ERROR_CODES = [
   'E_PLUGIN_NEEDS_SECRET',
   /** a plugin rejected its input */
   'E_PLUGIN_BAD_INPUT',
+  /** the user switched the plugin off */
+  'E_PLUGIN_OFF',
 ] as const;
 export type PluginErrorCode = (typeof PLUGIN_ERROR_CODES)[number];
 
