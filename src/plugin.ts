@@ -267,6 +267,8 @@ export function definePlugin(def: PluginDefinition, env: NodeJS.ProcessEnv = pro
     server,
     start: async () => {
       await server.connect(new StdioServerTransport());
+      // CutPilot closes stdin when it stops the plugin, or when it goes away: don't outlive it
+      process.stdin.once('end', () => process.exit(0));
     },
   };
 }
