@@ -1,0 +1,4 @@
+{
+  "files": [],
+  "references": [{ "path": "packages/plugin-api" }, { "path": "packages/plugin-sdk" }]
+}
