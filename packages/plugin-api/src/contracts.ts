@@ -1,0 +1,185 @@
+/**
+ * The tools each plugin kind must offer, with their input and output schemas. The engine
+ * calls them; the SDK checks a plugin's answers against them before they leave the plugin.
+ * Times are integer milliseconds in SOURCE time, as everywhere in CutPilot.
+ */
+import { z } from 'zod';
+import type { PluginKind } from './manifest.js';
+
+const Ms = z.number().int().nonnegative();
+const Fraction = z.number().min(0).max(1);
+const Path = z.string().min(1);
+
+// ── transcriber ──────────────────────────────────────────────────────────────
+
+export const TranscribeInputSchema = z.object({
+  /** 16 kHz mono wav made by the engine */
+  audio: Path,
+  /** ISO 639-1 code (en, ru, uz, …) or `auto` */
+  language: z.string().regex(/^([a-z]{2,3}|auto)$/),
+  /** words to expect (names, jargon) */
+  prompt: z.string().max(2000).optional(),
+});
+
+export const TranscribedWordSchema = z
+  .object({
+    /** as spoken, with its punctuation attached (`Hello,`) */
+    text: z.string().min(1),
+    start: Ms,
+    end: Ms,
+    confidence: Fraction.optional(),
+    /** a non-speech event such as (laughs) or [music] */
+    event: z.boolean().optional(),
+  })
+  .refine((w) => w.end >= w.start, { message: 'a word ends at or after its start', path: ['end'] });
+
+export const TranscribeOutputSchema = z.object({
+  /** the language heard (ISO 639-1) */
+  language: z.string().regex(/^[a-z]{2,3}$/),
+  words: z.array(TranscribedWordSchema).superRefine((ws, ctx) => {
+    for (let i = 1; i < ws.length; i++)
+      if (ws[i]!.start < ws[i - 1]!.start)
+        ctx.addIssue({ code: 'custom', message: 'words are in time order', path: [i, 'start'] });
+  }),
+});
+
+// ── analyzer: reframe-track ──────────────────────────────────────────────────
+
+/** Same names as core's ASPECT_NAMES (plugin-api imports nothing from core; the engine tests keep them equal). */
+export const ASPECTS = ['9:16', '16:9', '1:1', '4:5', '4:3'] as const;
+
+export const ReframeTrackInputSchema = z.object({
+  /** the source video (never modified) */
+  source: Path,
+  aspect: z.enum(ASPECTS),
+  /** the kept parts of the edit, in source time; only these need a track */
+  ranges: z
+    .array(z.object({ start: Ms, end: Ms }).refine((r) => r.end > r.start, 'a range ends after it starts'))
+    .min(1),
+  /** frames to look at per second (the plugin may choose) */
+  sampleFps: z.number().positive().max(30).optional(),
+});
+
+export const KeyframeSchema = z.object({
+  /** source time */
+  t: Ms,
+  /** crop centre as a fraction of the source frame */
+  x: Fraction,
+  y: Fraction,
+});
+export type Keyframe = z.infer<typeof KeyframeSchema>;
+
+export const ReframeTrackOutputSchema = z.object({
+  keyframes: z
+    .array(KeyframeSchema)
+    .min(1)
+    .superRefine((ks, ctx) => {
+      for (let i = 1; i < ks.length; i++)
+        if (ks[i]!.t <= ks[i - 1]!.t)
+          ctx.addIssue({ code: 'custom', message: 'keyframe times strictly increase', path: [i, 't'] });
+    }),
+  /** how sure the plugin is about what it followed, 0..1 */
+  confidence: Fraction.optional(),
+});
+
+// ── asset: music ─────────────────────────────────────────────────────────────
+
+export const FindMusicInputSchema = z.object({
+  /** e.g. calm, upbeat, inspiring */
+  mood: z.string().min(1).max(40).optional(),
+  query: z.string().min(1).max(200).optional(),
+  /** the output length the music has to cover (looping is fine if the track says so) */
+  minDurationMs: Ms.optional(),
+  limit: z.number().int().min(1).max(50).optional(),
+});
+
+export const MusicTrackSchema = z.object({
+  id: z.string().min(1).max(200),
+  title: z.string().min(1).max(200),
+  moods: z.array(z.string().min(1)).default([]),
+  bpm: z.number().positive().optional(),
+  durationMs: Ms.refine((d) => d > 0, 'a track has a length'),
+  /** loops without an audible seam */
+  loopable: z.boolean(),
+  /** e.g. "CC0", "Licensed for use in CutPilot projects" */
+  license: z.string().min(1),
+  /** the credit line to show, if the license asks for one */
+  attribution: z.string().min(1).optional(),
+});
+
+export const FindMusicOutputSchema = z.object({ tracks: z.array(MusicTrackSchema) });
+
+export const GetMusicInputSchema = z.object({ id: z.string().min(1) });
+
+export const GetMusicOutputSchema = z.object({
+  /** absolute path of an audio file the engine may copy */
+  file: Path,
+  durationMs: Ms,
+  license: z.string().min(1),
+  attribution: z.string().min(1).optional(),
+});
+
+// ── the contract table ───────────────────────────────────────────────────────
+
+export interface ToolContract<I extends z.ZodType = z.ZodType, O extends z.ZodType = z.ZodType> {
+  description: string;
+  input: I;
+  output: O;
+}
+
+export const KIND_TOOLS = {
+  transcriber: {
+    transcribe: {
+      description: 'Transcribe a 16 kHz mono wav into timed words.',
+      input: TranscribeInputSchema,
+      output: TranscribeOutputSchema,
+    },
+  },
+  'analyzer:reframe-track': {
+    reframe_track: {
+      description: 'Where to centre the crop over time (keyframes in source time) for the given aspect.',
+      input: ReframeTrackInputSchema,
+      output: ReframeTrackOutputSchema,
+    },
+  },
+  'asset:music': {
+    find_music: {
+      description: 'Music tracks that fit a mood or query.',
+      input: FindMusicInputSchema,
+      output: FindMusicOutputSchema,
+    },
+    get_music: {
+      description: 'The audio file of one track.',
+      input: GetMusicInputSchema,
+      output: GetMusicOutputSchema,
+    },
+  },
+} as const satisfies Record<PluginKind, Record<string, ToolContract>>;
+
+/** Tool names a plugin must offer for its kinds. */
+export const contractTools = (kinds: readonly PluginKind[]): string[] =>
+  kinds.flatMap((k) => Object.keys(KIND_TOOLS[k]));
+
+/** Names reserved for the kinds; extra tools can't use them. */
+export const CONTRACT_TOOL_NAMES: ReadonlySet<string> = new Set(
+  Object.values(KIND_TOOLS).flatMap((t) => Object.keys(t)),
+);
+
+/** snake_case, and short enough that `<id>__<tool>` stays within MCP's 64 characters */
+export const EXTRA_TOOL_NAME_RE = /^[a-z][a-z0-9_]*$/;
+export const MAX_EXPORTED_TOOL_NAME = 64;
+
+/** The name AI clients see for a plugin's extra tool. */
+export const exportedToolName = (pluginId: string, tool: string) => `${pluginId}__${tool}`;
+
+/** Why an extra tool can't be offered to AI clients, or null when it can. */
+export function extraToolProblem(pluginId: string, tool: string): string | null {
+  if (!EXTRA_TOOL_NAME_RE.test(tool))
+    return `tool ${JSON.stringify(tool)}: names are snake_case, like suggest_titles`;
+  if (CONTRACT_TOOL_NAMES.has(tool))
+    return `tool ${tool}: that name belongs to a plugin kind; declare the kind instead`;
+  const name = exportedToolName(pluginId, tool);
+  if (name.length > MAX_EXPORTED_TOOL_NAME)
+    return `tool ${tool}: ${name} is longer than ${MAX_EXPORTED_TOOL_NAME} characters; shorten the tool or plugin id`;
+  return null;
+}

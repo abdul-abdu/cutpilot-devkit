@@ -1,0 +1,36 @@
+{
+  "name": "@cutpilot/plugin-api",
+  "version": "0.1.0",
+  "description": "What a CutPilot plugin is: the manifest and the tool contract of each plugin kind.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "!dist/.tsbuildinfo"
+  ],
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {
+    "zod": "^4.1.0"
+  },
+  "license": "MIT",
+  "author": "Abdul <abdul.abdurohiym@gmail.com>",
+  "keywords": [
+    "cutpilot",
+    "video",
+    "mcp",
+    "plugin"
+  ],
+  "private": true
+}
