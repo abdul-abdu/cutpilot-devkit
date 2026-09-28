@@ -27,6 +27,11 @@
     "zod": "^4.1.0"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "directory": "packages/plugin-sdk"
+  },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
     "cutpilot",

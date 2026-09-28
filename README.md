@@ -36,7 +36,7 @@ The private app repo uses these packages straight from a sibling checkout. Its `
 ```
 
 - Run `pnpm install` in `cutpilot` after changing dependencies here. The app's install also writes `node_modules` into this repo's packages. If you then work on the devkit alone, run `pnpm install` here again.
-- If you change a contract, commit it here first, then update the app. Breaking changes to a contract bump its `contract` number (see `packages/plugin-api/src/manifest.ts`).
+- If you change a contract, commit it here first, then update the app. Breaking changes to a contract bump `CONTRACT_VERSION` in `packages/plugin-api/src/manifest.ts`.
 
 ## Rules
 

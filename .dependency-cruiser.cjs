@@ -54,7 +54,7 @@ module.exports = {
     },
   ],
   options: {
-    doNotFollow: { path: 'node_modules' },
+    doNotFollow: { path: ['node_modules', '^\.\./'] },
     exclude: { path: '(^|/)dist/' },
     tsPreCompilationDeps: true,
     tsConfig: { fileName: 'tsconfig.test.json' },
