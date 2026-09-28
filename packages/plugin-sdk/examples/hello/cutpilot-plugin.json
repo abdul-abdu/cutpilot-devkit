@@ -1,0 +1,10 @@
+{
+  "id": "hello",
+  "name": "Hello",
+  "version": "0.1.0",
+  "description": "The smallest plugin: one extra tool that greets someone.",
+  "contract": 1,
+  "cutpilot": ">=0.1",
+  "command": "node",
+  "args": ["index.mjs"]
+}

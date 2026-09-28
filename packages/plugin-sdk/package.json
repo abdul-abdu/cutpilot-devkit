@@ -1,0 +1,38 @@
+{
+  "name": "@cutpilot/plugin-sdk",
+  "version": "0.1.0",
+  "description": "Build CutPilot plugins: definePlugin() and a test harness.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "!dist/.tsbuildinfo"
+  ],
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {
+    "@cutpilot/plugin-api": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.1.0"
+  },
+  "license": "MIT",
+  "author": "Abdul <abdul.abdurohiym@gmail.com>",
+  "keywords": [
+    "cutpilot",
+    "video",
+    "mcp",
+    "plugin"
+  ],
+  "private": true
+}
