@@ -1,4 +1,8 @@
 {
   "files": [],
-  "references": [{ "path": "packages/plugin-api" }, { "path": "packages/plugin-sdk" }]
+  "references": [
+    { "path": "packages/plugin-api" },
+    { "path": "packages/plugin-sdk" },
+    { "path": "plugins/hyperframes" }
+  ]
 }

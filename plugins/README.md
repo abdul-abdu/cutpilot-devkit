@@ -7,6 +7,7 @@ CutPilot's own plugins, one folder each, built the way a third-party plugin is: 
 | `cloud-transcribe/` | `@cutpilot/plugin-stt-cloud` | transcriber | P3-030, P3-031 |
 | `follow-speaker/` | `@cutpilot/plugin-analyze-follow-speaker` | analyzer: reframe-track | P3-032, P3-033 |
 | `music/` | `@cutpilot/plugin-asset-music` | asset: music | P3-034 |
+| `hyperframes/` | `@cutpilot/plugin-render-hyperframes` | extra tools only (research) | — |
 
 ## Adding a plugin
 

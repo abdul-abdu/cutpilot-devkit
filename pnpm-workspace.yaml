@@ -1,3 +1,8 @@
 packages:
   - packages/*
   - plugins/*
+
+# esbuild (a dependency of hyperframes) has a postinstall that only checks its prebuilt binary,
+# which comes as an optional dependency anyway: no need to run scripts.
+allowBuilds:
+  esbuild: false
