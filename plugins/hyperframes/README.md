@@ -58,5 +58,5 @@ cutpilot plugin install plugins/hyperframes --link
 ```sh
 pnpm bundle plugins/hyperframes        # → build/hyperframes: the SDK bundled in, hyperframes and gsap installed with npm
 cutpilot plugin install build/hyperframes
-cutpilot plugin pack build/hyperframes  # → hyperframes-0.1.0.cutpilot-plugin (about 34 MB: hyperframes brings sharp, puppeteer-core and an esbuild binary)
+cutpilot plugin pack build/hyperframes  # → hyperframes-<version>.cutpilot-plugin (about 34 MB: hyperframes brings sharp, puppeteer-core and an esbuild binary)
 ```

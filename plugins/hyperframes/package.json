@@ -1,6 +1,6 @@
 {
   "name": "@cutpilot/plugin-render-hyperframes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CutPilot plugin (research): an edit as a HyperFrames HTML composition, rendered to MP4 with headless Chrome.",
   "type": "module",
   "private": true,
