@@ -7,5 +7,11 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["packages/*/src/**/*.test.ts", "plugins/*/src/**/*.test.ts", "vitest.config.ts"]
+  "include": [
+    "packages/*/src/**/*.test.ts",
+    "plugins/*/src/**/*.test.ts",
+    "scripts/*.test.ts",
+    "scripts/*.d.mts",
+    "vitest.config.ts"
+  ]
 }

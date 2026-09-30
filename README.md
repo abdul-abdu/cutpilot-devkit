@@ -23,6 +23,7 @@ Requirements: Node 22+, pnpm (`corepack enable`).
 pnpm install
 pnpm build        # tsc -b: dist/ for every package (the SDK harness tests need it)
 pnpm check        # typecheck, lint, format, dependency rules, tests
+pnpm bundle plugins/<name>   # a plugin as a folder that stands alone (build/<id>), for a copied install or the store
 ```
 
 ### Together with the CutPilot app

@@ -14,3 +14,4 @@ CutPilot's own plugins, one folder each, built the way a third-party plugin is: 
 1. Create `plugins/<name>/` with `package.json` (`"name": "@cutpilot/plugin-<kind>-<name>"`, `"license": "MIT"`), `cutpilot-plugin.json`, `tsconfig.json` (extends `../../tsconfig.base.json`, references `../../packages/plugin-sdk`) and `src/`.
 2. Add its `tsconfig.json` to the root `tsconfig.json` references.
 3. Test it with `testPlugin()` from the SDK in `src/*.test.ts`.
+4. To install it as a copy or pack it for the store, `pnpm bundle plugins/<name>` writes `build/<id>/`: the entry bundled with the SDK (esbuild), the plugin's other dependencies installed with npm at the versions the workspace resolved, no links. A workspace folder itself can only be installed with `cutpilot plugin install <folder> --link`.

@@ -8,14 +8,12 @@ It fits no plugin kind, so it offers only extra tools; AI clients see them as `h
 
 ## The mapping
 
-| CutPilot | HyperFrames |
-| --- | --- |
-| Source video (never modified) | Linked into the project as `assets/source.<ext>`; one `<video class="clip">` per kept part |
-| Kept ranges in source ms, in play order | `data-start` (output seconds, laid end to end), `data-duration`, `data-media-start` (the trim, source seconds) |
-| Reframe track: crop centres over source time | The footage scaled to cover the stage (like `object-fit: cover`), panned by a GSAP timeline with linear segments between keyframes, each clip's steps re-timed to the output |
-| Words in source ms | Caption lines (a few words each, broken at sentence ends, cuts and long silences) as timed `<p class="clip">`; `karaoke` lights the spoken word with `tl.set` |
-| Aspect (`9:16`, `1:1`, …) | `data-width` / `data-height`, as large as the source allows |
-| A title | A timed `<h1 class="clip">` faded in by the timeline |
+- **Source video** (never modified) → linked into the project as `assets/source.<ext>`; one `<video class="clip">` per kept part.
+- **Kept ranges** in source ms, in play order → `data-start` (output seconds, laid end to end), `data-duration`, `data-media-start` (the trim, source seconds).
+- **Reframe track** (crop centres over source time) → the footage scaled to cover the stage (like `object-fit: cover`), panned by a GSAP timeline with linear segments between keyframes, each clip's steps re-timed to the output.
+- **Words** in source ms → caption lines (a few words each, broken at sentence ends, cuts and long silences) as timed `<p class="clip">`; `karaoke` lights the spoken word with `tl.set`.
+- **Aspect** (`9:16`, `1:1`, …) → `data-width` / `data-height`, as large as the source allows.
+- **A title** → a timed `<h1 class="clip">` faded in by the timeline.
 
 Everything the render needs is in the project folder: `gsap.min.js` is copied in and fonts are the system's, so the plugin declares no network and a render works offline.
 
@@ -55,4 +53,10 @@ Or install the folder into CutPilot and ask an AI client: "compose this edit wit
 cutpilot plugin install plugins/hyperframes --link
 ```
 
-`--link` matters: this folder's `node_modules` are pnpm symlinks into the workspace, so a copied install would have no dependencies, and `cutpilot plugin pack` refuses links. A store package needs the plugin bundled with its dependencies first; that isn't done yet.
+`--link` matters here: this folder's `node_modules` are pnpm symlinks into the workspace, so a copied install would have no dependencies, and `cutpilot plugin pack` refuses links. For a copy, or a store package, bundle it first:
+
+```sh
+pnpm bundle plugins/hyperframes        # → build/hyperframes: the SDK bundled in, hyperframes and gsap installed with npm
+cutpilot plugin install build/hyperframes
+cutpilot plugin pack build/hyperframes  # → hyperframes-0.1.0.cutpilot-plugin (about 34 MB: hyperframes brings sharp, puppeteer-core and an esbuild binary)
+```
