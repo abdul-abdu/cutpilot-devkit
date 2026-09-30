@@ -13,6 +13,7 @@ export {
   pluginEnv,
   resolveCommand,
   silentWav,
+  smallCanvas,
   testPlugin,
   type Check,
   type TestOptions,

@@ -119,6 +119,100 @@ export const GetMusicOutputSchema = z.object({
   attribution: z.string().min(1).optional(),
 });
 
+// ── generator ────────────────────────────────────────────────────────────────
+// A generator makes a clip from a template: a title card, a chapter heading, an end card. The
+// engine asks for it at the timeline's output size and puts it in the edit as an insert (a
+// clip that plays between two moments of the source); the plugin never sees the timeline.
+
+/** kebab-case, like title-card */
+export const TemplateIdSchema = z
+  .string()
+  .max(40)
+  .regex(/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/, 'template ids are kebab-case, like title-card');
+
+/** A clip's frame size: even, as encoders want it. */
+const EvenPx = z
+  .number()
+  .int()
+  .min(16)
+  .max(7680)
+  .refine((n) => n % 2 === 0, 'sizes are even numbers of pixels');
+
+const Positive = Ms.refine((d) => d > 0, 'a clip has a length');
+
+export const ListTemplatesInputSchema = z.object({
+  /** only the templates made for this output aspect (and those made for any) */
+  aspect: z.enum(ASPECTS).optional(),
+});
+
+export const TemplateSchema = z
+  .object({
+    id: TemplateIdSchema,
+    name: z.string().min(1).max(60),
+    /** what it shows and when it fits, for the AI choosing one */
+    description: z.string().min(1).max(500),
+    /** the template's parameters as a JSON Schema of type object (z.toJSONSchema makes one) */
+    params: z
+      .record(z.string(), z.unknown())
+      .refine((s) => s.type === 'object', 'params is a JSON Schema with "type": "object"'),
+    /** parameters that make a good example; the test harness renders with them */
+    example: z.record(z.string(), z.unknown()).default({}),
+    defaultDurationMs: Positive,
+    minDurationMs: Positive.optional(),
+    maxDurationMs: Positive.optional(),
+    /** the aspects it is laid out for; empty: any */
+    aspects: z.array(z.enum(ASPECTS)).default([]),
+  })
+  .superRefine((t, ctx) => {
+    const min = t.minDurationMs ?? 0;
+    const max = t.maxDurationMs ?? Infinity;
+    if (min > max)
+      ctx.addIssue({
+        code: 'custom',
+        message: 'minDurationMs is at most maxDurationMs',
+        path: ['minDurationMs'],
+      });
+    else if (t.defaultDurationMs < min || t.defaultDurationMs > max)
+      ctx.addIssue({
+        code: 'custom',
+        message: 'defaultDurationMs is between minDurationMs and maxDurationMs',
+        path: ['defaultDurationMs'],
+      });
+  });
+export type Template = z.infer<typeof TemplateSchema>;
+
+export const ListTemplatesOutputSchema = z.object({
+  templates: z.array(TemplateSchema).superRefine((ts, ctx) => {
+    const seen = new Set<string>();
+    ts.forEach((t, i) => {
+      if (seen.has(t.id))
+        ctx.addIssue({ code: 'custom', message: `template ${t.id} is listed twice`, path: [i, 'id'] });
+      seen.add(t.id);
+    });
+  }),
+});
+
+export const GenerateInputSchema = z.object({
+  template: TemplateIdSchema,
+  /** checked by the plugin against the template's params schema */
+  params: z.record(z.string(), z.unknown()).default({}),
+  /** the output canvas of the timeline the clip goes into */
+  width: EvenPx,
+  height: EvenPx,
+  fps: z.number().positive().max(120),
+  /** default: the template's */
+  durationMs: Positive.optional(),
+});
+
+export const GenerateOutputSchema = z.object({
+  /** absolute path of the rendered clip (an MP4 the engine copies into the project) */
+  file: Path,
+  durationMs: Positive,
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  hasAudio: z.boolean(),
+});
+
 // ── the contract table ───────────────────────────────────────────────────────
 
 export interface ToolContract<I extends z.ZodType = z.ZodType, O extends z.ZodType = z.ZodType> {
@@ -152,6 +246,18 @@ export const KIND_TOOLS = {
       description: 'The audio file of one track.',
       input: GetMusicInputSchema,
       output: GetMusicOutputSchema,
+    },
+  },
+  generator: {
+    list_templates: {
+      description: 'The templates this generator can render, with their parameters as JSON Schema.',
+      input: ListTemplatesInputSchema,
+      output: ListTemplatesOutputSchema,
+    },
+    generate: {
+      description: 'Render one template with its parameters to a clip of the given size, fps and length.',
+      input: GenerateInputSchema,
+      output: GenerateOutputSchema,
     },
   },
 } as const satisfies Record<PluginKind, Record<string, ToolContract>>;

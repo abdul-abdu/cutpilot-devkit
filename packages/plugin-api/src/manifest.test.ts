@@ -93,7 +93,10 @@ describe('manifest', () => {
     [{ version: '1.0' }, 'version: versions are semver'],
     [{ contract: 2 }, 'contract: this CutPilot speaks plugin contract 1'],
     [{ cutpilot: 'soon' }, 'cutpilot: cutpilot is a semver range'],
-    [{ kinds: ['analyzer:faces'] }, 'kinds.0: kinds are transcriber, analyzer:reframe-track, asset:music'],
+    [
+      { kinds: ['analyzer:faces'] },
+      'kinds.0: kinds are transcriber, analyzer:reframe-track, asset:music, generator',
+    ],
     [
       { kinds: ['analyzer:reframe-track', 'analyzer:reframe-track'] },
       'kinds: kind analyzer:reframe-track is listed twice',

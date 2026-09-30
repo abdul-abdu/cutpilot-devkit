@@ -8,6 +8,7 @@ CutPilot's own plugins, one folder each, built the way a third-party plugin is: 
 | `follow-speaker/` | `@cutpilot/plugin-analyze-follow-speaker` | analyzer: reframe-track | P3-032, P3-033 |
 | `music/` | `@cutpilot/plugin-asset-music` | asset: music | P3-034 |
 | `hyperframes/` | `@cutpilot/plugin-render-hyperframes` | extra tools only (research) | — |
+| `html-motion/` | `@cutpilot/plugin-generator-html-motion` | generator: title cards, chapters, quotes, lists, end cards | P3-036 |
 
 ## Adding a plugin
 

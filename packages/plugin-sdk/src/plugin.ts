@@ -18,8 +18,12 @@ import {
   settingEnv,
   type FindMusicInputSchema,
   type FindMusicOutputSchema,
+  type GenerateInputSchema,
+  type GenerateOutputSchema,
   type GetMusicInputSchema,
   type GetMusicOutputSchema,
+  type ListTemplatesInputSchema,
+  type ListTemplatesOutputSchema,
   type Manifest,
   type PluginKind,
   type ReframeTrackInputSchema,
@@ -81,6 +85,9 @@ export interface PluginDefinition {
   /** kind `asset:music` */
   findMusic?: Handler<typeof FindMusicInputSchema, typeof FindMusicOutputSchema>;
   getMusic?: Handler<typeof GetMusicInputSchema, typeof GetMusicOutputSchema>;
+  /** kind `generator` */
+  listTemplates?: Handler<typeof ListTemplatesInputSchema, typeof ListTemplatesOutputSchema>;
+  generate?: Handler<typeof GenerateInputSchema, typeof GenerateOutputSchema>;
   /** free-form read-only tools; AI clients see them as `<plugin id>__<name>` */
   tools?: Record<string, ExtraTool>;
 }
@@ -91,6 +98,8 @@ const HANDLER_FOR: Record<string, keyof PluginDefinition> = {
   reframe_track: 'reframeTrack',
   find_music: 'findMusic',
   get_music: 'getMusic',
+  list_templates: 'listTemplates',
+  generate: 'generate',
 };
 
 export class PluginDefinitionError extends Error {
