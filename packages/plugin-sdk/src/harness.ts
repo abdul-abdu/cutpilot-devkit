@@ -24,6 +24,7 @@ import {
   secretEnv,
   settingEnv,
   type Manifest,
+  type Template,
 } from '@cutpilot/plugin-api';
 import type { z } from 'zod';
 
@@ -38,6 +39,8 @@ export interface TestOptions {
     /** a video for `reframe_track` (no default: the check is skipped without one) */
     video?: string;
   };
+  /** which of a generator's templates to render: the first (default), all, or none */
+  templates?: 'first' | 'all' | 'none';
   /** per call; default 60 s */
   timeoutMs?: number;
 }
@@ -93,6 +96,13 @@ export function pluginEnv(
     if (settings[s.key] !== undefined) env[settingEnv(s.key)] = String(settings[s.key]);
   for (const name of m.permissions.secrets) if (secrets[name]) env[secretEnv(name)] = secrets[name]!;
   return env;
+}
+
+/** A small frame of an aspect (360 px on the short side, even) for trying templates quickly. */
+export function smallCanvas(aspect: string): { width: number; height: number } {
+  const [w, h] = aspect.split(':').map(Number) as [number, number];
+  const even = (n: number) => Math.round(n / 2) * 2;
+  return w >= h ? { width: even((360 * w) / h), height: 360 } : { width: 360, height: even((360 * h) / w) };
 }
 
 const issues = (e: z.ZodError) =>
@@ -201,9 +211,13 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
     }
 
     const missing = m.permissions.secrets.filter((s) => !opts.secrets?.[s]);
-    const call = async (tool: string, args: Record<string, unknown>, output: z.ZodType) => {
+    const call = async (
+      tool: string,
+      args: Record<string, unknown>,
+      output: z.ZodType,
+      name = `${tool} answers per contract`,
+    ) => {
       if (!offered.has(tool)) return undefined;
-      const name = `${tool} answers per contract`;
       if (missing.length) {
         add({
           name,
@@ -288,6 +302,47 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
             detail: String(got.file),
             fix: 'return an absolute path to an existing file',
           });
+      }
+    }
+    if (m.kinds.includes('generator')) {
+      const contract = KIND_TOOLS.generator;
+      const listed = await call('list_templates', {}, contract.list_templates.output);
+      const templates = (listed?.templates as Template[] | undefined) ?? [];
+      if (listed && !templates.length)
+        add({
+          name: 'list_templates lists a template',
+          result: 'fail',
+          fix: 'a generator offers at least one template',
+        });
+      const which = opts.templates ?? 'first';
+      for (const t of which === 'all' ? templates : which === 'first' ? templates.slice(0, 1) : []) {
+        const size = smallCanvas(t.aspects[0] ?? '16:9');
+        const durationMs = Math.min(
+          Math.max(Math.min(t.defaultDurationMs, 2000), t.minDurationMs ?? 0),
+          t.maxDurationMs ?? Infinity,
+        );
+        const got = await call(
+          'generate',
+          { template: t.id, params: t.example, ...size, fps: 30, durationMs },
+          contract.generate.output,
+          `generate ${t.id} answers per contract`,
+        );
+        if (!got) continue;
+        const problem = !existsSync(String(got.file))
+          ? `${String(got.file)} doesn't exist`
+          : got.width !== size.width || got.height !== size.height
+            ? `asked for ${size.width}x${size.height}, got ${String(got.width)}x${String(got.height)}`
+            : null;
+        add(
+          problem
+            ? {
+                name: `generate ${t.id} makes the clip asked for`,
+                result: 'fail',
+                detail: problem,
+                fix: 'render at the width and height given and return the absolute path of the file',
+              }
+            : { name: `generate ${t.id} makes the clip asked for`, result: 'pass', detail: String(got.file) },
+        );
       }
     }
     return done(m.id);

@@ -5,6 +5,9 @@ import {
   contractTools,
   extraToolProblem,
   FindMusicOutputSchema,
+  GenerateInputSchema,
+  GenerateOutputSchema,
+  ListTemplatesOutputSchema,
   KIND_TOOLS,
   ReframeTrackInputSchema,
   ReframeTrackOutputSchema,
@@ -19,6 +22,45 @@ describe('kind contracts', () => {
     expect(Object.keys(KIND_TOOLS).sort()).toEqual([...PLUGIN_KINDS].sort());
     for (const k of PLUGIN_KINDS) expect(contractTools([k]).length).toBeGreaterThan(0);
     expect(contractTools(['transcriber', 'asset:music'])).toEqual(['transcribe', 'find_music', 'get_music']);
+  });
+
+  test('generator: templates with a params schema and sane lengths; clips at even sizes', () => {
+    const t = {
+      id: 'title-card',
+      name: 'Title card',
+      description: 'A big title',
+      params: { type: 'object', properties: { title: { type: 'string' } }, required: ['title'] },
+      defaultDurationMs: 3000,
+      minDurationMs: 1000,
+      maxDurationMs: 10000,
+    };
+    const ok = ListTemplatesOutputSchema.parse({ templates: [t] });
+    expect(ok.templates[0]).toMatchObject({ example: {}, aspects: [] });
+    const problem = (x: unknown) =>
+      ListTemplatesOutputSchema.safeParse(x).error?.issues.map((i) => `${i.path.join('.')}: ${i.message}`);
+    expect(problem({ templates: [t, t] })).toEqual(['templates.1.id: template title-card is listed twice']);
+    expect(problem({ templates: [{ ...t, id: 'Title Card' }] })).toEqual([
+      'templates.0.id: template ids are kebab-case, like title-card',
+    ]);
+    expect(problem({ templates: [{ ...t, params: { type: 'string' } }] })).toEqual([
+      'templates.0.params: params is a JSON Schema with "type": "object"',
+    ]);
+    expect(problem({ templates: [{ ...t, defaultDurationMs: 20000 }] })).toEqual([
+      'templates.0.defaultDurationMs: defaultDurationMs is between minDurationMs and maxDurationMs',
+    ]);
+    expect(problem({ templates: [{ ...t, minDurationMs: 11000 }] })).toEqual([
+      'templates.0.minDurationMs: minDurationMs is at most maxDurationMs',
+    ]);
+
+    const input = { template: 'title-card', width: 1080, height: 1920, fps: 30 };
+    expect(GenerateInputSchema.parse(input)).toEqual({ ...input, params: {} });
+    expect(GenerateInputSchema.safeParse({ ...input, width: 1081 }).error?.issues[0]?.message).toBe(
+      'sizes are even numbers of pixels',
+    );
+    expect(GenerateInputSchema.safeParse({ ...input, durationMs: 0 }).success).toBe(false);
+    const out = { file: '/tmp/x.mp4', durationMs: 3000, width: 1080, height: 1920, hasAudio: false };
+    expect(GenerateOutputSchema.safeParse(out).success).toBe(true);
+    expect(GenerateOutputSchema.safeParse({ ...out, file: '' }).success).toBe(false);
   });
 
   test('transcribe: words in time order, each ending at or after its start', () => {

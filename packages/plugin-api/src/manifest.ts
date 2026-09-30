@@ -13,7 +13,7 @@ export const PluginIdSchema = z
   .max(40, 'ids are at most 40 characters')
   .regex(/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/, 'ids are kebab-case, like follow-speaker');
 
-export const PLUGIN_KINDS = ['transcriber', 'analyzer:reframe-track', 'asset:music'] as const;
+export const PLUGIN_KINDS = ['transcriber', 'analyzer:reframe-track', 'asset:music', 'generator'] as const;
 export const PluginKindSchema = z.enum(PLUGIN_KINDS, {
   error: `kinds are ${PLUGIN_KINDS.join(', ')}`,
 });
@@ -29,6 +29,7 @@ export const KIND_READS: Record<PluginKind, readonly PluginRead[]> = {
   transcriber: ['audio'],
   'analyzer:reframe-track': ['source'],
   'asset:music': [],
+  generator: [],
 };
 
 const HostSchema = z

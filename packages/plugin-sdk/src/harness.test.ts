@@ -1,5 +1,5 @@
 /** testPlugin() starts real plugin processes, so it needs the built SDK (`pnpm build`, or `tsc -b` in `pnpm check`). */
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -113,6 +113,52 @@ await definePlugin({ findMusic: () => ({ tracks: [track] }), getMusic: () => ({ 
       'get_music answers per contract': 'pass',
       'get_music file exists': 'fail',
     });
+  });
+
+  test('generator: templates listed, the first rendered at a small size, the clip checked', async () => {
+    const dir = plugin(
+      'gen',
+      { kinds: ['generator'] },
+      `import { writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+const params = { type: 'object', properties: { text: { type: 'string' } } };
+const templates = [
+  { id: 'card', name: 'Card', description: 'a card', params, example: { text: 'Hi' }, defaultDurationMs: 3000, aspects: ['9:16'] },
+  { id: 'wrong-size', name: 'Wrong', description: 'renders the wrong size', params, defaultDurationMs: 1000 },
+];
+await definePlugin({
+  listTemplates: () => ({ templates }),
+  generate: ({ template, params, width, height, durationMs }) => {
+    const file = join(tmpdir(), 'cp-gen-' + template + '.mp4');
+    writeFileSync(file, JSON.stringify(params));
+    return template === 'card'
+      ? { file, durationMs, width, height, hasAudio: false }
+      : { file, durationMs, width: width + 2, height, hasAudio: false };
+  },
+}).start();`,
+    );
+    const first = await testPlugin(dir);
+    expect(results(first)).toMatchObject({
+      'offers list_templates': 'pass',
+      'offers generate': 'pass',
+      'list_templates answers per contract': 'pass',
+      'generate card answers per contract': 'pass',
+      'generate card makes the clip asked for': 'pass',
+    });
+    expect(first.ok).toBe(true);
+    // 9:16 at 360 px wide, two seconds at most
+    expect(readFileSync(join(tmpdir(), 'cp-gen-card.mp4'), 'utf8')).toBe('{"text":"Hi"}');
+
+    const all = await testPlugin(dir, { templates: 'all' });
+    expect(all.ok).toBe(false);
+    expect(all.checks.find((c) => c.name === 'generate wrong-size makes the clip asked for')).toMatchObject({
+      result: 'fail',
+      detail: 'asked for 640x360, got 642x360',
+    });
+    expect(results(await testPlugin(dir, { templates: 'none' }))).not.toHaveProperty(
+      'generate card answers per contract',
+    );
   });
 
   test('a reframe analyzer is skipped without a video', async () => {
