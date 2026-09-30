@@ -1,0 +1,37 @@
+{
+  "name": "@cutpilot/plugin-generator-html-motion",
+  "version": "0.1.0",
+  "description": "CutPilot plugin: motion-graphics clips (title cards, chapters, quotes, lists, end cards) from HTML templates, rendered with headless Chrome.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {
+    "@cutpilot/plugin-sdk": "workspace:*",
+    "gsap": "^3.13.0",
+    "hyperframes": "^0.8.80",
+    "zod": "^4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "directory": "plugins/html-motion"
+  },
+  "author": "Abdul <abdul.abdurohiym@gmail.com>",
+  "keywords": [
+    "cutpilot",
+    "hyperframes",
+    "motion-graphics",
+    "video",
+    "mcp",
+    "plugin"
+  ],
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  }
+}
