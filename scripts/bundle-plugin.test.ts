@@ -36,6 +36,7 @@ describe.skipIf(!existsSync(join(HYPERFRAMES, 'dist/index.js')))('bundle-plugin'
       expect(js).not.toMatch(/from ["']@cutpilot\//);
       expect(existsSync(join(r.dir, 'node_modules/hyperframes/bin/hyperframes.mjs'))).toBe(true);
       expect(existsSync(join(r.dir, 'node_modules/gsap/dist/gsap.min.js'))).toBe(true);
+      expect(existsSync(join(r.dir, 'icon.png'))).toBe(true);
       expect(JSON.parse(readFileSync(join(r.dir, 'package.json'), 'utf8')).dependencies).toEqual({
         gsap: expect.any(String),
         hyperframes: expect.any(String),

@@ -124,6 +124,40 @@ await definePlugin({ findMusic: () => ({ tracks: [track] }), getMusic: () => ({ 
     expect(results(await testPlugin(dir))['reframe_track answers per contract']).toBe('skip');
   });
 
+  test('an icon is checked before the plugin starts: missing, wrong, or fine', async () => {
+    const body = `await definePlugin({ tools: { hi: { description: 'x', input: {}, handler: () => 'hi' } } }).start();`;
+    const dir = plugin('with-icon', { icon: 'art/icon.png' }, body);
+    let r = await testPlugin(dir);
+    expect(r.ok).toBe(false);
+    expect(r.checks[1]).toMatchObject({
+      name: 'icon',
+      result: 'fail',
+      detail: "art/icon.png doesn't exist",
+      fix: expect.stringMatching(/square PNG .* at art\/icon\.png, or drop "icon"/),
+    });
+
+    mkdirSync(join(dir, 'art'));
+    const png = (w: number, h: number) => {
+      const b = new Uint8Array(64);
+      b.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52]);
+      new DataView(b.buffer).setUint32(16, w);
+      new DataView(b.buffer).setUint32(20, h);
+      return b;
+    };
+    writeFileSync(join(dir, 'art/icon.png'), png(300, 200));
+    r = await testPlugin(dir);
+    expect(r.checks[1]).toMatchObject({
+      name: 'icon',
+      result: 'fail',
+      detail: 'the icon is 300×200; icons are square',
+    });
+
+    writeFileSync(join(dir, 'art/icon.png'), png(128, 128));
+    r = await testPlugin(dir);
+    expect(r.ok).toBe(true);
+    expect(r.checks[1]).toEqual({ name: 'icon', result: 'pass', detail: '128 px' });
+  });
+
   test('a plugin that does not start, and a broken manifest, are reported with fixes', async () => {
     const crash = plugin('crasher', {}, `console.error('missing dependency: sharp'); process.exit(3);`);
     const r = await testPlugin(crash);

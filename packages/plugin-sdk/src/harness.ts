@@ -12,10 +12,15 @@ import {
   CONTRACT_TOOL_NAMES,
   contractTools,
   extraToolProblem,
+  ICON_MAX_BYTES,
+  ICON_MAX_PX,
+  ICON_MIN_PX,
+  iconProblem,
   KIND_TOOLS,
   MANIFEST_FILE,
   parseManifest,
   PluginErrorSchema,
+  pngSize,
   secretEnv,
   settingEnv,
   type Manifest,
@@ -126,6 +131,27 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
   }
   const m = parsed.manifest;
   add({ name: 'manifest', result: 'pass', detail: `${m.id} ${m.version}` });
+
+  if (m.icon) {
+    // the store and the app check the same bytes the same way, so a bad icon fails here, not there
+    let bytes: Buffer | null;
+    try {
+      bytes = readFileSync(join(dir, m.icon));
+    } catch {
+      bytes = null;
+    }
+    const problem = bytes ? iconProblem(bytes) : `${m.icon} doesn't exist`;
+    add(
+      problem
+        ? {
+            name: 'icon',
+            result: 'fail',
+            detail: problem,
+            fix: `put a square PNG (${ICON_MIN_PX}–${ICON_MAX_PX} px, at most ${ICON_MAX_BYTES / 1024} KB) at ${m.icon}, or drop "icon" from ${MANIFEST_FILE}`,
+          }
+        : { name: 'icon', result: 'pass', detail: `${pngSize(bytes!)!.width} px` },
+    );
+  }
 
   const tmp = mkdtempSync(join(tmpdir(), 'cutpilot-plugin-test-'));
   const transport = new StdioClientTransport({

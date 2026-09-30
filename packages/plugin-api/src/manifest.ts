@@ -96,6 +96,19 @@ const CommandSchema = z
   )
   .refine((c) => !c.split(/[\\/]/).includes('..'), 'the command stays inside the plugin folder');
 
+/**
+ * The plugin's icon: a PNG inside the plugin folder, square, 32–256 px, at most 64 KB
+ * (`iconProblem` in icon.ts checks the bytes). The store and the Plugins screen show it.
+ */
+const IconPathSchema = z
+  .string()
+  .min(1)
+  .refine((p) => /\.png$/i.test(p), 'the icon is a PNG, like icon.png')
+  .refine(
+    (p) => !p.startsWith('/') && !/^[A-Za-z]:[\\/]/.test(p) && !p.split(/[\\/]/).includes('..'),
+    'the icon is a path inside the plugin folder',
+  );
+
 export const ManifestSchema = z
   .object({
     id: PluginIdSchema,
@@ -104,6 +117,7 @@ export const ManifestSchema = z
     description: z.string().min(1).max(300),
     publisher: z.string().min(1).max(60).optional(),
     homepage: z.url().optional(),
+    icon: IconPathSchema.optional(),
     contract: z.literal(CONTRACT_VERSION, {
       error: `this CutPilot speaks plugin contract ${CONTRACT_VERSION}`,
     }),

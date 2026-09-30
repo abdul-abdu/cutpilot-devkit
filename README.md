@@ -4,6 +4,8 @@ Everything you need to build a plugin for [CutPilot](https://github.com/abdul-ab
 
 A CutPilot plugin is a folder with a `cutpilot-plugin.json` manifest and a command that starts an [MCP](https://modelcontextprotocol.io) server on stdio. It can be written in any language. CutPilot's engine starts the plugin when it's needed, calls its tools, validates what comes back and applies it as an ordinary, undoable edit. Plugins return data or files. They never edit the timeline themselves.
 
+A plugin may ship an icon: `"icon": "icon.png"` in the manifest names a PNG inside the folder, square, 32 to 256 px, at most 64 KB. The store shows it in its list and on the plugin's page, the app next to the installed plugin; without one, the first letter of the name stands in. `testPlugin()` checks the file the way the store will.
+
 ## What's here
 
 | Path | npm package | What it is |

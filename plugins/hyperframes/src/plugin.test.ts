@@ -203,6 +203,7 @@ describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it'
     const r = await testPlugin(DIR);
     expect(r.checks.map((c) => [c.name, c.result])).toEqual([
       ['manifest', 'pass'],
+      ['icon', 'pass'],
       ['starts and answers', 'pass'],
       ['extra tool doctor', 'pass'],
       ['extra tool compose', 'pass'],

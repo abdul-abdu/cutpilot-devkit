@@ -11,7 +11,7 @@
  *   SDK go into the bundle: there must be one copy of zod between the plugin and the SDK;
  * - every other dependency of the plugin, installed with npm as real folders, because a CLI the
  *   plugin runs (`hyperframes`) or a file it copies at run time (`gsap`) can't be bundled;
- * - the manifest, README, LICENSE, and a package.json that names those dependencies.
+ * - the manifest, its icon, README, LICENSE, and a package.json that names those dependencies.
  */
 import { execFileSync } from 'node:child_process';
 import {
@@ -24,7 +24,7 @@ import {
   rmSync,
   writeFileSync,
 } from 'node:fs';
-import { join, resolve, sep } from 'node:path';
+import { dirname, join, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { build } from 'esbuild';
 
@@ -79,6 +79,10 @@ export async function bundlePlugin(dir, out, { log = () => {} } = {}) {
   log(`bundled ${entry} (${Math.round(bytes / 1024)} KB)`);
 
   for (const f of COPIED) if (existsSync(join(src, f))) copyFileSync(join(src, f), join(dest, f));
+  if (manifest.icon && existsSync(join(src, manifest.icon))) {
+    mkdirSync(dirname(join(dest, manifest.icon)), { recursive: true });
+    copyFileSync(join(src, manifest.icon), join(dest, manifest.icon));
+  }
   writeFileSync(
     join(dest, 'package.json'),
     JSON.stringify(

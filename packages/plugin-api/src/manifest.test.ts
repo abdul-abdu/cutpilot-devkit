@@ -35,6 +35,7 @@ const FIRST_PARTY: Record<string, unknown> = {
     version: '1.0.0',
     description: 'Keeps the person talking in a vertical crop, using face detection on your Mac.',
     publisher: 'CutPilot',
+    icon: 'icon.png',
     contract: 1,
     cutpilot: '^0.3.0',
     command: 'node',
@@ -113,6 +114,9 @@ describe('manifest', () => {
     ],
     [{ command: '/usr/bin/python3' }, 'command: the command is relative to the plugin folder'],
     [{ command: '../other/bin' }, 'command: the command stays inside the plugin folder'],
+    [{ icon: 'icon.svg' }, 'icon: the icon is a PNG, like icon.png'],
+    [{ icon: '/Users/me/icon.png' }, 'icon: the icon is a path inside the plugin folder'],
+    [{ icon: '../shared/icon.png' }, 'icon: the icon is a path inside the plugin folder'],
     [
       { settings: [{ key: 'mode', label: 'Mode', type: 'choice' }] },
       'settings.0.choices: a choice setting lists its choices',

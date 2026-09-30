@@ -5,6 +5,7 @@
   "description": "Research: turns a CutPilot edit (kept parts, words, reframe track, a title) into a HyperFrames HTML composition and renders it to MP4 with a local Chrome and ffmpeg. Tools: doctor, compose, lint, render.",
   "publisher": "CutPilot",
   "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/plugins/hyperframes",
+  "icon": "icon.png",
   "contract": 1,
   "cutpilot": ">=0.1",
   "command": "node",
