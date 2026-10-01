@@ -2,7 +2,14 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { afterEach, describe, expect, test } from 'vitest';
 import { z } from 'zod';
-import { definePlugin, PluginDefinitionError, PluginFailure, type PluginDefinition } from './plugin.js';
+import {
+  definePlugin,
+  imageBlock,
+  PluginDefinitionError,
+  PluginFailure,
+  ToolContent,
+  type PluginDefinition,
+} from './plugin.js';
 
 const manifest = (over: Record<string, unknown> = {}) => ({
   id: 'test-plugin',
@@ -218,5 +225,26 @@ describe('context', () => {
       content: [{ type: 'text', text: 'Hello, Abdul!' }],
     });
     expect((await c.callTool({ name: 'stats', arguments: {} })).structuredContent).toEqual({ words: 2 });
+  });
+
+  test('extra tools can return content blocks (an image) with structured data', async () => {
+    const png = Uint8Array.from([0x89, 0x50, 0x4e, 0x47]);
+    const c = await connect({
+      manifest: manifest({ kinds: [] }),
+      tools: {
+        look: {
+          description: 'Look.',
+          input: {},
+          handler: () =>
+            new ToolContent([{ type: 'text', text: 'frame 0' }, imageBlock(png, 'image/png')], { frame: 0 }),
+        },
+      },
+    });
+    const r = await c.callTool({ name: 'look', arguments: {} });
+    expect(r.content).toEqual([
+      { type: 'text', text: 'frame 0' },
+      { type: 'image', data: Buffer.from(png).toString('base64'), mimeType: 'image/png' },
+    ]);
+    expect(r.structuredContent).toEqual({ frame: 0 });
   });
 });
