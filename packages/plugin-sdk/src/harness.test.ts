@@ -115,6 +115,39 @@ await definePlugin({ findMusic: () => ({ tracks: [track] }), getMusic: () => ({ 
     });
   });
 
+  test('sound: voices listed; a sound only when asked for, and its file must exist', async () => {
+    const dir = plugin(
+      'sounds',
+      { kinds: ['asset:sound'] },
+      `import { writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+await definePlugin({
+  listVoices: () => ({ voices: [{ id: 'F1', name: 'Female 1', languages: ['en'] }], languages: ['en'] }),
+  generateSound: ({ kind, text }) => {
+    const file = join(tmpdir(), 'cp-sound-' + kind + '.wav');
+    if (text !== 'missing') writeFileSync(file, 'RIFF');
+    return { file: text === 'missing' ? file + '.gone' : file, durationMs: 1000, sampleRate: 24000, channels: 1, license: 'Apache-2.0', model: 'fake' };
+  },
+}).start();`,
+    );
+    const quiet = await testPlugin(dir);
+    expect(results(quiet)).toMatchObject({
+      'offers list_voices': 'pass',
+      'offers generate_sound': 'pass',
+      'list_voices answers per contract': 'pass',
+      'generate_sound answers per contract': 'skip',
+    });
+    expect(quiet.ok).toBe(true);
+    expect(results(await testPlugin(dir, { sound: { kind: 'speech', text: 'Hello' } }))).toMatchObject({
+      'generate_sound answers per contract': 'pass',
+      'generate_sound makes the file': 'pass',
+    });
+    expect(results(await testPlugin(dir, { sound: { kind: 'speech', text: 'missing' } }))).toMatchObject({
+      'generate_sound makes the file': 'fail',
+    });
+  });
+
   test('generator: templates listed, the first rendered at a small size, the clip checked', async () => {
     const dir = plugin(
       'gen',

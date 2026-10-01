@@ -41,6 +41,11 @@ export interface TestOptions {
   };
   /** which of a generator's templates to render: the first (default), all, or none */
   templates?: 'first' | 'all' | 'none';
+  /**
+   * a sound to ask an `asset:sound` plugin for (e.g. `{ kind: 'speech', text: 'Hello' }`); without
+   * one, generate_sound is skipped: making sound usually needs a model the test machine may not have
+   */
+  sound?: Record<string, unknown>;
   /** per call; default 60 s */
   timeoutMs?: number;
 }
@@ -343,6 +348,31 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
               }
             : { name: `generate ${t.id} makes the clip asked for`, result: 'pass', detail: String(got.file) },
         );
+      }
+    }
+    if (m.kinds.includes('asset:sound')) {
+      const contract = KIND_TOOLS['asset:sound'];
+      await call('list_voices', {}, contract.list_voices.output);
+      if (!opts.sound)
+        add({
+          name: 'generate_sound answers per contract',
+          result: 'skip',
+          detail: 'no sound asked for',
+          fix: "pass sound (e.g. { kind: 'speech', text: 'Hello' }) to test it",
+        });
+      else {
+        const got = await call('generate_sound', opts.sound, contract.generate_sound.output);
+        if (got)
+          add(
+            existsSync(String(got.file))
+              ? { name: 'generate_sound makes the file', result: 'pass', detail: String(got.file) }
+              : {
+                  name: 'generate_sound makes the file',
+                  result: 'fail',
+                  detail: `${String(got.file)} doesn't exist`,
+                  fix: 'return the absolute path of the audio file',
+                },
+          );
       }
     }
     return done(m.id);

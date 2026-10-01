@@ -95,7 +95,7 @@ describe('manifest', () => {
     [{ cutpilot: 'soon' }, 'cutpilot: cutpilot is a semver range'],
     [
       { kinds: ['analyzer:faces'] },
-      'kinds.0: kinds are transcriber, analyzer:reframe-track, asset:music, generator',
+      'kinds.0: kinds are transcriber, analyzer:reframe-track, asset:music, generator, asset:sound',
     ],
     [
       { kinds: ['analyzer:reframe-track', 'analyzer:reframe-track'] },

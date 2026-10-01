@@ -213,6 +213,79 @@ export const GenerateOutputSchema = z.object({
   hasAudio: z.boolean(),
 });
 
+// ── asset: sound ─────────────────────────────────────────────────────────────
+// A sound plugin makes audio from a description: a sound effect ("a door creaks open"), music
+// ("calm piano, 20 seconds") or spoken text (a voice-over). The engine puts the file into a
+// generated clip or a project asset; the plugin never sees the timeline.
+
+export const SOUND_KINDS = ['sfx', 'music', 'speech'] as const;
+export type SoundKind = (typeof SOUND_KINDS)[number];
+
+/** ISO 639-1 (en, ru, uz), with an optional region (pt-br) */
+export const LanguageTagSchema = z
+  .string()
+  .regex(/^[a-z]{2,3}(-[a-z]{2,4})?$/, 'a language tag like en or pt-br');
+
+export const ListVoicesInputSchema = z.object({
+  /** only voices that speak this language; default: all */
+  language: LanguageTagSchema.optional(),
+});
+
+export const VoiceSchema = z.object({
+  /** what `generate_sound.voice` takes, e.g. F1 or af_heart */
+  id: z.string().min(1).max(60),
+  /** a name to show, e.g. "Female 1" */
+  name: z.string().min(1).max(60),
+  /** the languages it speaks; empty: any the plugin lists in `languages` */
+  languages: z.array(LanguageTagSchema).default([]),
+  /** a few words for the AI choosing one: "warm, low, narrator" */
+  description: z.string().max(200).optional(),
+});
+export type Voice = z.infer<typeof VoiceSchema>;
+
+export const ListVoicesOutputSchema = z.object({
+  voices: z.array(VoiceSchema),
+  /** the languages speech can be made in */
+  languages: z.array(LanguageTagSchema).default([]),
+});
+
+export const GenerateSoundInputSchema = z
+  .object({
+    kind: z.enum(SOUND_KINDS),
+    /** sfx and music: what it sounds like, in English; speech: how to say it (optional) */
+    prompt: z.string().max(1000).optional(),
+    /** speech: the words to say */
+    text: z.string().max(5000).optional(),
+    /** speech: the language of the text; default: the plugin's */
+    language: LanguageTagSchema.optional(),
+    /** speech: a voice id from list_voices; default: the plugin's */
+    voice: z.string().min(1).max(60).optional(),
+    /** sfx and music: how long; speech: ignored, the words set the length */
+    durationMs: Positive.max(600_000).optional(),
+    /** the same request with the same seed gives the same sound */
+    seed: z.number().int().nonnegative().optional(),
+  })
+  .superRefine((a, ctx) => {
+    if (a.kind === 'speech' && !a.text?.trim())
+      ctx.addIssue({ code: 'custom', message: 'speech needs the text to say', path: ['text'] });
+    if (a.kind !== 'speech' && !a.prompt?.trim())
+      ctx.addIssue({ code: 'custom', message: `${a.kind} needs a prompt`, path: ['prompt'] });
+  });
+
+export const GenerateSoundOutputSchema = z.object({
+  /** absolute path of an audio file (wav, m4a, mp3…) the engine copies */
+  file: Path,
+  durationMs: Positive,
+  sampleRate: z.number().int().positive(),
+  channels: z.number().int().min(1).max(2),
+  /** e.g. "Stability AI Community License", "Apache-2.0" */
+  license: z.string().min(1),
+  /** the credit line to show, if the license asks for one */
+  attribution: z.string().min(1).optional(),
+  /** the model that made it, e.g. "Stable Audio 3 Small SFX" */
+  model: z.string().min(1).max(100).optional(),
+});
+
 // ── the contract table ───────────────────────────────────────────────────────
 
 export interface ToolContract<I extends z.ZodType = z.ZodType, O extends z.ZodType = z.ZodType> {
@@ -258,6 +331,18 @@ export const KIND_TOOLS = {
       description: 'Render one template with its parameters to a clip of the given size, fps and length.',
       input: GenerateInputSchema,
       output: GenerateOutputSchema,
+    },
+  },
+  'asset:sound': {
+    list_voices: {
+      description: 'The voices speech can be made with, and the languages they speak.',
+      input: ListVoicesInputSchema,
+      output: ListVoicesOutputSchema,
+    },
+    generate_sound: {
+      description: 'Make a sound effect or music from a prompt, or speech from text; returns an audio file.',
+      input: GenerateSoundInputSchema,
+      output: GenerateSoundOutputSchema,
     },
   },
 } as const satisfies Record<PluginKind, Record<string, ToolContract>>;

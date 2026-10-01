@@ -12,7 +12,7 @@ A plugin may ship an icon: `"icon": "icon.png"` in the manifest names a PNG insi
 
 | Path | npm package | What it is |
 | --- | --- | --- |
-| `packages/plugin-api` | `@cutpilot/plugin-api` | The manifest schema, the tool contract of each plugin kind (`transcriber`, `analyzer`, `asset`, `generator`), error codes, the registry index format. Depends on `zod` only. |
+| `packages/plugin-api` | `@cutpilot/plugin-api` | The manifest schema, the tool contract of each plugin kind (`transcriber`, `analyzer`, `asset:music`, `asset:sound`, `generator`), error codes, the registry index format. Depends on `zod` only. |
 | `packages/plugin-sdk` | `@cutpilot/plugin-sdk` | `definePlugin()` (an MCP server with the contracts wired in) and `testPlugin()` (checks a plugin folder the way CutPilot will). |
 | `packages/plugin-sdk/examples/hello` | — | The smallest plugin: one extra tool. |
 | `plugins/*` | `@cutpilot/plugin-<kind>-<name>` | First-party plugins, built exactly like third-party ones. See [plugins/README.md](plugins/README.md). |

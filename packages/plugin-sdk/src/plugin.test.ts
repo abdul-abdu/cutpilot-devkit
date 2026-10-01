@@ -60,6 +60,9 @@ describe('definePlugin checks the definition against the manifest', () => {
       'findMusic is defined, but the manifest doesn\'t list its kind in "kinds"',
     ]);
     expect(
+      problemsOf({ manifest: manifest({ kinds: ['asset:sound'] }), listVoices: () => ({ voices: [] }) }),
+    ).toEqual(['kind asset:sound needs a generateSound handler']);
+    expect(
       problemsOf({
         manifest: manifest({ kinds: [] }),
         tools: { suggestTitles: { description: 'd', input: {}, handler: () => '' } },

@@ -4,6 +4,7 @@
     { "path": "packages/plugin-api" },
     { "path": "packages/plugin-sdk" },
     { "path": "plugins/hyperframes" },
-    { "path": "plugins/html-motion" }
+    { "path": "plugins/html-motion" },
+    { "path": "plugins/sound" }
   ]
 }

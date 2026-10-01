@@ -20,10 +20,14 @@ import {
   type FindMusicOutputSchema,
   type GenerateInputSchema,
   type GenerateOutputSchema,
+  type GenerateSoundInputSchema,
+  type GenerateSoundOutputSchema,
   type GetMusicInputSchema,
   type GetMusicOutputSchema,
   type ListTemplatesInputSchema,
   type ListTemplatesOutputSchema,
+  type ListVoicesInputSchema,
+  type ListVoicesOutputSchema,
   type Manifest,
   type PluginKind,
   type ReframeTrackInputSchema,
@@ -88,6 +92,9 @@ export interface PluginDefinition {
   /** kind `generator` */
   listTemplates?: Handler<typeof ListTemplatesInputSchema, typeof ListTemplatesOutputSchema>;
   generate?: Handler<typeof GenerateInputSchema, typeof GenerateOutputSchema>;
+  /** kind `asset:sound` */
+  listVoices?: Handler<typeof ListVoicesInputSchema, typeof ListVoicesOutputSchema>;
+  generateSound?: Handler<typeof GenerateSoundInputSchema, typeof GenerateSoundOutputSchema>;
   /** free-form read-only tools; AI clients see them as `<plugin id>__<name>` */
   tools?: Record<string, ExtraTool>;
 }
@@ -100,6 +107,8 @@ const HANDLER_FOR: Record<string, keyof PluginDefinition> = {
   get_music: 'getMusic',
   list_templates: 'listTemplates',
   generate: 'generate',
+  list_voices: 'listVoices',
+  generate_sound: 'generateSound',
 };
 
 export class PluginDefinitionError extends Error {

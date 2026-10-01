@@ -9,6 +9,7 @@ CutPilot's own plugins, one folder each, built the way a third-party plugin is: 
 | `music/` | `@cutpilot/plugin-asset-music` | asset: music | P3-034 |
 | `hyperframes/` | `@cutpilot/plugin-render-hyperframes` | extra tools only (research) | — |
 | `html-motion/` | `@cutpilot/plugin-generator-html-motion` | generator: title cards, chapters, quotes, lists, end cards | P3-036 |
+| `sound/` | `@cutpilot/plugin-asset-sound` | asset: sound (effects, music, speech made locally with audio.cpp) | P3-038 |
 
 ## Adding a plugin
 
