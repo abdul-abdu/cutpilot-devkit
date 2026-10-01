@@ -1,7 +1,7 @@
 {
   "id": "sound",
   "name": "Sound",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sound effects, music and voice-overs made on your computer from a description: Stable Audio 3 (effects and music) and Supertonic 3 (speech in 31 languages), run with audio.cpp. Downloads the runtime and the models you ask for; nothing leaves your machine.",
   "publisher": "CutPilot",
   "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/plugins/sound",

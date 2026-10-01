@@ -5,7 +5,7 @@
  */
 import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { createWriteStream } from 'node:fs';
+import { createReadStream, createWriteStream } from 'node:fs';
 import { chmod, mkdir, readdir, rename, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Readable, Transform } from 'node:stream';
@@ -15,10 +15,12 @@ import type { Download } from './catalog.js';
 
 export interface DownloadOptions {
   signal?: AbortSignal;
-  /** bytes so far, of `size` */
+  /** bytes so far, of `size` (a resumed download starts above zero) */
   onProgress?: (bytes: number) => void;
   fetch?: typeof fetch;
 }
+
+const sizeOf = async (p: string) => (await stat(p).catch(() => null))?.size ?? 0;
 
 const fail = (what: string, detail: string) =>
   new PluginFailure(
@@ -27,7 +29,11 @@ const fail = (what: string, detail: string) =>
     'check the connection and try sound__setup again; the file is fetched from its publisher and checked by SHA-256',
   );
 
-/** Download `d` to `to`; a wrong hash or size leaves nothing behind. */
+/**
+ * Download `d` to `to`. An interrupted download (Stop, a lost connection) leaves `to.part`
+ * and the next call continues from it with a Range request; a wrong hash or size leaves
+ * nothing behind.
+ */
 export async function download(
   what: string,
   d: Download,
@@ -37,15 +43,25 @@ export async function download(
   const f = o.fetch ?? fetch;
   await mkdir(join(to, '..'), { recursive: true });
   const part = `${to}.part`;
+  let have = await sizeOf(part);
+  if (have >= d.size) have = 0; // a leftover that can't be right: start over
+  const resumedHash = createHash('sha256');
+  if (have) for await (const chunk of createReadStream(part)) resumedHash.update(chunk as Buffer);
   let res: Response;
   try {
-    res = await f(d.url, { signal: o.signal ?? null, redirect: 'follow' });
+    res = await f(d.url, {
+      signal: o.signal ?? null,
+      redirect: 'follow',
+      ...(have ? { headers: { range: `bytes=${have}-` } } : {}),
+    });
   } catch (e) {
     throw fail(what, (e as Error).message);
   }
   if (!res.ok || !res.body) throw fail(what, `HTTP ${res.status}`);
-  const hash = createHash('sha256');
-  let bytes = 0;
+  // a server that ignores the range (200) sends the whole file: the part is replaced
+  const resumed = have > 0 && res.status === 206;
+  const hash = resumed ? resumedHash : createHash('sha256');
+  let bytes = resumed ? have : 0;
   const count = new Transform({
     transform(chunk: Buffer, _enc, cb) {
       bytes += chunk.length;
@@ -56,14 +72,19 @@ export async function download(
     },
   });
   try {
-    await pipeline(Readable.fromWeb(res.body as never, { signal: o.signal }), count, createWriteStream(part));
+    await pipeline(
+      Readable.fromWeb(res.body as never, { signal: o.signal }),
+      count,
+      createWriteStream(part, resumed ? { flags: 'a' } : {}),
+    );
     if (bytes !== d.size) throw new Error(`${bytes} bytes, the publisher lists ${d.size}`);
     const got = hash.digest('hex');
     if (got !== d.sha256) throw new Error(`SHA-256 ${got.slice(0, 12)}…, expected ${d.sha256.slice(0, 12)}…`);
     await rename(part, to);
   } catch (e) {
-    await rm(part, { force: true });
+    // an interruption keeps the part for next time; a wrong file is deleted
     if ((e as Error).name === 'AbortError') throw e;
+    if (/SHA-256|publisher lists|more than/.test((e as Error).message)) await rm(part, { force: true });
     throw fail(what, (e as Error).message);
   }
 }

@@ -333,7 +333,12 @@ describe.skipIf(!RUNTIMES[key])('tools, with a fake audio.cpp', () => {
 
 describe.skipIf(!RUNTIMES[key] || process.platform === 'win32')('setup, against a local server', () => {
   /** A tar.gz with the fake CLI inside, served with a fake model; both pinned by their real hashes. */
-  async function serve(): Promise<{ runtimes: Record<string, Runtime>; models: Model[]; hits: string[] }> {
+  async function serve(): Promise<{
+    runtimes: Record<string, Runtime>;
+    models: Model[];
+    hits: string[];
+    ranges: string[];
+  }> {
     const src = join(tmp, 'serve');
     mkdirSync(join(src, 'pkg'), { recursive: true });
     writeFileSync(join(src, 'pkg', exeName), FAKE_CLI);
@@ -342,8 +347,10 @@ describe.skipIf(!RUNTIMES[key] || process.platform === 'win32')('setup, against 
     const model = Buffer.from('a very small gguf');
     const sha = (b: Buffer) => createHash('sha256').update(b).digest('hex');
     const hits: string[] = [];
+    const ranges: string[] = [];
     const server = createServer((req, res) => {
       hits.push(req.url!);
+      if (req.headers.range) ranges.push(req.headers.range);
       if (req.url === '/moved') return void res.writeHead(302, { location: '/rt.tar.gz' }).end();
       const body =
         req.url === '/rt.tar.gz'
@@ -354,6 +361,16 @@ describe.skipIf(!RUNTIMES[key] || process.platform === 'win32')('setup, against 
               ? model.subarray(0, 5)
               : null;
       if (!body) return void res.writeHead(404).end();
+      const from = Number(/^bytes=(\d+)-$/.exec(req.headers.range ?? '')?.[1] ?? NaN);
+      if (from > 0 && from < body.length) {
+        const rest = body.subarray(from);
+        return void res
+          .writeHead(206, {
+            'content-length': rest.length,
+            'content-range': `bytes ${from}-${body.length - 1}/${body.length}`,
+          })
+          .end(rest);
+      }
       res.writeHead(200, { 'content-length': body.length }).end(body);
     });
     servers.push(server);
@@ -362,6 +379,7 @@ describe.skipIf(!RUNTIMES[key] || process.platform === 'win32')('setup, against 
     const rt = RUNTIMES[key]!;
     return {
       hits,
+      ranges,
       runtimes: {
         [key]: { ...rt, url: `${base}/moved`, sha256: sha(archive), size: archive.length, archive: 'tar.gz' },
       },
@@ -378,6 +396,23 @@ describe.skipIf(!RUNTIMES[key] || process.platform === 'win32')('setup, against 
       })),
     };
   }
+
+  test('an interrupted download continues from its .part with a Range request', async () => {
+    const { runtimes, models, ranges } = await serve();
+    const dir = join(tmp, 'resume');
+    const sfx = models.find((m) => m.job === 'sfx')!;
+    mkdirSync(join(dir, 'models', sfx.id), { recursive: true });
+    writeFileSync(
+      join(dir, 'models', sfx.id, `${sfx.file}.part`),
+      Buffer.from('a very small gguf').subarray(0, 5),
+    );
+    const c = await connect(makeDefinition({ runtimes, models }), { CUTPILOT_SETTING_DATA_DIR: dir });
+    const r = await c.callTool({ name: 'setup', arguments: { what: 'sfx', agree: true } });
+    expect(r.isError, JSON.stringify(r.structuredContent)).toBeFalsy();
+    expect(ranges).toEqual(['bytes=5-']);
+    expect(existsSync(join(dir, 'models', sfx.id, sfx.file))).toBe(true);
+    expect(existsSync(join(dir, 'models', sfx.id, `${sfx.file}.part`))).toBe(false);
+  });
 
   test('downloads the runtime (following a redirect) and a model, marks them, and then makes sound; refuses a wrong hash or size', async () => {
     const { runtimes, models, hits } = await serve();

@@ -1,6 +1,6 @@
 {
   "name": "@cutpilot/plugin-asset-sound",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CutPilot plugin: sound effects, music and voice-overs generated locally with audio.cpp (Stable Audio 3, Supertonic 3).",
   "type": "module",
   "private": true,

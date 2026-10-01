@@ -35,7 +35,7 @@ import { download, unpack } from './download.js';
 import { run, threadCount } from './runner.js';
 import { wavInfo } from './wav.js';
 
-export const VERSION = '0.1.0';
+export const VERSION = '0.1.1';
 
 export interface Catalog {
   runtimes: Readonly<Record<string, Runtime>>;
@@ -236,7 +236,7 @@ export function makeDefinition(c: Catalog): PluginDefinition {
       },
       setup: tool({
         description:
-          'Download the sound runtime (audio.cpp, ~30 MB) and the model for a job: sfx (Stable Audio 3 Small SFX, 1.7 GB), music (Stable Audio 3 Small Music, 1.7 GB) or speech (Supertonic 3, 450 MB); all = every model. Only after the user has seen the licences and sizes from sound__doctor and agreed. Takes minutes; progress is reported. Returns what is installed.',
+          'Download the sound runtime (audio.cpp, ~30 MB) and the model for ONE job: sfx (Stable Audio 3 Small SFX, 1.7 GB), music (Stable Audio 3 Small Music, 1.7 GB) or speech (Supertonic 3, 450 MB). Only after the user has seen the licences and sizes from sound__doctor and agreed. Set up one job at a time, the one the next sound needs, and warn the user first: a 1.7 GB model takes about 30 minutes at 1 MB/s. Progress with a time estimate is reported; an interrupted download continues next time. Returns what is installed. "all" downloads every model (3.8 GB): only when the user asked for that.',
         input: {
           what: z.enum(SETUP_WHAT).describe('runtime, sfx, music, speech or all'),
           agree: z.boolean().describe('true once the user has agreed to the licences sound__doctor lists'),
@@ -260,11 +260,26 @@ export function makeDefinition(c: Catalog): PluginDefinition {
           let total = 0;
           let before = 0;
           let current: Step | undefined;
-          const report = (bytes: number) =>
+          // the speed since this step began (a resumed download starts above zero), for the estimate
+          let startedAt = 0;
+          let startBytes = -1;
+          const mb = (n: number) => Math.round(n / 1e6);
+          const report = (bytes: number) => {
+            if (startBytes < 0) {
+              startBytes = bytes;
+              startedAt = Date.now();
+            }
+            const seconds = (Date.now() - startedAt) / 1000;
+            const perSecond = seconds >= 3 ? (bytes - startBytes) / seconds : 0;
+            const left = perSecond > 0 ? (total - before - bytes) / perSecond : 0;
+            const when =
+              left < 90 ? `${Math.max(10, Math.round(left / 10) * 10)} s` : `${Math.round(left / 60)} min`;
+            const eta = perSecond > 0 ? `, ${(perSecond / 1e6).toFixed(1)} MB/s, about ${when} left` : '';
             ctx.progress(
               total ? (before + bytes) / total : 1,
-              `downloading ${current!.what} (${Math.round(bytes / 1e6)} of ${Math.round(current!.d.size / 1e6)} MB)`,
+              `downloading ${current!.what} (${mb(bytes)} of ${mb(current!.d.size)} MB${eta})`,
             );
+          };
           const exe = exePath(L, r);
           if (!existsSync(exe))
             steps.push({
@@ -301,6 +316,7 @@ export function makeDefinition(c: Catalog): PluginDefinition {
           total = steps.reduce((n, s) => n + s.d.size, 0);
           for (const s of steps) {
             current = s;
+            startBytes = -1;
             ctx.log(`downloading ${s.what} from ${s.d.url}`);
             await s.go();
             before += s.d.size;

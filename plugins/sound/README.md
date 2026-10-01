@@ -19,7 +19,7 @@ Effects and music are 44.1 kHz stereo, 1–120 s (effects default to 5 s, music 
 - **Supertonic 3**: free, also commercially; OpenRAIL-M's use restrictions apply to what you make (no deception, harassment, discrimination or unlawful use).
 - **audio.cpp**: Apache-2.0.
 
-Nothing is bundled with the plugin: the first time you ask for a sound, your AI runs `sound__doctor`, shows you the sizes and licences, and only with your agreement runs `sound__setup`, which downloads the runtime and the model for that job from their publishers (GitHub releases and Hugging Face), checks each file against a pinned SHA-256, and keeps them in `~/.cutpilot/sound` (or the **Data folder** setting). `sound__remove` deletes them again.
+Nothing is bundled with the plugin: the first time you ask for a sound, your AI runs `sound__doctor`, shows you the sizes and licences, and only with your agreement runs `sound__setup`, which downloads the runtime and the model for that job from their publishers (GitHub releases and Hugging Face), checks each file against a pinned SHA-256, and keeps them in `~/.cutpilot/sound` (or the **Data folder** setting). It sets up one job at a time (a 1.7 GB model takes about 30 minutes at 1 MB/s), reports the progress with the speed and the time left, and a download that was stopped continues from where it was. `sound__remove` deletes them again.
 
 ## What it needs
 
