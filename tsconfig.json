@@ -5,6 +5,7 @@
     { "path": "packages/plugin-sdk" },
     { "path": "plugins/hyperframes" },
     { "path": "plugins/html-motion" },
-    { "path": "plugins/sound" }
+    { "path": "plugins/sound" },
+    { "path": "plugins/remotion" }
   ]
 }

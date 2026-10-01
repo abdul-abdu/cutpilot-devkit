@@ -1,0 +1,35 @@
+{
+  "name": "@cutpilot/plugin-generator-remotion",
+  "version": "0.1.0",
+  "description": "CutPilot plugin: scenes written in React with your own Remotion install, previewed and rendered on your Mac. Remotion is not included; you bring your own Remotion licence.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {
+    "@cutpilot/plugin-sdk": "workspace:*",
+    "zod": "^4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "directory": "plugins/remotion"
+  },
+  "author": "Abdul <abdul.abdurohiym@gmail.com>",
+  "keywords": [
+    "cutpilot",
+    "remotion",
+    "motion-graphics",
+    "video",
+    "mcp",
+    "plugin"
+  ],
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  }
+}
