@@ -3,6 +3,7 @@
   "references": [
     { "path": "packages/plugin-api" },
     { "path": "packages/plugin-sdk" },
+    { "path": "plugins/cloud-transcribe" },
     { "path": "plugins/hyperframes" },
     { "path": "plugins/html-motion" }
   ]
