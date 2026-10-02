@@ -1,8 +1,10 @@
 /** @cutpilot/plugin-sdk (MIT): build and test CutPilot plugins. */
 export {
   definePlugin,
+  imageBlock,
   PluginDefinitionError,
   PluginFailure,
+  ToolContent,
   type ExtraTool,
   type Plugin,
   type PluginContext,

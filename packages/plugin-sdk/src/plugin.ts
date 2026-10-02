@@ -8,7 +8,12 @@ import { join } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol.js';
-import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types.js';
+import type {
+  CallToolResult,
+  ContentBlock,
+  ServerNotification,
+  ServerRequest,
+} from '@modelcontextprotocol/sdk/types.js';
 import {
   extraToolProblem,
   KIND_TOOLS,
@@ -51,6 +56,24 @@ export class PluginFailure extends Error {
   }
 }
 
+/**
+ * What an extra tool returns when text or JSON isn't enough: MCP content blocks passed to the AI
+ * client as they are (an image to look at, say), and optionally structured data next to them.
+ */
+export class ToolContent {
+  constructor(
+    readonly content: ContentBlock[],
+    readonly structured?: Record<string, unknown>,
+  ) {}
+}
+
+/** An image content block: the bytes of a PNG, JPEG, GIF or WebP. */
+export const imageBlock = (bytes: Uint8Array, mimeType: string): ContentBlock => ({
+  type: 'image',
+  data: Buffer.from(bytes).toString('base64'),
+  mimeType,
+});
+
 export interface PluginContext {
   readonly manifest: Manifest;
   /** the manifest's settings, as the user set them (or their defaults) */
@@ -75,7 +98,7 @@ type Handler<I extends z.ZodType, O extends z.ZodType> = (
 export interface ExtraTool<S extends z.ZodRawShape = z.ZodRawShape> {
   description: string;
   input: S;
-  /** return a string (shown as text) or an object (structured, and as JSON text) */
+  /** return a string (shown as text), an object (structured, and as JSON text), or a ToolContent */
   handler: (args: z.infer<z.ZodObject<S>>, ctx: PluginContext) => Promise<unknown> | unknown;
 }
 
@@ -138,6 +161,8 @@ function failure(code: string, message: string, fix: string): CallToolResult {
 }
 
 function success(out: unknown): CallToolResult {
+  if (out instanceof ToolContent)
+    return { content: out.content, ...(out.structured ? { structuredContent: out.structured } : {}) };
   if (typeof out === 'string') return { content: [{ type: 'text', text: out }] };
   const text = JSON.stringify(out ?? null);
   return out && typeof out === 'object' && !Array.isArray(out)
@@ -155,7 +180,7 @@ function readSettings(
     if (raw === undefined) out[s.key] = s.default;
     else if (s.type === 'number') out[s.key] = Number.isFinite(Number(raw)) ? Number(raw) : s.default;
     else if (s.type === 'boolean') out[s.key] = raw === 'true' || raw === '1';
-    else out[s.key] = raw;
+    else out[s.key] = raw; // string, choice, folder (a path)
   }
   return out;
 }

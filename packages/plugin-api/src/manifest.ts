@@ -62,12 +62,19 @@ export const PermissionsSchema = z
   .strict();
 export type Permissions = z.infer<typeof PermissionsSchema>;
 
+/**
+ * A setting's type. `folder` is a string too (an absolute path, or empty for none): the app
+ * offers a folder picker for it instead of a text field.
+ */
+export const SETTING_TYPES = ['string', 'number', 'boolean', 'choice', 'folder'] as const;
+export type SettingType = (typeof SETTING_TYPES)[number];
+
 export const SettingSchema = z
   .object({
     /** passed as CUTPILOT_SETTING_<KEY in upper snake case> */
     key: z.string().regex(/^[a-z][a-zA-Z0-9]*$/, 'setting keys are camelCase, like provider'),
     label: z.string().min(1).max(60),
-    type: z.enum(['string', 'number', 'boolean', 'choice']),
+    type: z.enum(SETTING_TYPES),
     default: z.union([z.string(), z.number(), z.boolean()]).optional(),
     choices: z.array(z.string().min(1)).min(2).optional(),
   })
@@ -78,7 +85,7 @@ export const SettingSchema = z
     if (s.type !== 'choice' && s.choices)
       ctx.addIssue({ code: 'custom', message: 'only choice settings have choices', path: ['choices'] });
     if (s.default === undefined) return;
-    const want = s.type === 'choice' ? 'string' : s.type;
+    const want = s.type === 'choice' || s.type === 'folder' ? 'string' : s.type;
     if (typeof s.default !== want)
       ctx.addIssue({
         code: 'custom',
@@ -87,6 +94,12 @@ export const SettingSchema = z
       });
     else if (s.type === 'choice' && !s.choices?.includes(s.default as string))
       ctx.addIssue({ code: 'custom', message: 'the default is one of the choices', path: ['default'] });
+    else if (s.type === 'folder' && s.default !== '' && !/^(\/|[A-Za-z]:[\\/])/.test(s.default as string))
+      ctx.addIssue({
+        code: 'custom',
+        message: 'the default of a folder setting is empty or an absolute path',
+        path: ['default'],
+      });
   });
 export type Setting = z.infer<typeof SettingSchema>;
 

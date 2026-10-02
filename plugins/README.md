@@ -10,6 +10,7 @@ CutPilot's own plugins, one folder each, built the way a third-party plugin is: 
 | `hyperframes/` | `@cutpilot/plugin-render-hyperframes` | extra tools only (research) | — |
 | `html-motion/` | `@cutpilot/plugin-generator-html-motion` | generator: title cards, chapters, quotes, lists, end cards | P3-036 |
 | `sound/` | `@cutpilot/plugin-asset-sound` | asset: sound (effects, music, speech made locally with audio.cpp) | P3-038 |
+| `remotion/` | `@cutpilot/plugin-generator-remotion` | generator: React scenes rendered with the user's own Remotion project and licence (Remotion not included) | — |
 
 ## Adding a plugin
 

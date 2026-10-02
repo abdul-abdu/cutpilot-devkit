@@ -1,0 +1,33 @@
+{
+  "id": "remotion",
+  "name": "Remotion",
+  "version": "0.1.0",
+  "description": "Scenes your AI writes in React, previewed and rendered with YOUR OWN Remotion project on your Mac. Remotion is not included or licensed by CutPilot: you need your own licence (free for individuals and companies of up to 3 people; larger companies buy one at remotion.pro).",
+  "publisher": "CutPilot",
+  "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/plugins/remotion",
+  "icon": "icon.png",
+  "contract": 1,
+  "cutpilot": ">=0.2.0-beta.10",
+  "command": "node",
+  "args": ["dist/index.js"],
+  "kinds": ["generator"],
+  "permissions": {
+    "network": [
+      "www.remotion.pro",
+      "storage.googleapis.com",
+      "remotion.media",
+      "playwright.azureedge.net",
+      "registry.npmjs.org"
+    ],
+    "secrets": ["REMOTION_LICENSE_KEY"],
+    "reads": []
+  },
+  "settings": [
+    {
+      "key": "projectDir",
+      "label": "Remotion project folder",
+      "type": "folder",
+      "default": ""
+    }
+  ]
+}
