@@ -9,7 +9,7 @@ Scenes for a CutPilot edit written in React by your AI, with **your own** [Remot
 What that means in practice:
 
 - **You are Remotion's licensee, not CutPilot.** CutPilot doesn't provide, resell or cover a Remotion licence. Read [Remotion's licence](https://www.remotion.dev/docs/license) to see which one applies to you.
-- **Nothing runs until you enter your licence key** in CutPilot → Plugins → Remotion, as `REMOTION_LICENSE_KEY`:
+- **Nothing runs until you enter your licence key** in CutPilot → Plugins → Remotion → **Keys**, as `REMOTION_LICENSE_KEY` (CutPilot keeps it in the macOS Keychain and never shows it again):
   - `free-license` if you qualify for the free licence (an individual, a company of up to 3 people, or a non-profit);
   - your Company License key from [remotion.pro](https://www.remotion.pro) otherwise.
 
@@ -23,7 +23,7 @@ What that means in practice:
 
 1. **Node.js 20+** (`brew install node`), which Remotion needs to install.
 2. **A Remotion project.** Either use one you have, or ask your AI to make one: *"Create a Remotion project in ~/Videos/remotion-scenes"*. It runs Remotion's own scaffolder on your Mac (`npx create-video@latest --yes --blank --no-tailwind`), then `npm i`, then adds `@remotion/renderer` and `@remotion/bundler` at the project's Remotion version.
-3. In CutPilot → Plugins → Remotion, set **Remotion project folder** to that folder and enter your **licence key** (see above).
+3. In CutPilot → Plugins → Remotion: under **Keys**, enter your licence key (see above) and **Save**; under **Settings**, **Choose…** the project folder for **Remotion project folder**.
 4. Ask your AI to run `remotion__status`. It should say `ok: true` and list your Remotion versions.
 
 What the project needs:
@@ -110,7 +110,7 @@ The AI calls these in order:
 - `remotion.config.ts` overrides (a custom webpack config, Tailwind) aren't applied: Remotion's Node APIs don't read that file. New projects are made without Tailwind for that reason.
 - CutPilot can't yet place a transparent overlay over the footage; `render { transparent: true }` makes the file for use elsewhere.
 - The app shows no "I understand / Cancel" dialog before first use yet. Entering the key is the act of acceptance, and the notice comes with every refusal and with the first answer for each project and Remotion version.
-- CutPilot has yet to pass a plugin its settings and secrets (P3-013, P3-042). Until it does, the plugin works only when started with `CUTPILOT_SETTING_PROJECT_DIR` and `CUTPILOT_SECRET_REMOTION_LICENSE_KEY` set, as the tests do.
+- It needs CutPilot 0.2.0-beta.10 or later: the first version that passes a plugin its settings and keys. Older versions list it as needing a newer CutPilot.
 
 ## Develop
 
