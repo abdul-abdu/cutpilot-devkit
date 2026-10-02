@@ -43,5 +43,12 @@
     "mcp",
     "plugin"
   ],
-  "private": true
+  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/packages/plugin-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/abdul-abdu/cutpilot-devkit/issues"
+  }
 }
