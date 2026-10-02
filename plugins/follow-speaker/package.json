@@ -1,0 +1,43 @@
+{
+  "name": "@cutpilot/plugin-analyze-follow-speaker",
+  "version": "0.1.0",
+  "description": "CutPilot plugin: a crop that follows the person talking, from Apple Vision face detection (macOS).",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "build:helper": "sh helper/build.sh"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "cutpilot-plugin.json",
+    "icon.png",
+    "README.md"
+  ],
+  "dependencies": {
+    "@cutpilot/plugin-sdk": "workspace:*",
+    "zod": "^4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "directory": "plugins/follow-speaker"
+  },
+  "author": "Abdul <abdul.abdurohiym@gmail.com>",
+  "keywords": [
+    "cutpilot",
+    "reframe",
+    "face-detection",
+    "vertical-video",
+    "mcp",
+    "plugin"
+  ],
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  }
+}

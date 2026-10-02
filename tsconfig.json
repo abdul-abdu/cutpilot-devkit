@@ -8,6 +8,7 @@
     { "path": "plugins/sound" },
     { "path": "plugins/remotion" },
     { "path": "plugins/music" },
-    { "path": "plugins/cloud-transcribe" }
+    { "path": "plugins/cloud-transcribe" },
+    { "path": "plugins/follow-speaker" }
   ]
 }
