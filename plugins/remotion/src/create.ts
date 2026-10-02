@@ -10,7 +10,7 @@ import { basename, delimiter, dirname, isAbsolute, join } from 'node:path';
 import { PluginFailure, type PluginContext } from '@cutpilot/plugin-sdk';
 import { installedVersions } from './project.js';
 
-/** Where Node lives when a GUI app's PATH doesn't say (Homebrew, the installer, nvm/volta shims). */
+/** Where Node lives when a GUI app's PATH doesn't say: Homebrew, the nodejs.org installer, the system. */
 const EXTRA_DIRS = ['/opt/homebrew/bin', '/usr/local/bin', '/usr/bin'];
 
 export function findOnPath(name: string, env: NodeJS.ProcessEnv = process.env): string | null {
@@ -25,11 +25,86 @@ export function findOnPath(name: string, env: NodeJS.ProcessEnv = process.env): 
   return null;
 }
 
+/** `v24.2.0` / `24.2.0` / `node-v20.1.0` → [24, 2, 0]; anything else sorts last. */
+function versionOf(name: string): number[] {
+  const m = /(\d+)\.(\d+)\.(\d+)/.exec(name);
+  return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : [-1, -1, -1];
+}
+
+/** `<root>/<version>/<sub>` for every version installed under root, newest first. */
+function versions(root: string, sub: string): string[] {
+  let names: string[];
+  try {
+    names = readdirSync(root);
+  } catch {
+    return [];
+  }
+  const newer = (a: string, b: string) => {
+    const [x, y] = [versionOf(a), versionOf(b)];
+    for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return y[i]! - x[i]!;
+    return 0;
+  };
+  return names.sort(newer).map((n) => join(root, n, sub));
+}
+
+/**
+ * The folders that may hold the user's Node, in the order they are tried: the PATH the plugin
+ * was started with, the fixed places, then version managers. An app opened from the Dock or
+ * Finder doesn't run the user's shell profile, so a Node from nvm, fnm, Volta, asdf or mise is
+ * on no PATH it sees; their install folders are searched instead, newest version first.
+ */
+export function nodeDirs(
+  env: NodeJS.ProcessEnv = process.env,
+  fixed: readonly string[] = EXTRA_DIRS,
+): string[] {
+  const home = env.HOME ?? '';
+  const at = (...p: string[]) => join(home, ...p);
+  const dirs = [...(env.PATH ?? '').split(delimiter).filter(Boolean), ...fixed];
+  if (env.NVM_BIN) dirs.push(env.NVM_BIN);
+  if (env.VOLTA_HOME) dirs.push(join(env.VOLTA_HOME, 'bin'));
+  if (env.NVM_DIR) dirs.push(...versions(join(env.NVM_DIR, 'versions', 'node'), 'bin'));
+  if (home)
+    dirs.push(
+      ...versions(at('.nvm', 'versions', 'node'), 'bin'),
+      at('.volta', 'bin'),
+      ...versions(at('Library', 'Application Support', 'fnm', 'node-versions'), join('installation', 'bin')),
+      ...versions(at('.local', 'share', 'fnm', 'node-versions'), join('installation', 'bin')),
+      ...versions(at('.fnm', 'node-versions'), join('installation', 'bin')),
+      ...versions(at('.local', 'share', 'mise', 'installs', 'node'), 'bin'),
+      ...versions(at('.asdf', 'installs', 'nodejs'), 'bin'),
+      at('.asdf', 'shims'),
+      at('.local', 'bin'),
+    );
+  return [...new Set(dirs)];
+}
+
+/**
+ * The user's Node: one folder with node, npm and npx together. npm and npx are scripts that
+ * start with `#!/usr/bin/env node`, and `run` puts their folder first on PATH, so the node next
+ * to them is the one that runs them; an npx from one install with a node from another is not
+ * picked. Null when no folder has all three.
+ */
+export function findNode(
+  env: NodeJS.ProcessEnv = process.env,
+  fixed: readonly string[] = EXTRA_DIRS,
+): { node: string; npm: string; npx: string } | null {
+  const win = process.platform === 'win32';
+  const pick = (dir: string, name: string) =>
+    (win ? [`${name}.cmd`, `${name}.exe`, name] : [name]).map((n) => join(dir, n)).find((f) => existsSync(f));
+  for (const dir of nodeDirs(env, fixed)) {
+    const node = pick(dir, 'node');
+    const npm = pick(dir, 'npm');
+    const npx = pick(dir, 'npx');
+    if (node && npm && npx) return { node, npm, npx };
+  }
+  return null;
+}
+
 const NO_NODE = () =>
   new PluginFailure(
     'E_REMOTION_NO_NODE',
-    "Node.js (with npm and npx) isn't installed, and creating a Remotion project needs it",
-    'install Node.js 20 or later from nodejs.org (macOS: brew install node), then try again',
+    "Node.js (with npm and npx) wasn't found, and creating a Remotion project needs it",
+    'install Node.js 20 or later from nodejs.org (macOS: brew install node). A Node from nvm, fnm, Volta, asdf or mise is found in their usual folders; one installed elsewhere needs a link to node, npm and npx in ~/.local/bin',
   );
 
 /** The command lines `create` runs, in order (exported for tests). */
@@ -135,9 +210,9 @@ export async function createProject(
       `${dir} already exists and isn't empty`,
       'pick a new folder; to use an existing Remotion project, the user sets it as "Remotion project folder" instead',
     );
-  const npx = findOnPath('npx');
-  const npm = findOnPath('npm');
-  if (!npx || !npm) throw NO_NODE();
+  const found = findNode();
+  if (!found) throw NO_NODE();
+  const { npx, npm } = found;
 
   const log: string[] = [];
   const [scaffold, install] = createSteps(name);

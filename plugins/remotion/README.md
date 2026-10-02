@@ -21,7 +21,7 @@ What that means in practice:
 
 ## Set up
 
-1. **Node.js 20+** (`brew install node`), which Remotion needs to install.
+1. **Node.js 20+** (`brew install node`), which Remotion needs to install. A Node from nvm, fnm, Volta, asdf or mise is found too, even though an app opened from the Dock doesn't see your shell's PATH: the plugin looks in their install folders (newest version first) for a folder with `node`, `npm` and `npx` together.
 2. **A Remotion project.** Either use one you have, or ask your AI to make one: *"Create a Remotion project in ~/Videos/remotion-scenes"*. It runs Remotion's own scaffolder on your Mac (`npx create-video@latest --yes --blank --no-tailwind`), then `npm i`, then adds `@remotion/renderer` and `@remotion/bundler` at the project's Remotion version.
 3. In CutPilot → Plugins → Remotion: under **Keys**, enter your licence key (see above) and **Save**; under **Settings**, **Choose…** the project folder for **Remotion project folder**.
 4. Ask your AI to run `remotion__status`. It should say `ok: true` and list your Remotion versions.
