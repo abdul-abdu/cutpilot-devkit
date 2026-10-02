@@ -3,7 +3,7 @@
  * minimal environment, its settings and secrets as variables), then check the manifest, the
  * tools it offers, and one call of each contract tool against `@cutpilot/plugin-api`.
  */
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
@@ -12,21 +12,17 @@ import {
   CONTRACT_TOOL_NAMES,
   contractTools,
   extraToolProblem,
-  ICON_MAX_BYTES,
-  ICON_MAX_PX,
-  ICON_MIN_PX,
-  iconProblem,
   KIND_TOOLS,
-  MANIFEST_FILE,
-  parseManifest,
   PluginErrorSchema,
-  pngSize,
   secretEnv,
   settingEnv,
   type Manifest,
   type Template,
 } from '@cutpilot/plugin-api';
 import type { z } from 'zod';
+import { commandCheck, manifestChecks, report, type Check, type TestReport } from './validate.js';
+
+export { formatReport, type Check, type TestReport } from './validate.js';
 
 export interface TestOptions {
   /** values for the manifest's secrets; without them, contract calls are skipped */
@@ -48,19 +44,6 @@ export interface TestOptions {
   sound?: Record<string, unknown>;
   /** per call; default 60 s */
   timeoutMs?: number;
-}
-
-export interface Check {
-  name: string;
-  result: 'pass' | 'fail' | 'skip';
-  detail?: string;
-  fix?: string;
-}
-
-export interface TestReport {
-  plugin: string;
-  ok: boolean;
-  checks: Check[];
 }
 
 /** A 16 kHz mono 16-bit PCM wav of silence. */
@@ -114,58 +97,15 @@ const issues = (e: z.ZodError) =>
   e.issues.map((i) => (i.path.length ? `${i.path.join('.')}: ${i.message}` : i.message)).join('; ');
 
 export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<TestReport> {
-  const checks: Check[] = [];
+  const { checks, manifest: m } = manifestChecks(dir);
+  if (!m) return report(dir, checks);
   const add = (c: Check) => checks.push(c);
-  const done = (plugin: string): TestReport => ({
-    plugin,
-    ok: checks.every((c) => c.result !== 'fail'),
-    checks,
-  });
-
-  let json: unknown;
-  try {
-    json = JSON.parse(readFileSync(join(dir, MANIFEST_FILE), 'utf8'));
-  } catch (e) {
-    add({
-      name: 'manifest',
-      result: 'fail',
-      detail: (e as Error).message,
-      fix: `add ${MANIFEST_FILE} to ${dir}`,
-    });
-    return done(dir);
-  }
-  const parsed = parseManifest(json);
-  if (!parsed.ok) {
-    add({
-      name: 'manifest',
-      result: 'fail',
-      detail: parsed.problems.join('; '),
-      fix: `fix ${MANIFEST_FILE}`,
-    });
-    return done(dir);
-  }
-  const m = parsed.manifest;
-  add({ name: 'manifest', result: 'pass', detail: `${m.id} ${m.version}` });
-
-  if (m.icon) {
-    // the store and the app check the same bytes the same way, so a bad icon fails here, not there
-    let bytes: Buffer | null;
-    try {
-      bytes = readFileSync(join(dir, m.icon));
-    } catch {
-      bytes = null;
-    }
-    const problem = bytes ? iconProblem(bytes) : `${m.icon} doesn't exist`;
-    add(
-      problem
-        ? {
-            name: 'icon',
-            result: 'fail',
-            detail: problem,
-            fix: `put a square PNG (${ICON_MIN_PX}–${ICON_MAX_PX} px, at most ${ICON_MAX_BYTES / 1024} KB) at ${m.icon}, or drop "icon" from ${MANIFEST_FILE}`,
-          }
-        : { name: 'icon', result: 'pass', detail: `${pngSize(bytes!)!.width} px` },
-    );
+  const done = (plugin: string): TestReport => report(plugin, checks, m);
+  // a missing entry file (an unbuilt TypeScript plugin) is clearer said so than as a failed start
+  const command = commandCheck(dir, m);
+  if (command.result === 'fail') {
+    add(command);
+    return done(m.id);
   }
 
   const tmp = mkdtempSync(join(tmpdir(), 'cutpilot-plugin-test-'));
@@ -380,18 +320,4 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
     await client.close().catch(() => {});
     rmSync(tmp, { recursive: true, force: true });
   }
-}
-
-/** The report as lines for a terminal. */
-export function formatReport(r: TestReport): string {
-  const mark = { pass: '✓', fail: '✗', skip: '–' } as const;
-  const lines = r.checks.map((c) => {
-    const head = `${mark[c.result]} ${c.name}${c.detail ? ` — ${c.detail}` : ''}`;
-    return c.result !== 'pass' && c.fix ? `${head}\n    fix: ${c.fix}` : head;
-  });
-  const failed = r.checks.filter((c) => c.result === 'fail').length;
-  lines.push(
-    r.ok ? `${r.plugin}: all checks passed` : `${r.plugin}: ${failed} check${failed === 1 ? '' : 's'} failed`,
-  );
-  return lines.join('\n');
 }

@@ -6,6 +6,9 @@
     { "path": "plugins/hyperframes" },
     { "path": "plugins/html-motion" },
     { "path": "plugins/sound" },
-    { "path": "plugins/remotion" }
+    { "path": "plugins/remotion" },
+    { "path": "plugins/music" },
+    { "path": "plugins/cloud-transcribe" },
+    { "path": "plugins/follow-speaker" }
   ]
 }

@@ -25,6 +25,10 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      # the Python example plugin (examples/python-plugin) runs with uv; its test is skipped without it
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.12'
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm check

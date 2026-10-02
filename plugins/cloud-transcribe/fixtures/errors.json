@@ -1,0 +1,97 @@
+{
+  "elevenlabs_invalid_key": {
+    "status": 401,
+    "body": { "detail": { "status": "invalid_api_key", "message": "Invalid API key" } }
+  },
+  "elevenlabs_quota": {
+    "status": 401,
+    "body": {
+      "detail": {
+        "status": "quota_exceeded",
+        "message": "This request exceeds your quota of 10000. You have 120 credits remaining, while 900 credits are required for this request."
+      }
+    }
+  },
+  "elevenlabs_missing_permissions": {
+    "status": 401,
+    "body": {
+      "detail": {
+        "status": "missing_permissions",
+        "message": "The API key you used is missing the permission user_read to execute this operation."
+      }
+    }
+  },
+  "elevenlabs_too_large": {
+    "status": 413,
+    "body": {
+      "detail": { "status": "file_too_large", "message": "File size exceeds the maximum allowed size." }
+    }
+  },
+  "elevenlabs_bad_language": {
+    "status": 422,
+    "body": {
+      "detail": [
+        {
+          "type": "value_error",
+          "loc": ["body", "language_code"],
+          "msg": "Value error, Unsupported language code"
+        }
+      ]
+    }
+  },
+  "openai_invalid_key": {
+    "status": 401,
+    "body": {
+      "error": {
+        "message": "Incorrect API key provided: sk-test. You can find your API key at https://platform.openai.com/account/api-keys.",
+        "type": "invalid_request_error",
+        "param": null,
+        "code": "invalid_api_key"
+      }
+    }
+  },
+  "openai_quota": {
+    "status": 429,
+    "body": {
+      "error": {
+        "message": "You exceeded your current quota, please check your plan and billing details.",
+        "type": "insufficient_quota",
+        "param": null,
+        "code": "insufficient_quota"
+      }
+    }
+  },
+  "openai_rate_limit": {
+    "status": 429,
+    "body": {
+      "error": {
+        "message": "Rate limit reached for whisper-1 on requests per min (RPM): Limit 50, Used 50, Requested 1.",
+        "type": "requests",
+        "param": null,
+        "code": "rate_limit_exceeded"
+      }
+    }
+  },
+  "openai_too_large": {
+    "status": 413,
+    "body": {
+      "error": {
+        "message": "Maximum content size limit (26214400) exceeded (26500000 bytes read)",
+        "type": "server_error",
+        "param": null,
+        "code": null
+      }
+    }
+  },
+  "openai_server": {
+    "status": 500,
+    "body": {
+      "error": {
+        "message": "The server had an error while processing your request. Sorry about that!",
+        "type": "server_error",
+        "param": null,
+        "code": null
+      }
+    }
+  }
+}

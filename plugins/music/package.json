@@ -1,0 +1,42 @@
+{
+  "name": "@cutpilot/plugin-asset-music",
+  "version": "0.1.0",
+  "description": "CutPilot plugin: background music by mood, from a small library of loops shipped inside the plugin.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "library": "node scripts/make-library.mjs"
+  },
+  "files": [
+    "dist",
+    "library",
+    "cutpilot-plugin.json",
+    "icon.png",
+    "README.md"
+  ],
+  "dependencies": {
+    "@cutpilot/plugin-sdk": "workspace:*",
+    "zod": "^4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "directory": "plugins/music"
+  },
+  "author": "Abdul <abdul.abdurohiym@gmail.com>",
+  "keywords": [
+    "cutpilot",
+    "music",
+    "background-music",
+    "mcp",
+    "plugin"
+  ],
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  }
+}

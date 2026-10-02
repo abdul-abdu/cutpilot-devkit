@@ -1,6 +1,7 @@
 /** @cutpilot/plugin-sdk (MIT): build and test CutPilot plugins. */
 export {
   definePlugin,
+  defineTool,
   imageBlock,
   PluginDefinitionError,
   PluginFailure,
@@ -11,14 +12,34 @@ export {
   type PluginDefinition,
 } from './plugin.js';
 export {
-  formatReport,
   pluginEnv,
   resolveCommand,
   silentWav,
   smallCanvas,
   testPlugin,
-  type Check,
   type TestOptions,
-  type TestReport,
 } from './harness.js';
+export {
+  commandCheck,
+  findOnPath,
+  formatReport,
+  validatePluginFolder,
+  type Check,
+  type TestReport,
+} from './validate.js';
 export * from '@cutpilot/plugin-api';
+/** The SDK's own zod, for extra tools' inputs: one copy between a plugin and the SDK. */
+export { z } from 'zod';
+export { CLI_USAGE, pluginCli } from './cli.js';
+export {
+  SCAFFOLD_KINDS,
+  ScaffoldError,
+  scaffoldKind,
+  scaffoldPlugin,
+  sdkVersion,
+  TEMPLATE_CUTPILOT_RANGE,
+  TEMPLATE_DEV_DEPENDENCIES,
+  type ScaffoldKind,
+  type ScaffoldOptions,
+  type ScaffoldResult,
+} from './scaffold.js';

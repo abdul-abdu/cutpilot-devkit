@@ -1,0 +1,64 @@
+{
+  "tracks": [
+    {
+      "id": "still-water",
+      "title": "Still Water",
+      "moods": ["calm"],
+      "bpm": 72,
+      "durationMs": 53333,
+      "loopable": true,
+      "license": "CC0-1.0",
+      "file": "still-water.m4a"
+    },
+    {
+      "id": "bright-side",
+      "title": "Bright Side",
+      "moods": ["upbeat"],
+      "bpm": 118,
+      "durationMs": 48814,
+      "loopable": true,
+      "license": "CC0-1.0",
+      "file": "bright-side.m4a"
+    },
+    {
+      "id": "first-light",
+      "title": "First Light",
+      "moods": ["inspiring", "upbeat"],
+      "bpm": 96,
+      "durationMs": 60000,
+      "loopable": true,
+      "license": "CC0-1.0",
+      "file": "first-light.m4a"
+    },
+    {
+      "id": "clear-plan",
+      "title": "Clear Plan",
+      "moods": ["corporate", "upbeat"],
+      "bpm": 110,
+      "durationMs": 61091,
+      "loopable": true,
+      "license": "CC0-1.0",
+      "file": "clear-plan.m4a"
+    },
+    {
+      "id": "long-shadow",
+      "title": "Long Shadow",
+      "moods": ["dramatic"],
+      "bpm": 70,
+      "durationMs": 54857,
+      "loopable": true,
+      "license": "CC0-1.0",
+      "file": "long-shadow.m4a"
+    },
+    {
+      "id": "rainy-desk",
+      "title": "Rainy Desk",
+      "moods": ["lo-fi", "calm"],
+      "bpm": 80,
+      "durationMs": 72000,
+      "loopable": true,
+      "license": "CC0-1.0",
+      "file": "rainy-desk.m4a"
+    }
+  ]
+}
