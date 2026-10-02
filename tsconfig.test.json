@@ -11,6 +11,7 @@
     "packages/*/src/**/*.test.ts",
     "plugins/*/src/**/*.test.ts",
     "scripts/*.test.ts",
+    "examples/*.test.ts",
     "scripts/*.d.mts",
     "vitest.config.ts"
   ]

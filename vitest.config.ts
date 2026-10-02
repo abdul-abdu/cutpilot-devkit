@@ -10,6 +10,11 @@ const alias = [{ find: /^@cutpilot\/(plugin-api|plugin-sdk)$/, replacement: pkg(
 export default defineConfig({
   resolve: { alias },
   test: {
-    include: ['packages/*/src/**/*.test.ts', 'plugins/*/src/**/*.test.ts', 'scripts/*.test.ts'],
+    include: [
+      'packages/*/src/**/*.test.ts',
+      'plugins/*/src/**/*.test.ts',
+      'scripts/*.test.ts',
+      'examples/*.test.ts',
+    ],
   },
 });
