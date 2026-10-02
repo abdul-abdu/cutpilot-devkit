@@ -8,6 +8,8 @@ A `generator` plugin renders clips from templates (a title card, a chapter headi
 
 A plugin may ship an icon: `"icon": "icon.png"` in the manifest names a PNG inside the folder, square, 32 to 256 px, at most 64 KB. The store shows it in its list and on the plugin's page, the app next to the installed plugin; without one, the first letter of the name stands in. `testPlugin()` checks the file the way the store will.
 
+**To build a plugin, start with the [plugin guide](docs/plugin-guide.md)**: the kinds and extra tools, a walkthrough, permissions and settings, testing, installing and sharing.
+
 ## What's here
 
 | Path | npm package | What it is |
