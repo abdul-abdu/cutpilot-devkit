@@ -11,11 +11,16 @@
  *   SDK go into the bundle: there must be one copy of zod between the plugin and the SDK;
  * - every other dependency of the plugin, installed with npm as real folders, because a CLI the
  *   plugin runs (`hyperframes`) or a file it copies at run time (`gsap`) can't be bundled;
- * - the manifest, its icon, README, LICENSE, and a package.json that names those dependencies.
+ * - the manifest, its icon, README, LICENSE, and a package.json that names those dependencies;
+ * - whatever else the plugin's package.json lists in `files` (npm's list of what a package
+ *   ships: a music library, a helper binary), except the entry's folder, which esbuild writes.
+ *   Plain paths, no globs; a listed path that doesn't exist is skipped with a note (e.g. a
+ *   helper binary not built on this machine).
  */
 import { execFileSync } from 'node:child_process';
 import {
   copyFileSync,
+  cpSync,
   existsSync,
   lstatSync,
   mkdirSync,
@@ -82,6 +87,19 @@ export async function bundlePlugin(dir, out, { log = () => {} } = {}) {
   if (manifest.icon && existsSync(join(src, manifest.icon))) {
     mkdirSync(dirname(join(dest, manifest.icon)), { recursive: true });
     copyFileSync(join(src, manifest.icon), join(dest, manifest.icon));
+  }
+  const entryDir = entry.split(/[\\/]/)[0];
+  for (const f of pkg.files ?? []) {
+    const rel = f.replace(/^\.\//, '').replace(/\/+$/, '');
+    if (!rel || rel === 'package.json' || rel === entryDir || rel === entry) continue;
+    const from = resolve(src, rel);
+    if (from === src || !from.startsWith(src + sep)) throw new Error(`files: ${f} is outside the plugin`);
+    if (!existsSync(from)) {
+      log(`skipped ${rel} (listed in files, not there)`);
+      continue;
+    }
+    cpSync(from, join(dest, rel), { recursive: true, dereference: true });
+    log(`copied ${rel}`);
   }
   writeFileSync(
     join(dest, 'package.json'),
