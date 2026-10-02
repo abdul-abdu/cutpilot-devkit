@@ -121,13 +121,22 @@ export function createSteps(
   ];
 }
 
-function run(
+/** How often a silent step still reports progress (AD1: npm install is quiet for minutes). */
+export const BEAT_MS = 5000;
+
+/**
+ * Run one step with the user's npm or npx, reporting progress for each line it prints and, while
+ * it prints nothing, every `beatMs`: CutPilot ends a plugin call after 120 s without progress,
+ * and `npm install --loglevel=error` can be silent for minutes on a slow connection.
+ */
+export function run(
   bin: string,
   args: string[],
   cwd: string,
   ctx: Pick<PluginContext, 'progress' | 'log' | 'signal'>,
   from: number,
   to: number,
+  beatMs = BEAT_MS,
 ): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const env: NodeJS.ProcessEnv = { ...process.env, CI: '1', npm_config_yes: 'true' };
@@ -144,6 +153,16 @@ function run(
     });
     const lines: string[] = [];
     let n = 0;
+    const step =
+      `${basename(bin).replace(/\.(cmd|exe)$/, '')} ${args.find((a) => !a.startsWith('-')) ?? ''}`.trim();
+    const started = Date.now();
+    let fraction = from;
+    let message = `${step} is running`;
+    const beat = setInterval(
+      () => ctx.progress(fraction, `${message} (${Math.round((Date.now() - started) / 1000)} s)`),
+      beatMs,
+    );
+    const done = () => clearInterval(beat);
     const take = (chunk: Buffer) => {
       // eslint-disable-next-line no-control-regex -- strip ANSI colours
       const text = chunk.toString().replace(/\x1b\[[0-9;]*[A-Za-z]/g, '');
@@ -153,23 +172,28 @@ function run(
         if (lines.length > 200) lines.shift();
         ctx.log(l);
         n++;
-        ctx.progress(from + (to - from) * (1 - 1 / (1 + n / 20)), l.trim().slice(0, 100));
+        fraction = from + (to - from) * (1 - 1 / (1 + n / 20));
+        message = l.trim().slice(0, 100);
+        ctx.progress(fraction, message);
       }
     };
     child.stdout.on('data', take);
     child.stderr.on('data', take);
-    child.on('error', reject);
-    child.on('close', (code) =>
-      code === 0
-        ? resolve(lines)
-        : reject(
-            new PluginFailure(
-              'E_REMOTION_CREATE_FAILED',
-              `${basename(bin)} ${args.join(' ')} failed (exit ${code}): ${lines.slice(-6).join(' | ')}`,
-              'check the internet connection and that the folder is writable, then try again',
-            ),
-          ),
-    );
+    child.on('error', (e) => {
+      done();
+      reject(e);
+    });
+    child.on('close', (code) => {
+      done();
+      if (code === 0) return resolve(lines);
+      reject(
+        new PluginFailure(
+          'E_REMOTION_CREATE_FAILED',
+          `${basename(bin)} ${args.join(' ')} failed (exit ${code}): ${lines.slice(-6).join(' | ')}`,
+          'check the internet connection and that the folder is writable, then try again',
+        ),
+      );
+    });
   });
 }
 

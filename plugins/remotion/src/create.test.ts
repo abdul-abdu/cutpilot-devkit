@@ -2,11 +2,11 @@
  * Finding the user's Node for create_project when CutPilot was opened from the Dock: its PATH
  * has no nvm, fnm, Volta, asdf or mise folder, so their install folders are searched.
  */
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
-import { findNode, nodeDirs } from './create.js';
+import { findNode, nodeDirs, run } from './create.js';
 
 describe.skipIf(process.platform === 'win32')('findNode', () => {
   let home: string;
@@ -82,5 +82,63 @@ describe.skipIf(process.platform === 'win32')('findNode', () => {
       '/nvm/current',
       join(home, '.nvm/versions/node/v20.0.0/bin'),
     ]);
+  });
+});
+
+describe.skipIf(process.platform === 'win32')('run', () => {
+  let dir: string;
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), 'cp-remotion-run-'));
+  });
+  afterEach(() => rmSync(dir, { recursive: true, force: true }));
+
+  /** an `npm` that prints one line, then says nothing for a while, like npm install --loglevel=error */
+  const quietNpm = (seconds: number, code = 0) => {
+    const f = join(dir, 'npm');
+    writeFileSync(f, `#!/bin/sh\necho "added 1 package"\nsleep ${seconds}\nexit ${code}\n`);
+    chmodSync(f, 0o755);
+    return f;
+  };
+  const ctx = () => {
+    const seen: { fraction: number; message: string | undefined }[] = [];
+    return {
+      seen,
+      ctx: {
+        progress: (fraction: number, message?: string) => seen.push({ fraction, message }),
+        log: () => {},
+        signal: new AbortController().signal,
+      },
+    };
+  };
+
+  test('a silent step still reports progress, so CutPilot does not take it for a hung plugin', async () => {
+    const { seen, ctx: c } = ctx();
+    const lines = await run(quietNpm(0.7), ['install', '--no-audit'], dir, c, 0.3, 0.8, 100);
+    expect(lines).toEqual(['added 1 package']);
+    // before the line (a slow start): the step's name; after it: its progress and the time it ran
+    const at = seen.findIndex((x) => x.message === 'added 1 package');
+    expect(at).toBeGreaterThanOrEqual(0);
+    for (const b of seen.slice(0, at))
+      expect(b).toEqual({
+        fraction: 0.3,
+        message: expect.stringMatching(/^npm install is running \(\d+ s\)$/),
+      });
+    const beats = seen.slice(at + 1);
+    expect(beats.length).toBeGreaterThanOrEqual(3);
+    for (const b of beats) {
+      expect(b.fraction).toBe(seen[at]!.fraction);
+      expect(b.message).toMatch(/^added 1 package \(\d+ s\)$/);
+    }
+  });
+
+  test('the beat stops when the step ends, and a failure names the step', async () => {
+    const { seen, ctx: c } = ctx();
+    await expect(run(quietNpm(0.1, 3), ['install'], dir, c, 0, 1, 50)).rejects.toMatchObject({
+      code: 'E_REMOTION_CREATE_FAILED',
+      message: expect.stringMatching(/^npm install failed \(exit 3\): added 1 package/),
+    });
+    const after = seen.length;
+    await new Promise((r) => setTimeout(r, 200));
+    expect(seen.length).toBe(after);
   });
 });
