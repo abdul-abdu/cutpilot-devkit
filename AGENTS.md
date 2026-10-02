@@ -56,6 +56,7 @@ Read the matching one before starting. If your agent does not load skills automa
 | Skill | Use when |
 | --- | --- |
 | `cutpilot-plugin` | writing, changing, testing, bundling or installing a plugin in `plugins/`; the manifest, kinds, handlers, `testPlugin` |
+| `cutpilot-plugin-licensing` | a plugin that uses anything not free for everyone (a metered API, a licensed library such as Remotion, a model or asset with terms): the user brings their own key or licence; what to declare, write and test |
 
 Changing the contract itself, publishing a plugin to the store and anything about the app are done from the app repo (its skills `cutpilot-plugin-contract`, `cutpilot-plugin-publish`, `cutpilot-workspace`).
 

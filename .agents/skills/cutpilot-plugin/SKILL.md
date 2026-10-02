@@ -22,7 +22,7 @@ First-party plugins live in `plugins/<name>/` and are built exactly like a third
 
 Contracts are in `packages/plugin-api/src/contracts.ts` (`KIND_TOOLS`): read the input/output schema of your kind before writing the handler, because the SDK refuses any answer that doesn't match (`E_PLUGIN_CONTRACT`) and the engine refuses a plugin that doesn't offer its kind's tools. Extra tools reach AI clients as `<id>__<tool>` (`hyperframes__render`): snake_case, not a contract tool name, and the joined name at most 64 characters. A plugin can have kinds _and_ extra tools.
 
-If the capability belongs in every CutPilot (core logic, a new tool over the timeline), it is an app feature, not a plugin. If it needs a new kind or a new contract field, that is a contract change (`packages/plugin-api`, skill `cutpilot-plugin-contract` in the app repo) first.
+If the capability belongs in every CutPilot (core logic, a new tool over the timeline), it is an app feature, not a plugin. If the plugin uses anything that is not free for everyone (a metered API, a library with a commercial licence, a model with terms), read `.agents/skills/cutpilot-plugin-licensing/SKILL.md` first: the user brings their own key or licence, and the plugin declares, explains and guards that. If it needs a new kind or a new contract field, that is a contract change (`packages/plugin-api`, skill `cutpilot-plugin-contract` in the app repo) first.
 
 ## 2. Start from the scaffold
 
