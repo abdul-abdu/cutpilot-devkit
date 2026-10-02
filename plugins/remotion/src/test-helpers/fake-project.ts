@@ -35,12 +35,20 @@ exports.selectComposition = async (o) => {
   if (s.throws) throw new Error(s.throws);
   return { id: o.id, ...s, props: { ...s.defaultProps, ...(o.inputProps ?? {}) } };
 };
+// like Remotion's <Img>: a prop "image" is loaded with staticFile(); this fake always fails it, the
+// way Remotion does for a file public/ doesn't have (the plugin checks whether it is there)
+const loadImage = (o) => {
+  const image = o.inputProps?.image ?? o.composition?.props?.image;
+  if (image) throw new Error('Error loading image with src: http://localhost:3000/public/' + encodeURIComponent(image));
+};
 exports.renderStill = async (o) => {
   log('renderStill', o);
+  loadImage(o);
   return { buffer: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, o.frame & 0xff]) };
 };
 exports.renderMedia = async (o) => {
   log('renderMedia', o);
+  loadImage(o);
   let cancelled = false;
   o.cancelSignal?.(() => { cancelled = true; });
   if (o.composition.props?.slow || o.inputProps?.slow) {

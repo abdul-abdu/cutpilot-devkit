@@ -266,6 +266,39 @@ export async function selectScene(
 /** selectComposition's error (the scene threw while loading, or isn't registered), verbatim. */
 export class CompositionError extends Error {}
 
+/**
+ * The files of public/ a Remotion error names that aren't there. A scene loads them with
+ * staticFile("x.png"), which the bundle serves as http://localhost:<port>/public/x.png; a
+ * missing one comes back as "Error loading image with src: http://localhost:3000/public/x.png"
+ * (or the video or audio equivalent), which says nothing about the file being missing.
+ */
+export function missingPublicFiles(projectDir: string, message: string): string[] {
+  const names = new Set<string>();
+  for (const m of message.matchAll(/https?:\/\/(?:localhost|127\.0\.0\.1):\d+\/public\/([^\s"'<>)\]]+)/g)) {
+    let name = m[1]!.replace(/[?#].*$/, '').replace(/[.,;:]+$/, '');
+    try {
+      name = decodeURIComponent(name);
+    } catch {
+      // not percent-encoded: keep it as it is
+    }
+    if (name.split('/').includes('..')) continue;
+    if (!existsSync(join(projectDir, 'public', name))) names.add(name);
+  }
+  return [...names];
+}
+
+/** A PluginFailure naming the missing files, or null when the error is about something else. */
+export function missingFileFailure(projectDir: string, e: unknown): PluginFailure | null {
+  const missing = missingPublicFiles(projectDir, (e as Error)?.message ?? String(e));
+  if (!missing.length) return null;
+  const list = missing.map((n) => `public/${n}`).join(', ');
+  return new PluginFailure(
+    'E_REMOTION_MISSING_FILE',
+    `the scene loads ${list} with staticFile(), and ${missing.length === 1 ? "it isn't" : "they aren't"} in the Remotion project (${join(projectDir, 'public')})`,
+    `copy the file${missing.length === 1 ? '' : 's'} into that folder under ${missing.length === 1 ? 'that name' : 'those names'} (or pass a prop naming a file that is there), then try again`,
+  );
+}
+
 /** A unique file name in a folder: `<base>.<ext>`, else `<base>-2.<ext>`, … (nothing is overwritten). */
 export function uniquePath(dir: string, base: string, ext: string): string {
   for (let i = 1; ; i++) {

@@ -3,7 +3,7 @@
  * (test-helpers/fake-project.ts): what is written where, what Remotion is asked to do, the
  * licence gate, and the errors. Real renders are in e2e.test.ts.
  */
-import { existsSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -285,6 +285,33 @@ describe('preview and render', () => {
     });
   });
 
+  test('a file the scene loads from public/ that is missing is named, with where to put it', async () => {
+    const p = project();
+    const c = await connect({ project: p });
+    await call(c, 'create_scene', promo);
+    const e = errorOf(
+      await call(c, 'preview_frame', { id: 'promo', frame: 0, props: { image: 'my shot.webp' } }),
+    );
+    expect(e).toEqual({
+      code: 'E_REMOTION_MISSING_FILE',
+      message: `the scene loads public/my shot.webp with staticFile(), and it isn't in the Remotion project (${join(p, 'public')})`,
+      fix: 'copy the file into that folder under that name (or pass a prop naming a file that is there), then try again',
+    });
+    expect(errorOf(await call(c, 'render', { id: 'promo', props: { image: 'my shot.webp' } })).code).toBe(
+      'E_REMOTION_MISSING_FILE',
+    );
+    // the file is there: Remotion's own error is passed on as it was
+    mkdirSync(join(p, 'public'), { recursive: true });
+    writeFileSync(join(p, 'public', 'my shot.webp'), 'x');
+    const other = errorOf(
+      await call(c, 'preview_frame', { id: 'promo', frame: 0, props: { image: 'my shot.webp' } }),
+    );
+    expect(other.code).not.toBe('E_REMOTION_MISSING_FILE');
+    expect(other.message).toContain(
+      'Error loading image with src: http://localhost:3000/public/my%20shot.webp',
+    );
+  });
+
   test('the bundle is reused until a file in src/ changes', async () => {
     const p = project();
     const c = await connect({ project: p });
@@ -348,6 +375,41 @@ describe('preview and render', () => {
     expect(errorOf(await call(c, 'render', { id: 'promo', frameRange: [10, 400] })).code).toBe(
       'E_PLUGIN_BAD_INPUT',
     );
+  });
+
+  test('a call waiting behind another Remotion job reports progress, so it is not timed out', async () => {
+    const p = project();
+    const env: NodeJS.ProcessEnv = {
+      CUTPILOT_SECRET_REMOTION_LICENSE_KEY: KEY,
+      CUTPILOT_SETTING_PROJECT_DIR: p,
+    };
+    const plugin = definePlugin(
+      { ...createDefinition({ stateDir: join(tmp, 'state'), beatMs: 50 }), manifest },
+      env,
+    );
+    const [a, b] = InMemoryTransport.createLinkedPair();
+    await plugin.server.connect(a);
+    const c = new Client({ name: 'test', version: '1' });
+    await c.connect(b);
+    clients.push(c);
+    await call(c, 'create_scene', promo);
+    const seen: string[] = [];
+    const slow = c.callTool({ name: 'render', arguments: { id: 'promo', props: { slow: true } } });
+    const waiting = c.callTool({ name: 'preview_frame', arguments: { id: 'promo', frame: 0 } }, undefined, {
+      onprogress: (x) => seen.push(x.message ?? ''),
+    });
+    await Promise.all([slow, waiting]);
+    expect(
+      seen.filter((m) => /^waiting for another Remotion job to finish \(\d+ s\)$/.test(m)).length,
+    ).toBeGreaterThanOrEqual(3);
+    // once its turn comes, no more waiting beats
+    const last = seen.findLastIndex((m) => m.startsWith('waiting'));
+    expect(seen.slice(last + 1).length).toBeGreaterThan(0);
+  });
+
+  test('status reports the version in the manifest', async () => {
+    const c = await connect({ project: project() });
+    expect(structured<{ plugin: string }>(await call(c, 'status')).plugin).toBe(manifest.version);
   });
 
   test('a cancelled render stops, leaves no partial file, and says so', async () => {

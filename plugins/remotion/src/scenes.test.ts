@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { PluginFailure } from '@cutpilot/plugin-sdk';
 import fc from 'fast-check';
 import { afterAll, describe, expect, test } from 'vitest';
+import { missingFileFailure, missingPublicFiles } from './remotion.js';
 import {
   checkSceneId,
   codeProblem,
@@ -160,5 +161,29 @@ test('props schema: each default typed, all optional', () => {
       style: { type: 'object', default: { a: 1 } },
     },
     additionalProperties: true,
+  });
+});
+
+describe('missingPublicFiles', () => {
+  test('names the files of public/ a Remotion error points at that are not there', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'cp-remotion-public-'));
+    try {
+      mkdirSync(join(dir, 'public', 'img'), { recursive: true });
+      writeFileSync(join(dir, 'public', 'img', 'here.png'), '');
+      const msg = [
+        'Error loading image with src: http://localhost:3000/public/cleanup.webp',
+        'and http://127.0.0.1:3001/public/CutPilot%20sample.mp4?t=1, then http://localhost:3000/public/img/here.png.',
+        'a repeat: http://localhost:3000/public/cleanup.webp, outside: http://localhost:3000/public/../etc/passwd',
+        'elsewhere: https://example.com/public/x.png',
+      ].join('\n');
+      expect(missingPublicFiles(dir, msg)).toEqual(['cleanup.webp', 'CutPilot sample.mp4']);
+      expect(missingPublicFiles(dir, 'ReferenceError: foo is not defined')).toEqual([]);
+      expect(missingFileFailure(dir, new Error('nothing about files'))).toBeNull();
+      expect(missingFileFailure(dir, new Error(msg))?.message).toBe(
+        `the scene loads public/cleanup.webp, public/CutPilot sample.mp4 with staticFile(), and they aren't in the Remotion project (${join(dir, 'public')})`,
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });

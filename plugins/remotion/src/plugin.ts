@@ -17,7 +17,7 @@ import {
   type PluginDefinition,
 } from '@cutpilot/plugin-sdk';
 import { z } from 'zod';
-import { createProject } from './create.js';
+import { BEAT_MS, createProject } from './create.js';
 import { GUIDE } from './guide.js';
 import {
   LICENSE_NOTICE,
@@ -36,6 +36,7 @@ import {
   ensureBundle,
   fileStamp,
   loadRemotion,
+  missingFileFailure,
   selectScene,
   uniquePath,
   workDir,
@@ -60,7 +61,6 @@ import {
 } from './scenes.js';
 import { typecheckScenes } from './typecheck.js';
 
-const VERSION = '0.1.0';
 const PROFILES = ['4444-xq', '4444', 'hq', 'standard', 'light', 'proxy'] as const;
 
 const Props = z.record(z.string(), z.unknown());
@@ -93,6 +93,8 @@ const metaFields = {
 export interface Options {
   /** where licence acceptances are recorded (default: the plugin's folder in the user's app data) */
   stateDir?: string;
+  /** how often a call waiting for another Remotion job reports progress (default BEAT_MS) */
+  beatMs?: number;
 }
 
 interface Ready {
@@ -120,10 +122,28 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
     if (lastErrors.length > 10) lastErrors.shift();
   };
 
-  /** One Remotion job at a time: each starts a Chrome and uses every core. */
+  /**
+   * One Remotion job at a time: each starts a Chrome and uses every core. A call waiting for its
+   * turn reports progress while it waits: CutPilot ends a plugin call after 120 s without any,
+   * and a render ahead of it (another chat, the app) can take longer than that.
+   */
   let queue: Promise<unknown> = Promise.resolve();
-  const exclusive = <T>(fn: () => Promise<T>): Promise<T> => {
-    const run = queue.then(fn, fn);
+  const beatMs = opts.beatMs ?? BEAT_MS;
+  const exclusive = <T>(ctx: Pick<PluginContext, 'progress'>, fn: () => Promise<T>): Promise<T> => {
+    const asked = Date.now();
+    const beat = setInterval(
+      () =>
+        ctx.progress(
+          0,
+          `waiting for another Remotion job to finish (${Math.round((Date.now() - asked) / 1000)} s)`,
+        ),
+      beatMs,
+    );
+    const start = () => {
+      clearInterval(beat);
+      return fn();
+    };
+    const run = queue.then(start, start);
     queue = run.catch(() => {});
     return run;
   };
@@ -205,6 +225,8 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
     try {
       return await selectScene(r.remotion, serveUrl, compositionId(id), props);
     } catch (e) {
+      const missing = missingFileFailure(r.project.dir, e);
+      if (missing) throw missing;
       if (e instanceof CompositionError)
         throw new PluginFailure(
           'E_REMOTION_SCENE_FAILED',
@@ -310,7 +332,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
       'Read remotion__guide once before your first scene. Takes a few seconds (the first bundle up to a minute).',
     input: { id: SceneId, code: Code, ...metaFields, defaultProps: metaFields.defaultProps.optional() },
     handler: tracked('create_scene', (a: Record<string, unknown>, ctx) =>
-      exclusive(async () => {
+      exclusive(ctx, async () => {
         const r = ready(ctx);
         const id = checkSceneId(a.id);
         if (readScene(r.project.dir, id) || existsSync(join(r.project.dir, 'src', 'cutpilot', `${id}.tsx`)))
@@ -343,7 +365,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
       defaultProps: metaFields.defaultProps.optional(),
     },
     handler: tracked('update_scene', (a: Record<string, unknown>, ctx) =>
-      exclusive(async () => {
+      exclusive(ctx, async () => {
         const r = ready(ctx);
         const s = sceneOrFail(r.project.dir, String(a.id));
         const code = a.code === undefined ? s.code : String(a.code);
@@ -407,7 +429,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
     handler: tracked(
       'preview_frame',
       (a: { id: string; frame: number; props?: Record<string, unknown>; scale?: number }, ctx) =>
-        exclusive(async () => {
+        exclusive(ctx, async () => {
           const r = ready(ctx);
           const s = sceneOrFail(r.project.dir, a.id);
           const { serveUrl } = await bundled(r, ctx, 0.6);
@@ -462,6 +484,8 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
               ],
               info,
             );
+          } catch (e) {
+            throw missingFileFailure(r.project.dir, e) ?? e;
           } finally {
             cancel.dispose();
           }
@@ -509,7 +533,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
         },
         ctx,
       ) =>
-        exclusive(async () => {
+        exclusive(ctx, async () => {
           if (a.transparent && a.codec === 'h264')
             throw new PluginFailure(
               'E_PLUGIN_BAD_INPUT',
@@ -619,6 +643,8 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
           'the render was cancelled',
           'start it again when wanted',
         );
+      const missing = missingFileFailure(r.project.dir, e);
+      if (missing) throw missing;
       throw new PluginFailure(
         'E_REMOTION_RENDER_FAILED',
         `rendering ${c.id} failed: ${((e as Error).message ?? String(e)).split('\n').slice(0, 3).join(' | ')}`,
@@ -697,7 +723,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
           : {}),
         problems,
         lastErrors,
-        plugin: VERSION,
+        plugin: ctx.manifest.version,
       };
     },
   };
@@ -776,7 +802,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
     },
 
     generate: (input, ctx) =>
-      exclusive(async () => {
+      exclusive(ctx, async () => {
         const r = ready(ctx);
         const s = sceneOrFail(r.project.dir, input.template);
         const props = { ...s.meta.defaultProps, ...input.params };
@@ -787,7 +813,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
         const key = createHash('sha256')
           .update(
             JSON.stringify([
-              VERSION,
+              ctx.manifest.version,
               r.project.version,
               fingerprint,
               s.id,
