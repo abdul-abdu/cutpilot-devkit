@@ -4,7 +4,7 @@ CutPilot's own plugins, one folder each, built the way a third-party plugin is: 
 
 | Folder | npm package | Kind | Task (app repo) |
 | --- | --- | --- | --- |
-| `cloud-transcribe/` | `@cutpilot/plugin-stt-cloud` | transcriber | P3-030, P3-031 |
+| `cloud-transcribe/` | `@cutpilot/plugin-stt-cloud` | transcriber (ElevenLabs Scribe or OpenAI whisper-1, with the user's key; `test_key`) | P3-030, P3-031 |
 | `follow-speaker/` | `@cutpilot/plugin-analyze-follow-speaker` | analyzer: reframe-track | P3-032, P3-033 |
 | `music/` | `@cutpilot/plugin-asset-music` | asset: music (background music by mood and length, from a library of loops inside the plugin; placeholder tracks for now) | P3-034 |
 | `hyperframes/` | `@cutpilot/plugin-render-hyperframes` | extra tools only (research) | — |
