@@ -38,18 +38,20 @@ pnpm cutpilot-plugin validate <dir>   # check a plugin folder's manifest, icon a
 pnpm cutpilot-plugin test <dir>       # start it the way CutPilot does and call its tools (after pnpm build)
 ```
 
+Coding agents: `AGENTS.md` is the guide, and `.agents/skills/cutpilot-plugin` the procedure for plugin work (Agent Skills format; `.claude/skills` links to it for Claude Code).
+
 ### Together with the CutPilot app
 
-The private app repo uses these packages straight from a sibling checkout. Its `pnpm-workspace.yaml` includes `../cutpilot-devkit/packages/*`, so an edit here is picked up there immediately, and both sides share one copy of `zod` and the MCP SDK.
+The private app repo is usually checked out next to this one and keeps its own copy of `packages/plugin-api` and `packages/plugin-sdk`, synced from here: this repo is the source of truth, and a test in the app fails when the copies differ (only the `version` field of each `package.json` may, since the app versions every package together). Until the SDK is on npm, that is how the engine builds against the contract.
 
 ```
-~/lab/
+cutpilot-repo/
   cutpilot/          # the app (private)
   cutpilot-devkit/   # this repo
 ```
 
-- Run `pnpm install` in `cutpilot` after changing dependencies here. The app's install also writes `node_modules` into this repo's packages. If you then work on the devkit alone, run `pnpm install` here again.
-- If you change a contract, commit it here first, then update the app. Breaking changes to a contract bump `CONTRACT_VERSION` in `packages/plugin-api/src/manifest.ts`.
+- If you change a contract, commit it here first, then sync and update the app. Breaking changes to a contract bump `CONTRACT_VERSION` in `packages/plugin-api/src/manifest.ts`.
+- The app's registry entries point at `../cutpilot-devkit/build/<id>-<version>` for the store, and its agent evals use `plugins/music` from here, so keep the two folders siblings with these names.
 
 ## Rules
 

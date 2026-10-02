@@ -60,6 +60,7 @@ my-titles/
   src/index.ts           starts the plugin: definePlugin(plugin).start()
   src/plugin.ts          the tool itself, with placeholder logic
   src/index.test.ts      runs testPlugin() and a unit test
+  AGENTS.md              the rules for a coding agent working in the folder
   README.md, .gitignore
 ```
 

@@ -1,7 +1,8 @@
 /**
  * scaffoldPlugin(): a new plugin folder that works before its author changes a line — the
  * manifest, a TypeScript `definePlugin()` with placeholder logic for its kind, a test that runs
- * `testPlugin()`, a standalone package.json and tsconfig, a README and a .gitignore. The sources
+ * `testPlugin()`, a standalone package.json and tsconfig, a README, an AGENTS.md with the rules for
+ * coding agents, and a .gitignore. The sources
  * come from this package's `template/` folder; this file writes the rest.
  */
 import {
@@ -194,6 +195,46 @@ See the [plugin guide](https://github.com/abdul-abdu/cutpilot-devkit/blob/main/d
 `;
 }
 
+/** The rules an agent working in the new plugin folder must know; written as AGENTS.md. */
+function agentsMd(id: string, kind: ScaffoldKind): string {
+  const manifestKind = SCAFFOLD_KINDS[kind];
+  const tools = manifestKind ? Object.keys(KIND_TOOLS[manifestKind]) : [];
+  const kindLine = manifestKind
+    ? `Kind \`${manifestKind}\`: CutPilot calls ${tools.map((t) => `\`${t}\``).join(' and ')} and checks each answer against the contract in \`@cutpilot/plugin-api\` (\`KIND_TOOLS\`); a wrong shape is refused as \`E_PLUGIN_CONTRACT\`.`
+    : `Extra tools only: AI clients see each tool as \`${id}__<tool>\` (snake_case, at most 64 characters together). They are read-only: they return text or data and never change an edit.`;
+  return `# Agent notes
+
+This folder is a CutPilot plugin: \`cutpilot-plugin.json\` (the manifest) plus an MCP server on stdio that \`src/index.ts\` starts with \`definePlugin()\` from \`@cutpilot/plugin-sdk\`. CutPilot starts it when needed, calls its tools, validates every answer and applies the result as an ordinary, undoable edit.
+
+${kindLine}
+
+## Rules the host enforces
+
+- A plugin returns data or files; it never edits the timeline.
+- Times are integer milliseconds in SOURCE time; positions are fractions 0..1 of the frame.
+- Never write to stdout: it carries MCP, and a stray \`console.log\` breaks the session. Log with \`ctx.log()\` (stderr).
+- Fail with \`throw new PluginFailure('E_YOUR_CODE', oneLineMessage, oneLineFix)\`: the fix names the setting, the tool to call or the thing to install. Anything else becomes a generic \`E_PLUGIN_FAILED\`.
+- Report progress during long work (\`ctx.progress(0..1, message)\`) and stop when \`ctx.signal\` aborts; a silent call is timed out.
+- Declare in the manifest only what is used: \`permissions.network\` (hosts), \`permissions.secrets\` (names the user enters in CutPilot), \`permissions.reads\`, \`settings\`. Secrets come through \`ctx.secret()\` / \`ctx.requireSecret()\`, settings through \`ctx.settings\`.
+- Files returned are absolute paths that exist; CutPilot copies what it needs.
+- Describe tools and every input field (\`.describe()\`, units, an example) for the weakest model that should succeed.
+
+## Commands
+
+\`\`\`sh
+npm run build                      # src/ → dist/ (CutPilot runs node dist/index.js)
+npm test                           # build, then the tests, including testPlugin()
+npx cutpilot-plugin validate .     # the manifest, icon and command, without starting anything
+npx cutpilot-plugin test .         # start it the way CutPilot does and call its tools (--secret NAME, --setting key=value)
+cutpilot plugin install . --link   # try it in CutPilot (the app's command line); cutpilot plugin list shows its state
+\`\`\`
+
+Before saying a change is done: \`npm test\` green, the README updated if a tool, setting or requirement changed, and \`version\` bumped in both \`cutpilot-plugin.json\` and \`package.json\` when it is to be shared again.
+
+Guide: https://github.com/abdul-abdu/cutpilot-devkit/blob/main/docs/plugin-guide.md
+`;
+}
+
 const json = (v: unknown) => JSON.stringify(v, null, 2) + '\n';
 
 /** Write a new plugin folder; throws a ScaffoldError for a bad id or kind, or a folder in use. */
@@ -287,6 +328,7 @@ export function scaffoldPlugin(o: ScaffoldOptions): ScaffoldResult {
   );
   write('.gitignore', 'node_modules/\ndist/\n*.cutpilot-plugin\n*.tgz\n');
   write('README.md', readme(o.id, name, kind));
+  write('AGENTS.md', agentsMd(o.id, kind));
   copy(new URL('index.ts', TEMPLATE), 'src/index.ts');
   copy(new URL(`${kind}/plugin.ts`, TEMPLATE), 'src/plugin.ts');
   copy(new URL(`${kind}/index.test.ts`, TEMPLATE), 'src/index.test.ts');

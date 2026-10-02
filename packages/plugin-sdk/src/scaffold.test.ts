@@ -40,12 +40,13 @@ afterAll(() => rmSync(tmp, { recursive: true, force: true }));
 const json = (file: string) => JSON.parse(readFileSync(file, 'utf8'));
 
 describe('scaffoldPlugin', () => {
-  test('writes the manifest, package, tsconfig, sources, test, README and .gitignore', () => {
+  test('writes the manifest, package, tsconfig, sources, test, README, AGENTS.md and .gitignore', () => {
     const r = scaffoldPlugin({ dir: join(tmp, 'files', 'my-titles'), id: 'my-titles' });
     expect(r).toMatchObject({ id: 'my-titles', name: 'My Titles', kind: 'tools' });
     expect(r.files.sort()).toEqual(
       [
         '.gitignore',
+        'AGENTS.md',
         'README.md',
         'cutpilot-plugin.json',
         'package.json',
@@ -63,6 +64,9 @@ describe('scaffoldPlugin', () => {
     });
     expect(json(join(r.dir, 'tsconfig.json')).extends).toBeUndefined();
     expect(readFileSync(join(r.dir, 'README.md'), 'utf8')).toContain('cutpilot plugin install . --link');
+    const agents = readFileSync(join(r.dir, 'AGENTS.md'), 'utf8');
+    expect(agents).toContain('never edits the timeline');
+    expect(agents).toContain('my-titles__<tool>');
   });
 
   test("each kind's manifest is valid and asks for what its kind reads", () => {
