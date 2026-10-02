@@ -102,6 +102,13 @@ export interface ExtraTool<S extends z.ZodRawShape = z.ZodRawShape> {
   handler: (args: z.infer<z.ZodObject<S>>, ctx: PluginContext) => Promise<unknown> | unknown;
 }
 
+/**
+ * Type an extra tool's handler from its input: `defineTool({ input: { text: z.string() }, handler:
+ * ({ text }) => … })` gives `text` the type string, which a plain object in `tools` can't.
+ */
+export const defineTool = <S extends z.ZodRawShape>(tool: ExtraTool<S>): ExtraTool =>
+  tool as unknown as ExtraTool;
+
 export interface PluginDefinition {
   /** default: `cutpilot-plugin.json` in the working directory (CutPilot starts plugins in their folder) */
   manifest?: unknown;

@@ -19,7 +19,8 @@
   },
   "files": [
     "dist",
-    "!dist/.tsbuildinfo"
+    "!dist/.tsbuildinfo",
+    "template"
   ],
   "scripts": {
     "build": "tsc -b"

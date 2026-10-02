@@ -1,20 +1,27 @@
 /**
  * `cutpilot-plugin`: the SDK's command line.
  *
+ *   cutpilot-plugin new ID [--kind K] [--dir D] [--name N] [--sdk SPEC]   a new plugin folder
  *   cutpilot-plugin validate [DIR]   the manifest, icon and command, without starting the plugin
  *   cutpilot-plugin test [DIR]       start it the way CutPilot does and call its tools
  *
  * Each check prints as ✓ (passed), ✗ (failed, with its fix) or – (skipped); the exit code is 1
- * when a check failed and 2 for a usage error. The app's `cutpilot plugin validate|test` call the
- * same functions.
+ * when a check failed (or `new` was refused) and 2 for a usage error. The app's
+ * `cutpilot plugin new|validate|test` call the same functions.
  */
 import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { relative, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { testPlugin, type TestOptions } from './harness.js';
+import { SCAFFOLD_KINDS, ScaffoldError, scaffoldPlugin, type ScaffoldKind } from './scaffold.js';
 import { formatReport, validatePluginFolder, type TestReport } from './validate.js';
 
 export const CLI_USAGE = `usage:
+  cutpilot-plugin new ID              a new plugin folder that passes its tests from the start
+      --kind KIND                     ${Object.keys(SCAFFOLD_KINDS).join(', ')} (default: tools)
+      --dir DIR                       where (default: ./ID); must be new or empty
+      --name NAME                     shown in CutPilot (default: the id in words)
+      --sdk SPEC                      the @cutpilot/plugin-sdk version to depend on (default: this one), or file:PATH
   cutpilot-plugin validate [DIR]      check the manifest, icon and command without starting the plugin
   cutpilot-plugin test [DIR]          start the plugin the way CutPilot does and call its tools
       --audio FILE                    a 16 kHz mono wav for transcribe (default: a second of silence)
@@ -87,6 +94,54 @@ const OPTIONS = {
   help: { type: 'boolean', short: 'h' },
 } as const;
 
+const NEW_OPTIONS = {
+  kind: { type: 'string' },
+  dir: { type: 'string' },
+  name: { type: 'string' },
+  sdk: { type: 'string' },
+  help: { type: 'boolean', short: 'h' },
+} as const;
+
+function newPlugin(args: string[], out: (line: string) => void): number {
+  const { values, positionals } = parseArgs({
+    args,
+    options: NEW_OPTIONS,
+    allowPositionals: true,
+    strict: true,
+  });
+  if (values.help) {
+    out(CLI_USAGE);
+    return 0;
+  }
+  const [id, ...more] = positionals;
+  if (!id) throw new UsageError('new needs the plugin id, like: cutpilot-plugin new my-titles');
+  if (more.length) throw new UsageError(`new takes one id; got ${positionals.join(' ')}`);
+  const dir = resolve(values.dir ?? id);
+  const sdk = values.sdk?.startsWith('file:') ? `file:${resolve(values.sdk.slice(5))}` : values.sdk;
+  try {
+    const r = scaffoldPlugin({
+      dir,
+      id,
+      ...(values.name ? { name: values.name } : {}),
+      ...(values.kind ? { kind: values.kind as ScaffoldKind } : {}),
+      ...(sdk ? { sdk } : {}),
+    });
+    const shown = relative(process.cwd(), r.dir) || '.';
+    out(`created ${r.id} (${r.kind}) in ${r.dir}`);
+    for (const f of r.files) out(`  ${f}`);
+    out(`next:
+  cd ${shown}
+  npm install
+  npm test                            build, then check it the way CutPilot will
+  cutpilot plugin install . --link    in CutPilot: install it from this folder`);
+    return 0;
+  } catch (e) {
+    if (!(e instanceof ScaffoldError)) throw e;
+    out(`${e.message}\nfix: ${e.fix}`);
+    return 1;
+  }
+}
+
 /** Run `cutpilot-plugin <argv>`; returns the exit code. */
 export async function pluginCli(
   argv: string[],
@@ -101,6 +156,7 @@ export async function pluginCli(
       out(pkg.version);
       return 0;
     }
+    if (cmd === 'new') return newPlugin(rest, out);
     if (cmd !== 'validate' && cmd !== 'test') {
       out(CLI_USAGE);
       return cmd === undefined || cmd === 'help' || cmd === '--help' || cmd === '-h' ? 0 : 2;
