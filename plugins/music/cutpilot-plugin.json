@@ -7,7 +7,7 @@
   "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/plugins/music",
   "icon": "icon.png",
   "contract": 1,
-  "cutpilot": ">=0.2.0-beta.3",
+  "cutpilot": ">=0.2.0-beta.11",
   "command": "node",
   "args": ["dist/index.js"],
   "kinds": ["asset:music"],
