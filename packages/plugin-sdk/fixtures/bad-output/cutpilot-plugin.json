@@ -1,0 +1,12 @@
+{
+  "id": "fixture-bad-output",
+  "name": "Fixture: bad output",
+  "version": "1.0.0",
+  "description": "A transcriber whose words come back out of time order, which its contract forbids.",
+  "contract": 1,
+  "cutpilot": ">=0.1",
+  "command": "node",
+  "args": ["index.mjs"],
+  "kinds": ["transcriber"],
+  "permissions": { "reads": ["audio"] }
+}

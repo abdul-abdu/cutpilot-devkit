@@ -13,8 +13,9 @@ A plugin may ship an icon: `"icon": "icon.png"` in the manifest names a PNG insi
 | Path | npm package | What it is |
 | --- | --- | --- |
 | `packages/plugin-api` | `@cutpilot/plugin-api` | The manifest schema, the tool contract of each plugin kind (`transcriber`, `analyzer`, `asset:music`, `asset:sound`, `generator`), error codes, the registry index format. Depends on `zod` only. |
-| `packages/plugin-sdk` | `@cutpilot/plugin-sdk` | `definePlugin()` (an MCP server with the contracts wired in) and `testPlugin()` (checks a plugin folder the way CutPilot will). An extra tool returns text, an object, or a `ToolContent` of MCP content blocks (e.g. `imageBlock(png, 'image/png')` for an image the AI looks at). |
+| `packages/plugin-sdk` | `@cutpilot/plugin-sdk` | `definePlugin()` (an MCP server with the contracts wired in), `validatePluginFolder()` (the manifest, icon and command, without starting anything), `testPlugin()` (checks a plugin folder the way CutPilot will), and the `cutpilot-plugin` command (`validate`, `test`) that prints their checks with a fix for each failure. An extra tool returns text, an object, or a `ToolContent` of MCP content blocks (e.g. `imageBlock(png, 'image/png')` for an image the AI looks at). |
 | `packages/plugin-sdk/examples/hello` | — | The smallest plugin: one extra tool. |
+| `packages/plugin-sdk/fixtures` | — | Plugins the SDK's tests check against: one that passes, a bad manifest, a contract-breaking answer. |
 | `plugins/*` | `@cutpilot/plugin-<kind>-<name>` | First-party plugins, built exactly like third-party ones. See [plugins/README.md](plugins/README.md). |
 
 Nothing is published to npm yet. Until it is, the packages are `private` and are consumed from source.
@@ -28,6 +29,8 @@ pnpm install
 pnpm build        # tsc -b: dist/ for every package (the SDK harness tests need it)
 pnpm check        # typecheck, lint, format, dependency rules, tests
 pnpm bundle plugins/<name>   # a plugin as a folder that stands alone (build/<id>), for a copied install or the store
+pnpm cutpilot-plugin validate <dir>   # check a plugin folder's manifest, icon and command
+pnpm cutpilot-plugin test <dir>       # start it the way CutPilot does and call its tools (after pnpm build)
 ```
 
 ### Together with the CutPilot app

@@ -11,14 +11,22 @@ export {
   type PluginDefinition,
 } from './plugin.js';
 export {
-  formatReport,
   pluginEnv,
   resolveCommand,
   silentWav,
   smallCanvas,
   testPlugin,
-  type Check,
   type TestOptions,
-  type TestReport,
 } from './harness.js';
+export {
+  commandCheck,
+  findOnPath,
+  formatReport,
+  validatePluginFolder,
+  type Check,
+  type TestReport,
+} from './validate.js';
 export * from '@cutpilot/plugin-api';
+/** The SDK's own zod, for extra tools' inputs: one copy between a plugin and the SDK. */
+export { z } from 'zod';
+export { CLI_USAGE, pluginCli } from './cli.js';
