@@ -13,6 +13,7 @@
     "build": "tsc -b",
     "clean": "tsc -b --clean",
     "bundle": "node scripts/bundle-plugin.mjs",
+    "cutpilot-plugin": "node packages/plugin-sdk/dist/bin.js",
     "typecheck": "tsc -b && tsc -p tsconfig.test.json",
     "lint": "eslint .",
     "format": "prettier --write .",
