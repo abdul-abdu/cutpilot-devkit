@@ -132,6 +132,14 @@ describe('manifest', () => {
       { settings: [{ key: 'm', label: 'M', type: 'choice', choices: ['a', 'b'], default: 'c' }] },
       'settings.0.default: the default is one of the choices',
     ],
+    [
+      { settings: [{ key: 'dir', label: 'Folder', type: 'folder', default: 'videos' }] },
+      'settings.0.default: the default of a folder setting is empty or an absolute path',
+    ],
+    [
+      { settings: [{ key: 'dir', label: 'Folder', type: 'folder', choices: ['a', 'b'] }] },
+      'settings.0.choices: only choice settings have choices',
+    ],
     [{ run: 'node index.js' }, 'Unrecognized key: "run"'],
   ])('rejects %j with a readable problem', (over, want) => {
     expect(problems(over).join('\n')).toContain(want);
@@ -145,6 +153,23 @@ describe('manifest', () => {
 
   test('not an object at all', () => {
     expect(parseManifest('{"id": 1}').ok).toBe(false);
+  });
+
+  test('a folder setting: empty or an absolute path by default', () => {
+    for (const d of [undefined, '', '/Users/me/Videos', 'C:\\Videos']) {
+      const r = parseManifest({
+        ...base,
+        settings: [
+          {
+            key: 'projectDir',
+            label: 'Project folder',
+            type: 'folder',
+            ...(d === undefined ? {} : { default: d }),
+          },
+        ],
+      });
+      expect(r.ok, String(d)).toBe(true);
+    }
   });
 
   test('environment names for settings and secrets', () => {

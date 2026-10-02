@@ -180,7 +180,7 @@ function readSettings(
     if (raw === undefined) out[s.key] = s.default;
     else if (s.type === 'number') out[s.key] = Number.isFinite(Number(raw)) ? Number(raw) : s.default;
     else if (s.type === 'boolean') out[s.key] = raw === 'true' || raw === '1';
-    else out[s.key] = raw;
+    else out[s.key] = raw; // string, choice, folder (a path)
   }
   return out;
 }

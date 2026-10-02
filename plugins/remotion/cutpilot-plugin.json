@@ -7,7 +7,7 @@
   "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/plugins/remotion",
   "icon": "icon.png",
   "contract": 1,
-  "cutpilot": ">=0.1",
+  "cutpilot": ">=0.2.0-beta.10",
   "command": "node",
   "args": ["dist/index.js"],
   "kinds": ["generator"],
@@ -26,7 +26,7 @@
     {
       "key": "projectDir",
       "label": "Remotion project folder",
-      "type": "string",
+      "type": "folder",
       "default": ""
     }
   ]
