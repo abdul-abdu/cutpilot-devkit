@@ -1,6 +1,6 @@
 {
   "name": "@cutpilot/plugin-stt-cloud",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CutPilot plugin: transcription in the cloud with ElevenLabs Scribe or OpenAI whisper-1, with your own API key.",
   "type": "module",
   "private": true,

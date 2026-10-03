@@ -1,7 +1,7 @@
 {
   "id": "cloud-transcribe",
   "name": "Cloud transcription",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Transcribe in the cloud with ElevenLabs Scribe (about 99 languages, Uzbek included) or OpenAI whisper-1, using your own API key. The audio of the video is uploaded to the provider you choose.",
   "publisher": "CutPilot",
   "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/plugins/cloud-transcribe",
@@ -23,6 +23,18 @@
       "type": "choice",
       "choices": ["elevenlabs", "openai"],
       "default": "elevenlabs"
+    },
+    {
+      "key": "scribeModel",
+      "label": "ElevenLabs model (blank: scribe_v1)",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "key": "keyterms",
+      "label": "Send the project's expected words to ElevenLabs as key terms",
+      "type": "boolean",
+      "default": false
     }
   ]
 }

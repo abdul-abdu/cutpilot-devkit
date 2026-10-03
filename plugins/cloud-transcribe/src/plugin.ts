@@ -63,7 +63,10 @@ export function makeDefinition(o: Options = {}): PluginDefinition {
       if (!key) throw missingKey(p);
       ctx.progress(0.05, `uploading the audio to ${p.name}`);
       ctx.log(`transcribing with ${p.name} (language ${input.language})`);
-      const r = await transcribeWith(p, key, input, transport(ctx));
+      const r = await transcribeWith(p, key, input, transport(ctx), {
+        model: String(ctx.settings.scribeModel ?? ''),
+        keyterms: ctx.settings.keyterms === true,
+      });
       ctx.progress(1, `${r.words.length} words`);
       return r;
     },
