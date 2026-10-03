@@ -8,7 +8,12 @@ import { join } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol.js';
-import type { CallToolResult, ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types.js';
+import type {
+  CallToolResult,
+  ContentBlock,
+  ServerNotification,
+  ServerRequest,
+} from '@modelcontextprotocol/sdk/types.js';
 import {
   extraToolProblem,
   KIND_TOOLS,
@@ -20,10 +25,14 @@ import {
   type FindMusicOutputSchema,
   type GenerateInputSchema,
   type GenerateOutputSchema,
+  type GenerateSoundInputSchema,
+  type GenerateSoundOutputSchema,
   type GetMusicInputSchema,
   type GetMusicOutputSchema,
   type ListTemplatesInputSchema,
   type ListTemplatesOutputSchema,
+  type ListVoicesInputSchema,
+  type ListVoicesOutputSchema,
   type Manifest,
   type PluginKind,
   type ReframeTrackInputSchema,
@@ -46,6 +55,24 @@ export class PluginFailure extends Error {
     super(message);
   }
 }
+
+/**
+ * What an extra tool returns when text or JSON isn't enough: MCP content blocks passed to the AI
+ * client as they are (an image to look at, say), and optionally structured data next to them.
+ */
+export class ToolContent {
+  constructor(
+    readonly content: ContentBlock[],
+    readonly structured?: Record<string, unknown>,
+  ) {}
+}
+
+/** An image content block: the bytes of a PNG, JPEG, GIF or WebP. */
+export const imageBlock = (bytes: Uint8Array, mimeType: string): ContentBlock => ({
+  type: 'image',
+  data: Buffer.from(bytes).toString('base64'),
+  mimeType,
+});
 
 export interface PluginContext {
   readonly manifest: Manifest;
@@ -71,9 +98,16 @@ type Handler<I extends z.ZodType, O extends z.ZodType> = (
 export interface ExtraTool<S extends z.ZodRawShape = z.ZodRawShape> {
   description: string;
   input: S;
-  /** return a string (shown as text) or an object (structured, and as JSON text) */
+  /** return a string (shown as text), an object (structured, and as JSON text), or a ToolContent */
   handler: (args: z.infer<z.ZodObject<S>>, ctx: PluginContext) => Promise<unknown> | unknown;
 }
+
+/**
+ * Type an extra tool's handler from its input: `defineTool({ input: { text: z.string() }, handler:
+ * ({ text }) => … })` gives `text` the type string, which a plain object in `tools` can't.
+ */
+export const defineTool = <S extends z.ZodRawShape>(tool: ExtraTool<S>): ExtraTool =>
+  tool as unknown as ExtraTool;
 
 export interface PluginDefinition {
   /** default: `cutpilot-plugin.json` in the working directory (CutPilot starts plugins in their folder) */
@@ -88,6 +122,9 @@ export interface PluginDefinition {
   /** kind `generator` */
   listTemplates?: Handler<typeof ListTemplatesInputSchema, typeof ListTemplatesOutputSchema>;
   generate?: Handler<typeof GenerateInputSchema, typeof GenerateOutputSchema>;
+  /** kind `asset:sound` */
+  listVoices?: Handler<typeof ListVoicesInputSchema, typeof ListVoicesOutputSchema>;
+  generateSound?: Handler<typeof GenerateSoundInputSchema, typeof GenerateSoundOutputSchema>;
   /** free-form read-only tools; AI clients see them as `<plugin id>__<name>` */
   tools?: Record<string, ExtraTool>;
 }
@@ -100,6 +137,8 @@ const HANDLER_FOR: Record<string, keyof PluginDefinition> = {
   get_music: 'getMusic',
   list_templates: 'listTemplates',
   generate: 'generate',
+  list_voices: 'listVoices',
+  generate_sound: 'generateSound',
 };
 
 export class PluginDefinitionError extends Error {
@@ -129,6 +168,8 @@ function failure(code: string, message: string, fix: string): CallToolResult {
 }
 
 function success(out: unknown): CallToolResult {
+  if (out instanceof ToolContent)
+    return { content: out.content, ...(out.structured ? { structuredContent: out.structured } : {}) };
   if (typeof out === 'string') return { content: [{ type: 'text', text: out }] };
   const text = JSON.stringify(out ?? null);
   return out && typeof out === 'object' && !Array.isArray(out)
@@ -146,7 +187,7 @@ function readSettings(
     if (raw === undefined) out[s.key] = s.default;
     else if (s.type === 'number') out[s.key] = Number.isFinite(Number(raw)) ? Number(raw) : s.default;
     else if (s.type === 'boolean') out[s.key] = raw === 'true' || raw === '1';
-    else out[s.key] = raw;
+    else out[s.key] = raw; // string, choice, folder (a path)
   }
   return out;
 }

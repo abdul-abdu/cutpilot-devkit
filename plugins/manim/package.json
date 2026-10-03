@@ -1,0 +1,43 @@
+{
+  "name": "@cutpilot/plugin-generator-manim",
+  "version": "0.1.0",
+  "description": "CutPilot plugin: math and explainer animations (equations, function plots, bar charts, titles, morphing text, or a scene your AI writes) rendered with Manim Community on your machine.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "files": [
+    "dist",
+    "python",
+    "cutpilot-plugin.json",
+    "icon.png",
+    "README.md"
+  ],
+  "dependencies": {
+    "@cutpilot/plugin-sdk": "workspace:*",
+    "zod": "^4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "directory": "plugins/manim"
+  },
+  "author": "Abdul <abdul.abdurohiym@gmail.com>",
+  "keywords": [
+    "cutpilot",
+    "manim",
+    "math",
+    "animation",
+    "video",
+    "mcp",
+    "plugin"
+  ],
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "sound",
+  "name": "Sound",
+  "version": "0.1.1",
+  "description": "Sound effects, music and voice-overs made on your computer from a description: Stable Audio 3 (effects and music) and Supertonic 3 (speech in 31 languages), run with audio.cpp. Downloads the runtime and the models you ask for; nothing leaves your machine.",
+  "publisher": "CutPilot",
+  "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/plugins/sound",
+  "icon": "icon.png",
+  "contract": 1,
+  "cutpilot": ">=0.2.0-beta.3",
+  "command": "node",
+  "args": ["dist/index.js"],
+  "kinds": ["asset:sound"],
+  "permissions": {
+    "network": ["github.com", "*.githubusercontent.com", "huggingface.co", "*.hf.co"],
+    "secrets": [],
+    "reads": []
+  },
+  "settings": [
+    {
+      "key": "dataDir",
+      "label": "Data folder (blank: ~/.cutpilot/sound)",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "key": "backend",
+      "label": "Compute",
+      "type": "choice",
+      "choices": ["auto", "cpu"],
+      "default": "auto"
+    },
+    {
+      "key": "threads",
+      "label": "CPU threads (0: half the cores)",
+      "type": "number",
+      "default": 0
+    }
+  ]
+}

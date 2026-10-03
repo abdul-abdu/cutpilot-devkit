@@ -1,33 +1,28 @@
 {
   "id": "cloud-transcribe",
-  "name": "Cloud Transcribe",
+  "name": "Cloud transcription",
   "version": "0.1.0",
-  "description": "Transcribe in the cloud with ElevenLabs Scribe and your own API key: word timestamps in about 90 languages, Uzbek and Russian among them, and sounds like laughter marked as non-speech. Your audio is uploaded to ElevenLabs.",
+  "description": "Transcribe in the cloud with ElevenLabs Scribe (about 99 languages, Uzbek included) or OpenAI whisper-1, using your own API key. The audio of the video is uploaded to the provider you choose.",
   "publisher": "CutPilot",
   "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/plugins/cloud-transcribe",
   "icon": "icon.png",
   "contract": 1,
-  "cutpilot": ">=0.1",
+  "cutpilot": ">=0.2.0-beta.11",
   "command": "node",
   "args": ["dist/index.js"],
   "kinds": ["transcriber"],
   "permissions": {
-    "network": ["api.elevenlabs.io"],
-    "secrets": ["ELEVENLABS_API_KEY"],
+    "network": ["api.elevenlabs.io", "api.openai.com"],
+    "secrets": ["ELEVENLABS_API_KEY", "OPENAI_API_KEY"],
     "reads": ["audio"]
   },
   "settings": [
     {
-      "key": "model",
-      "label": "ElevenLabs model",
-      "type": "string",
-      "default": "scribe_v2"
-    },
-    {
-      "key": "keyterms",
-      "label": "Send expected words (names, jargon) as key terms",
-      "type": "boolean",
-      "default": true
+      "key": "provider",
+      "label": "Provider",
+      "type": "choice",
+      "choices": ["elevenlabs", "openai"],
+      "default": "elevenlabs"
     }
   ]
 }

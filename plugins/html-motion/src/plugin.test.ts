@@ -74,7 +74,7 @@ describe('tools', () => {
     expect(unknown).toEqual({
       code: 'E_PLUGIN_BAD_INPUT',
       message: 'there is no template "intro"',
-      fix: 'use one of title-card, chapter, quote, bullets, end-card',
+      fix: 'use one of title-card, chapter, quote, bullets, end-card, hook, offer, stat, social-proof',
     });
     const bad = errorOf(
       await c.callTool({

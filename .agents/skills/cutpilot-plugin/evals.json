@@ -1,0 +1,23 @@
+{
+  "skill_name": "cutpilot-plugin",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a plugin that suggests chapter markers from the transcript (title + source time for each chapter).",
+      "expected_output": "A new plugins/<id> made with cutpilot-plugin new --kind tools, turned into a workspace plugin (@cutpilot/plugin-tools-<name>, workspace:* SDK, tsconfig extending the base, root tsconfig reference, plugins/README row), one extra tool with .describe() on every field and source-ms times, in-memory tests plus testPlugin() behind skipIf(!dist), an icon, a README, AGENTS.md kept, pnpm format && pnpm check green, nothing imported from outside the repo.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "The sound plugin should fail with a useful message when the data folder isn't writable.",
+      "expected_output": "A PluginFailure with a new E_ code, a one-line message and a fix naming the dataDir setting; no console.log; a test for the failure code; nothing else in the plugin changed; pnpm check green.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Make cloud-transcribe support a third provider.",
+      "expected_output": "The provider added to the manifest's choice setting, its host in permissions.network and its key in permissions.secrets, a recorded response fixture so CI needs no network, tests of the mapping to timed words in source ms with end >= start, README and plugins/README updated, cutpilot range unchanged unless a new engine capability is needed, pnpm format && pnpm check green, version left at its current value.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#g)"/>
+  <!-- a function being plotted: axes, the curve drawn so far, the dot tracing it, the rest to come -->
+  <path d="M40 136 H216 M128 60 V212" stroke="#ffffff" stroke-opacity="0.35" stroke-width="4" stroke-linecap="round"/>
+  <path d="M168.0,101.6 L170.7,103.4 L173.3,105.9 L176.0,109.0 L178.7,112.5 L181.3,116.6 L184.0,121.0 L186.7,125.8 L189.3,130.8 L192.0,136.0 L194.7,141.3 L197.3,146.5 L200.0,151.7 L202.7,156.7 L205.3,161.4 L208.0,165.7" fill="none" stroke="#58c4dd" stroke-opacity="0.25" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M48.0,119.7 L50.7,121.7 L53.3,124.1 L56.0,126.8 L58.7,129.7 L61.3,132.8 L64.0,136.0 L66.7,139.3 L69.3,142.6 L72.0,145.9 L74.7,149.1 L77.3,152.2 L80.0,155.0 L82.7,157.6 L85.3,159.8 L88.0,161.7 L90.7,163.2 L93.3,164.2 L96.0,164.8 L98.7,164.8 L101.3,164.4 L104.0,163.5 L106.7,162.0 L109.3,160.1 L112.0,157.7 L114.7,154.9 L117.3,151.6 L120.0,148.1 L122.7,144.3 L125.3,140.2 L128.0,136.0 L130.7,131.7 L133.3,127.4 L136.0,123.2 L138.7,119.1 L141.3,115.2 L144.0,111.6 L146.7,108.4 L149.3,105.6 L152.0,103.3 L154.7,101.5 L157.3,100.3 L160.0,99.7 L162.7,99.7 L165.3,100.3 L168.0,101.6" fill="none" stroke="#58c4dd" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="168.0" cy="101.6" r="14" fill="#ffffff"/>
+</svg>

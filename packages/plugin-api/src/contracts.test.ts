@@ -5,6 +5,9 @@ import {
   contractTools,
   extraToolProblem,
   FindMusicOutputSchema,
+  GenerateSoundInputSchema,
+  GenerateSoundOutputSchema,
+  ListVoicesOutputSchema,
   GenerateInputSchema,
   GenerateOutputSchema,
   ListTemplatesOutputSchema,
@@ -123,6 +126,38 @@ describe('kind contracts', () => {
     expect(FindMusicOutputSchema.safeParse({ tracks: [track] }).success).toBe(true);
     expect(FindMusicOutputSchema.safeParse({ tracks: [{ ...track, durationMs: 0 }] }).success).toBe(false);
     expect(FindMusicOutputSchema.safeParse({ tracks: [{ ...track, license: '' }] }).success).toBe(false);
+  });
+
+  test('sound: a prompt for effects and music, text for speech; the file has a length and a license', () => {
+    const ok = (a: unknown) => GenerateSoundInputSchema.safeParse(a).success;
+    expect(ok({ kind: 'sfx', prompt: 'a door creaks', durationMs: 3000 })).toBe(true);
+    expect(ok({ kind: 'music', prompt: 'calm piano', durationMs: 20_000, seed: 7 })).toBe(true);
+    expect(ok({ kind: 'speech', text: 'Hello there', language: 'en', voice: 'F1' })).toBe(true);
+    expect(ok({ kind: 'sfx', text: 'a door creaks' })).toBe(false); // effects take a prompt
+    expect(ok({ kind: 'speech', prompt: 'warmly' })).toBe(false); // speech takes text
+    expect(ok({ kind: 'speech', text: '  ' })).toBe(false);
+    expect(ok({ kind: 'speech', text: 'Hi', language: 'English' })).toBe(false);
+    expect(ok({ kind: 'music', prompt: 'x', durationMs: 0 })).toBe(false);
+    expect(ok({ kind: 'noise', prompt: 'x' })).toBe(false);
+    const out = {
+      file: '/tmp/a.wav',
+      durationMs: 3000,
+      sampleRate: 44100,
+      channels: 2,
+      license: 'Apache-2.0',
+    };
+    expect(GenerateSoundOutputSchema.safeParse(out).success).toBe(true);
+    expect(GenerateSoundOutputSchema.safeParse({ ...out, channels: 6 }).success).toBe(false);
+    expect(GenerateSoundOutputSchema.safeParse({ ...out, durationMs: 0 }).success).toBe(false);
+    expect(GenerateSoundOutputSchema.safeParse({ ...out, license: '' }).success).toBe(false);
+    expect(
+      ListVoicesOutputSchema.safeParse({
+        voices: [{ id: 'F1', name: 'Female 1' }],
+        languages: ['en', 'pt-br'],
+      }).success,
+    ).toBe(true);
+    expect(ListVoicesOutputSchema.safeParse({ voices: [{ id: '', name: 'x' }] }).success).toBe(false);
+    expect(contractTools(['asset:sound'])).toEqual(['list_voices', 'generate_sound']);
   });
 
   test('extra tools: snake_case, not a kind tool, and short enough for MCP clients', () => {

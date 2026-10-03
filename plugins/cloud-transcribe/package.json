@@ -1,7 +1,7 @@
 {
   "name": "@cutpilot/plugin-stt-cloud",
   "version": "0.1.0",
-  "description": "CutPilot plugin: transcribe in the cloud with ElevenLabs Scribe, using your own API key.",
+  "description": "CutPilot plugin: transcription in the cloud with ElevenLabs Scribe or OpenAI whisper-1, with your own API key.",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -23,14 +23,14 @@
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
     "cutpilot",
-    "elevenlabs",
-    "speech-to-text",
     "transcription",
+    "speech-to-text",
+    "elevenlabs",
+    "openai",
     "mcp",
     "plugin"
   ],
   "devDependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0",
-    "fast-check": "^4.10.2"
+    "@modelcontextprotocol/sdk": "^1.30.0"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "html-motion",
   "name": "HTML Motion",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Motion-graphics clips for your edit: title cards, chapter headings, quotes, bullet lists and end cards, made from HTML templates at your video's size and rendered offline with a local Chrome and ffmpeg.",
   "publisher": "CutPilot",
   "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/plugins/html-motion",

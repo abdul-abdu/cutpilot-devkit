@@ -3,8 +3,13 @@
   "references": [
     { "path": "packages/plugin-api" },
     { "path": "packages/plugin-sdk" },
-    { "path": "plugins/cloud-transcribe" },
     { "path": "plugins/hyperframes" },
-    { "path": "plugins/html-motion" }
+    { "path": "plugins/html-motion" },
+    { "path": "plugins/sound" },
+    { "path": "plugins/remotion" },
+    { "path": "plugins/music" },
+    { "path": "plugins/cloud-transcribe" },
+    { "path": "plugins/follow-speaker" },
+    { "path": "plugins/manim" }
   ]
 }

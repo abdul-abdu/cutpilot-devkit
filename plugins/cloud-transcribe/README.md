@@ -1,53 +1,67 @@
-# Cloud Transcribe
+# Cloud transcription
 
-Transcribe your videos in the cloud with [ElevenLabs Scribe](https://elevenlabs.io/speech-to-text) instead of whisper on your computer. Scribe gives word timestamps in about 90 languages, Uzbek and Russian among them, and marks sounds like `(laughter)` as non-speech, so the transcript edits exactly like a whisper one: cutting fillers and pauses, captions, highlights.
+Transcribe a video in the cloud instead of on your computer, with your own API key: [ElevenLabs Scribe](https://elevenlabs.io/speech-to-text) (`scribe_v1`, about 99 languages, Uzbek among them; it also marks laughter, applause and music) or [OpenAI](https://platform.openai.com/docs/guides/speech-to-text) `whisper-1`. The transcript edits exactly like one made locally: timed words with their punctuation, which CutPilot cuts, captions and searches.
 
-It is a `transcriber` plugin. Once it is installed and has a key, choose **Cloud Transcribe** as the transcriber when you open a video, or ask your AI to open it with this transcriber. You pay ElevenLabs for what you transcribe, with your own account.
+It is a `transcriber` plugin. Choose it when you open a video (or ask your AI to open it with this transcriber); CutPilot sends the 16 kHz mono wav it makes from the video, never the video itself.
 
-## What it needs
+**Your audio leaves your computer** and goes to the provider you chose, under that provider's terms. Use the local transcriber for anything that must stay on your computer.
 
-- An ElevenLabs API key with speech-to-text access. Enter it as `ELEVENLABS_API_KEY` in CutPilot → Plugins → Cloud Transcribe. CutPilot stores it and passes it only to this plugin.
-- An internet connection. The plugin talks only to `api.elevenlabs.io`.
+## Setup
 
-**Your audio leaves your computer.** The plugin uploads the audio track CutPilot extracts (16 kHz mono wav, about 115 MB an hour) to ElevenLabs. CutPilot asks you before a project is first transcribed in the cloud. The video itself is never uploaded or changed.
+1. Make an API key: ElevenLabs at elevenlabs.io → Settings → API keys (a restricted key needs speech-to-text access), or OpenAI at platform.openai.com/api-keys.
+2. In CutPilot → Plugins → Cloud transcription → Keys, enter it as `ELEVENLABS_API_KEY` or `OPENAI_API_KEY`. CutPilot passes a key to this plugin only, and only the one it declares.
+3. Settings → **Provider**: `elevenlabs` (the default) or `openai`.
+4. **Test key** (the `test_key` tool) checks the key with a small request that uploads nothing and costs nothing: ElevenLabs `GET /v1/user`, OpenAI `GET /v1/models`.
 
-Settings:
+## Permissions
 
-- **ElevenLabs model**: `scribe_v2` by default.
-- **Send expected words as key terms** (on by default): names and jargon you gave the project are sent to Scribe as key terms (at most 100, 50 characters each), which helps it spell them. Turn it off if you don't want that.
+| | |
+| --- | --- |
+| Network | `api.elevenlabs.io`, `api.openai.com` |
+| Secrets | `ELEVENLABS_API_KEY`, `OPENAI_API_KEY` |
+| Reads | `audio` (the wav CutPilot makes from the video) |
 
-ElevenLabs takes up to 10 hours of audio per file; longer audio is refused before anything is uploaded.
+## What it returns
+
+- Words in source time, integer milliseconds, in order, each ending at or after its start.
+- Punctuation on the word it belongs to (`Hello,` `"three"` `tips.`). ElevenLabs sends spaces and sometimes marks as separate tokens: spaces are dropped, a closing mark joins the word before, an opening one (`"`, `«`, `¿`) the word after. OpenAI's timed words have no punctuation, so it is taken from the full text and put back on each word.
+- ElevenLabs' audio events (`(laughs)`, `(applause)`) as words with `event: true`, which CutPilot treats as non-speech.
+- A confidence per word from ElevenLabs (`exp(logprob)`); OpenAI gives none per word.
+- The language heard as ISO 639-1 (`en`, `ru`, `uz`): OpenAI reports a name (`english`), ElevenLabs a three-letter code (`eng`); both are mapped. The project's language is sent as a hint; `auto` sends none. A prompt (names, jargon) goes to OpenAI; Scribe has no such field.
 
 ## Errors
 
-Each failure says what to do next:
+Every failure has a code, a one-line message and a fix:
 
-| Code | When |
-| --- | --- |
-| `E_PLUGIN_NEEDS_SECRET` | no key entered |
-| `E_CLOUD_TRANSCRIBE_BAD_KEY` | ElevenLabs refused the key (wrong, revoked, or without speech-to-text access) |
-| `E_CLOUD_TRANSCRIBE_QUOTA` | your ElevenLabs credits are used up |
-| `E_CLOUD_TRANSCRIBE_TOO_LARGE` | the audio is longer than ElevenLabs takes |
-| `E_CLOUD_TRANSCRIBE_BUSY` | ElevenLabs is limiting requests (HTTP 429) |
-| `E_CLOUD_TRANSCRIBE_UNAVAILABLE` | ElevenLabs failed (HTTP 5xx) |
-| `E_CLOUD_TRANSCRIBE_REJECTED` | ElevenLabs refused the request for another reason, e.g. an unknown model |
-| `E_CLOUD_TRANSCRIBE_NETWORK` | `api.elevenlabs.io` can't be reached |
-| `E_CLOUD_TRANSCRIBE_UNEXPECTED` | ElevenLabs answered in a form this version doesn't know |
-| `E_CLOUD_TRANSCRIBE_CANCELLED` | CutPilot cancelled the call |
+| Code | When | Fix |
+| --- | --- | --- |
+| `E_PLUGIN_NEEDS_SECRET` | the chosen provider's key isn't entered | which key to enter, where; or switch provider |
+| `E_STT_BAD_KEY` | 401 / 403 | check the key, make a new one |
+| `E_STT_QUOTA` | out of credits or quota (ElevenLabs answers 401 `quota_exceeded`, OpenAI 429 `insufficient_quota`) | add credits, or switch provider |
+| `E_STT_RATE_LIMITED` | 429 for too many requests | wait a minute |
+| `E_STT_FILE_TOO_LARGE` | over the provider's limit (OpenAI 25 MB, checked before uploading; about 13 minutes of CutPilot's audio), or 413 | ElevenLabs, or a shorter clip |
+| `E_STT_NETWORK` | no connection, DNS, a firewall | check the connection |
+| `E_STT_PROVIDER` | any other HTTP error, with the provider's own message | |
+| `E_STT_BAD_RESPONSE` | an answer this plugin can't read | update the plugin |
 
-## How it works
+## Limits
 
-`transcribe` sends the wav to `POST https://api.elevenlabs.io/v1/speech-to-text` with word timestamps and audio-event tagging on, diarization off, and the project's language (none for `auto`, so Scribe detects it). From the answer it drops the spacing tokens, turns seconds into integer milliseconds, joins punctuation that comes as its own token to its word (`Okay` `,` → `Okay,`; `¿` `Qué` → `¿Qué`) without moving the word's times, keeps audio events as non-speech words, and turns each word's log-probability into a 0–1 confidence. Scribe's ISO 639-3 language code (`eng`, `uzb`) is reported as CutPilot's ISO 639-1 (`en`, `uz`). Nothing is written to disk.
+- OpenAI: 25 MB per file. ElevenLabs takes far longer files than CutPilot makes.
+- The whole file is uploaded in one request; a long video takes as long as the upload plus the provider's processing.
+- Speaker labels and Scribe's newer models aren't used yet.
 
-## Develop
+## Try it
 
 ```sh
-pnpm build
-pnpm vitest run plugins/cloud-transcribe   # a recorded answer: no network, no key
-CUTPILOT_LIVE_ELEVENLABS_KEY=sk_… CUTPILOT_LIVE_AUDIO=/path/to/talk_en.wav \
-  pnpm vitest run plugins/cloud-transcribe  # plus a live run with your key
-cutpilot plugin install plugins/cloud-transcribe --link
-pnpm bundle plugins/cloud-transcribe       # → build/cloud-transcribe, for a copied install or the store
+pnpm build && pnpm vitest run plugins/cloud-transcribe
 ```
 
-The live run takes a 16 kHz mono wav (`ffmpeg -i talk_en.mp4 -ac 1 -ar 16000 talk_en.wav`) and `CUTPILOT_LIVE_LANGUAGE` (default `en`).
+The tests play recorded responses of both providers (`fixtures/`: words with punctuation, spacing tokens, an audio event, and the error bodies each provider sends), run real HTTP against a local stub, and run `testPlugin()` on the folder (without keys the call is skipped) and, through the stub, with keys. No test reaches the internet.
+
+A live smoke run against the real providers needs keys and opting in:
+
+```sh
+CUTPILOT_LIVE_STT=1 ELEVENLABS_API_KEY=… OPENAI_API_KEY=… pnpm vitest run plugins/cloud-transcribe
+```
+
+It speaks a sentence with `say` (macOS) or `espeak-ng` and ffmpeg, or uses the wav in `CUTPILOT_LIVE_STT_AUDIO`. `CUTPILOT_CLOUD_TRANSCRIBE_ORIGIN` sends every request to another origin; the tests use it for the stub, CutPilot never sets it.

@@ -1,0 +1,207 @@
+{
+  "language_code": "eng",
+  "language_probability": 0.9871,
+  "text": "Hello, everyone. (laughs) Welcome back to the channel! Today: \"three\" quick tips.",
+  "words": [
+    {
+      "text": "Hello,",
+      "start": 0.119,
+      "end": 0.519,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.0412
+    },
+    {
+      "text": " ",
+      "start": 0.519,
+      "end": 0.579,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "everyone.",
+      "start": 0.579,
+      "end": 1.159,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.1033
+    },
+    {
+      "text": " ",
+      "start": 1.159,
+      "end": 1.299,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "(laughs)",
+      "start": 1.299,
+      "end": 2.059,
+      "type": "audio_event",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": " ",
+      "start": 2.059,
+      "end": 2.199,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "Welcome",
+      "start": 2.199,
+      "end": 2.539,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.0021
+    },
+    {
+      "text": " ",
+      "start": 2.539,
+      "end": 2.559,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "back",
+      "start": 2.559,
+      "end": 2.779,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.0009
+    },
+    {
+      "text": " ",
+      "start": 2.779,
+      "end": 2.799,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "to",
+      "start": 2.799,
+      "end": 2.899,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.0005
+    },
+    {
+      "text": " ",
+      "start": 2.899,
+      "end": 2.919,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "the",
+      "start": 2.919,
+      "end": 3.019,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.0011
+    },
+    {
+      "text": " ",
+      "start": 3.019,
+      "end": 3.039,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "channel",
+      "start": 3.039,
+      "end": 3.479,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.0154
+    },
+    {
+      "text": "!",
+      "start": 3.479,
+      "end": 3.499,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.2877
+    },
+    {
+      "text": " ",
+      "start": 3.499,
+      "end": 4.119,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "Today:",
+      "start": 4.119,
+      "end": 4.539,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.0731
+    },
+    {
+      "text": " ",
+      "start": 4.539,
+      "end": 4.579,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "\"",
+      "start": 4.579,
+      "end": 4.579,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.6931
+    },
+    {
+      "text": "three\"",
+      "start": 4.579,
+      "end": 4.899,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.0402
+    },
+    {
+      "text": " ",
+      "start": 4.899,
+      "end": 4.939,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "quick",
+      "start": 4.939,
+      "end": 5.199,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.0122
+    },
+    {
+      "text": " ",
+      "start": 5.199,
+      "end": 5.219,
+      "type": "spacing",
+      "speaker_id": "speaker_0",
+      "logprob": 0.0
+    },
+    {
+      "text": "tips.",
+      "start": 5.219,
+      "end": 5.759,
+      "type": "word",
+      "speaker_id": "speaker_0",
+      "logprob": -0.0356
+    }
+  ]
+}

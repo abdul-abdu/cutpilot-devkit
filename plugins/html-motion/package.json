@@ -1,6 +1,6 @@
 {
   "name": "@cutpilot/plugin-generator-html-motion",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CutPilot plugin: motion-graphics clips (title cards, chapters, quotes, lists, end cards) from HTML templates, rendered with headless Chrome.",
   "type": "module",
   "private": true,
