@@ -1,0 +1,2057 @@
+{
+  "source": "Kenney (kenney.nl), CC0 1.0; analysis from latent-spaces/brag (MIT)",
+  "sounds": [
+    {
+      "file": "impact/impactSoft_medium_000.ogg",
+      "family": "impact",
+      "durationMs": 118,
+      "brightness": "warm",
+      "highFrequencyRisk": "low",
+      "envelope": "textured",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactSoft_medium_001.ogg",
+      "family": "impact",
+      "durationMs": 183,
+      "brightness": "warm",
+      "highFrequencyRisk": "low",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactSoft_medium_002.ogg",
+      "family": "impact",
+      "durationMs": 135,
+      "brightness": "warm",
+      "highFrequencyRisk": "low",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactSoft_medium_003.ogg",
+      "family": "impact",
+      "durationMs": 140,
+      "brightness": "warm",
+      "highFrequencyRisk": "low",
+      "envelope": "textured",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactSoft_medium_004.ogg",
+      "family": "impact",
+      "durationMs": 147,
+      "brightness": "warm",
+      "highFrequencyRisk": "low",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "interface/bong_001.ogg",
+      "family": "interface",
+      "durationMs": 123,
+      "brightness": "warm",
+      "highFrequencyRisk": "low",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "interface/click_002.ogg",
+      "family": "interface",
+      "durationMs": 10,
+      "brightness": "balanced",
+      "highFrequencyRisk": "low",
+      "envelope": "continuous",
+      "uses": ["button press", "selection", "simulated user action"]
+    },
+    {
+      "file": "interface/click_003.ogg",
+      "family": "interface",
+      "durationMs": 10,
+      "brightness": "balanced",
+      "highFrequencyRisk": "low",
+      "envelope": "continuous",
+      "uses": ["button press", "selection", "simulated user action"]
+    },
+    {
+      "file": "interface/click_005.ogg",
+      "family": "interface",
+      "durationMs": 10,
+      "brightness": "balanced",
+      "highFrequencyRisk": "low",
+      "envelope": "continuous",
+      "uses": ["button press", "selection", "simulated user action"]
+    },
+    {
+      "file": "interface/glitch_002.ogg",
+      "family": "interface",
+      "durationMs": 30,
+      "brightness": "bright",
+      "highFrequencyRisk": "low",
+      "envelope": "continuous",
+      "uses": ["chaotic accent", "comedic interruption", "tiny accent only"]
+    },
+    {
+      "file": "ui/click2.ogg",
+      "family": "ui",
+      "durationMs": 56,
+      "brightness": "balanced",
+      "highFrequencyRisk": "low",
+      "envelope": "continuous",
+      "uses": ["button press", "selection", "simulated user action"]
+    },
+    {
+      "file": "ui/rollover2.ogg",
+      "family": "ui",
+      "durationMs": 57,
+      "brightness": "balanced",
+      "highFrequencyRisk": "low",
+      "envelope": "continuous",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/card-slide-1.ogg",
+      "family": "casino",
+      "durationMs": 601,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/chip-lay-1.ogg",
+      "family": "casino",
+      "durationMs": 172,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["tiny accent only"]
+    },
+    {
+      "file": "casino/chip-lay-3.ogg",
+      "family": "casino",
+      "durationMs": 244,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/chips-stack-2.ogg",
+      "family": "casino",
+      "durationMs": 172,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["tiny accent only"]
+    },
+    {
+      "file": "casino/dice-throw-1.ogg",
+      "family": "casino",
+      "durationMs": 632,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/dice-throw-3.ogg",
+      "family": "casino",
+      "durationMs": 575,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/die-throw-1.ogg",
+      "family": "casino",
+      "durationMs": 532,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/die-throw-2.ogg",
+      "family": "casino",
+      "durationMs": 647,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/die-throw-3.ogg",
+      "family": "casino",
+      "durationMs": 733,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/die-throw-4.ogg",
+      "family": "casino",
+      "durationMs": 474,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_carpet_000.ogg",
+      "family": "impact",
+      "durationMs": 145,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_carpet_003.ogg",
+      "family": "impact",
+      "durationMs": 145,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_carpet_004.ogg",
+      "family": "impact",
+      "durationMs": 145,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_concrete_000.ogg",
+      "family": "impact",
+      "durationMs": 106,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_concrete_001.ogg",
+      "family": "impact",
+      "durationMs": 108,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_concrete_002.ogg",
+      "family": "impact",
+      "durationMs": 113,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_concrete_003.ogg",
+      "family": "impact",
+      "durationMs": 110,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_concrete_004.ogg",
+      "family": "impact",
+      "durationMs": 114,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_grass_000.ogg",
+      "family": "impact",
+      "durationMs": 778,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_grass_001.ogg",
+      "family": "impact",
+      "durationMs": 674,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_grass_002.ogg",
+      "family": "impact",
+      "durationMs": 692,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_grass_003.ogg",
+      "family": "impact",
+      "durationMs": 669,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_grass_004.ogg",
+      "family": "impact",
+      "durationMs": 590,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_snow_000.ogg",
+      "family": "impact",
+      "durationMs": 374,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_snow_001.ogg",
+      "family": "impact",
+      "durationMs": 374,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_snow_002.ogg",
+      "family": "impact",
+      "durationMs": 374,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_snow_003.ogg",
+      "family": "impact",
+      "durationMs": 374,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_snow_004.ogg",
+      "family": "impact",
+      "durationMs": 374,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_wood_000.ogg",
+      "family": "impact",
+      "durationMs": 250,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_wood_001.ogg",
+      "family": "impact",
+      "durationMs": 252,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_wood_002.ogg",
+      "family": "impact",
+      "durationMs": 251,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_wood_003.ogg",
+      "family": "impact",
+      "durationMs": 252,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/footstep_wood_004.ogg",
+      "family": "impact",
+      "durationMs": 248,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "impact/impactBell_heavy_000.ogg",
+      "family": "impact",
+      "durationMs": 1480,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "logo payoff", "major reveal", "reveal confirmation", "success"]
+    },
+    {
+      "file": "impact/impactBell_heavy_003.ogg",
+      "family": "impact",
+      "durationMs": 654,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "logo payoff", "major reveal", "reveal confirmation", "success"]
+    },
+    {
+      "file": "impact/impactBell_heavy_004.ogg",
+      "family": "impact",
+      "durationMs": 301,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "logo payoff", "major reveal", "reveal confirmation", "success"]
+    },
+    {
+      "file": "impact/impactGeneric_light_000.ogg",
+      "family": "impact",
+      "durationMs": 139,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGeneric_light_001.ogg",
+      "family": "impact",
+      "durationMs": 118,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGeneric_light_002.ogg",
+      "family": "impact",
+      "durationMs": 140,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGeneric_light_003.ogg",
+      "family": "impact",
+      "durationMs": 138,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGeneric_light_004.ogg",
+      "family": "impact",
+      "durationMs": 140,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGlass_heavy_002.ogg",
+      "family": "impact",
+      "durationMs": 247,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGlass_light_001.ogg",
+      "family": "impact",
+      "durationMs": 210,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGlass_light_002.ogg",
+      "family": "impact",
+      "durationMs": 210,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGlass_light_003.ogg",
+      "family": "impact",
+      "durationMs": 210,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGlass_medium_000.ogg",
+      "family": "impact",
+      "durationMs": 543,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGlass_medium_002.ogg",
+      "family": "impact",
+      "durationMs": 543,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactGlass_medium_004.ogg",
+      "family": "impact",
+      "durationMs": 543,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactMetal_heavy_000.ogg",
+      "family": "impact",
+      "durationMs": 168,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactMetal_heavy_002.ogg",
+      "family": "impact",
+      "durationMs": 117,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactMetal_heavy_004.ogg",
+      "family": "impact",
+      "durationMs": 134,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactMetal_light_002.ogg",
+      "family": "impact",
+      "durationMs": 236,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal", "tiny accent only"]
+    },
+    {
+      "file": "impact/impactMetal_light_003.ogg",
+      "family": "impact",
+      "durationMs": 482,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactMetal_medium_000.ogg",
+      "family": "impact",
+      "durationMs": 272,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactMetal_medium_001.ogg",
+      "family": "impact",
+      "durationMs": 143,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactMetal_medium_002.ogg",
+      "family": "impact",
+      "durationMs": 119,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactMetal_medium_003.ogg",
+      "family": "impact",
+      "durationMs": 254,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactMetal_medium_004.ogg",
+      "family": "impact",
+      "durationMs": 109,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactMining_001.ogg",
+      "family": "impact",
+      "durationMs": 869,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlank_medium_000.ogg",
+      "family": "impact",
+      "durationMs": 779,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlank_medium_001.ogg",
+      "family": "impact",
+      "durationMs": 779,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlank_medium_002.ogg",
+      "family": "impact",
+      "durationMs": 779,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlank_medium_003.ogg",
+      "family": "impact",
+      "durationMs": 779,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlank_medium_004.ogg",
+      "family": "impact",
+      "durationMs": 779,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_heavy_000.ogg",
+      "family": "impact",
+      "durationMs": 489,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_heavy_001.ogg",
+      "family": "impact",
+      "durationMs": 352,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_heavy_002.ogg",
+      "family": "impact",
+      "durationMs": 494,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_heavy_003.ogg",
+      "family": "impact",
+      "durationMs": 347,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_heavy_004.ogg",
+      "family": "impact",
+      "durationMs": 559,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_light_000.ogg",
+      "family": "impact",
+      "durationMs": 542,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_light_001.ogg",
+      "family": "impact",
+      "durationMs": 655,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_light_002.ogg",
+      "family": "impact",
+      "durationMs": 489,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_light_003.ogg",
+      "family": "impact",
+      "durationMs": 528,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_light_004.ogg",
+      "family": "impact",
+      "durationMs": 657,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_medium_000.ogg",
+      "family": "impact",
+      "durationMs": 609,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_medium_001.ogg",
+      "family": "impact",
+      "durationMs": 616,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_medium_002.ogg",
+      "family": "impact",
+      "durationMs": 515,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_medium_003.ogg",
+      "family": "impact",
+      "durationMs": 654,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPlate_medium_004.ogg",
+      "family": "impact",
+      "durationMs": 534,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPunch_heavy_000.ogg",
+      "family": "impact",
+      "durationMs": 649,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPunch_heavy_001.ogg",
+      "family": "impact",
+      "durationMs": 536,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPunch_heavy_002.ogg",
+      "family": "impact",
+      "durationMs": 457,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPunch_heavy_003.ogg",
+      "family": "impact",
+      "durationMs": 474,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPunch_heavy_004.ogg",
+      "family": "impact",
+      "durationMs": 536,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPunch_medium_000.ogg",
+      "family": "impact",
+      "durationMs": 431,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPunch_medium_001.ogg",
+      "family": "impact",
+      "durationMs": 405,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPunch_medium_002.ogg",
+      "family": "impact",
+      "durationMs": 541,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPunch_medium_003.ogg",
+      "family": "impact",
+      "durationMs": 455,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactPunch_medium_004.ogg",
+      "family": "impact",
+      "durationMs": 543,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactSoft_heavy_000.ogg",
+      "family": "impact",
+      "durationMs": 505,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactSoft_heavy_001.ogg",
+      "family": "impact",
+      "durationMs": 572,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactSoft_heavy_002.ogg",
+      "family": "impact",
+      "durationMs": 572,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactSoft_heavy_003.ogg",
+      "family": "impact",
+      "durationMs": 544,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactSoft_heavy_004.ogg",
+      "family": "impact",
+      "durationMs": 501,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactTin_medium_000.ogg",
+      "family": "impact",
+      "durationMs": 159,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactTin_medium_001.ogg",
+      "family": "impact",
+      "durationMs": 174,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactTin_medium_002.ogg",
+      "family": "impact",
+      "durationMs": 134,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactTin_medium_003.ogg",
+      "family": "impact",
+      "durationMs": 215,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactTin_medium_004.ogg",
+      "family": "impact",
+      "durationMs": 179,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_heavy_000.ogg",
+      "family": "impact",
+      "durationMs": 313,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_heavy_001.ogg",
+      "family": "impact",
+      "durationMs": 313,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_heavy_002.ogg",
+      "family": "impact",
+      "durationMs": 313,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_heavy_003.ogg",
+      "family": "impact",
+      "durationMs": 313,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_heavy_004.ogg",
+      "family": "impact",
+      "durationMs": 313,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_light_000.ogg",
+      "family": "impact",
+      "durationMs": 266,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_light_001.ogg",
+      "family": "impact",
+      "durationMs": 266,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_light_002.ogg",
+      "family": "impact",
+      "durationMs": 266,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_light_003.ogg",
+      "family": "impact",
+      "durationMs": 266,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_light_004.ogg",
+      "family": "impact",
+      "durationMs": 266,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_medium_000.ogg",
+      "family": "impact",
+      "durationMs": 333,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_medium_001.ogg",
+      "family": "impact",
+      "durationMs": 333,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_medium_002.ogg",
+      "family": "impact",
+      "durationMs": 333,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_medium_003.ogg",
+      "family": "impact",
+      "durationMs": 333,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "impact/impactWood_medium_004.ogg",
+      "family": "impact",
+      "durationMs": 333,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["hard transition", "major reveal"]
+    },
+    {
+      "file": "interface/click_001.ogg",
+      "family": "interface",
+      "durationMs": 100,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["button press", "selection", "simulated user action"]
+    },
+    {
+      "file": "interface/click_004.ogg",
+      "family": "interface",
+      "durationMs": 10,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "continuous",
+      "uses": ["button press", "selection", "simulated user action", "tiny accent only"]
+    },
+    {
+      "file": "interface/drop_001.ogg",
+      "family": "interface",
+      "durationMs": 110,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "interface/drop_002.ogg",
+      "family": "interface",
+      "durationMs": 191,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "interface/drop_003.ogg",
+      "family": "interface",
+      "durationMs": 191,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "interface/error_005.ogg",
+      "family": "interface",
+      "durationMs": 500,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["chaotic accent", "comedic interruption"]
+    },
+    {
+      "file": "interface/error_006.ogg",
+      "family": "interface",
+      "durationMs": 500,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["chaotic accent", "comedic interruption"]
+    },
+    {
+      "file": "interface/glitch_004.ogg",
+      "family": "interface",
+      "durationMs": 23,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "continuous",
+      "uses": ["chaotic accent", "comedic interruption", "tiny accent only"]
+    },
+    {
+      "file": "interface/select_008.ogg",
+      "family": "interface",
+      "durationMs": 47,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "continuous",
+      "uses": ["button press", "selection", "simulated user action", "tiny accent only"]
+    },
+    {
+      "file": "interface/switch_002.ogg",
+      "family": "interface",
+      "durationMs": 611,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "interface/switch_004.ogg",
+      "family": "interface",
+      "durationMs": 500,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "interface/switch_005.ogg",
+      "family": "interface",
+      "durationMs": 612,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "interface/switch_006.ogg",
+      "family": "interface",
+      "durationMs": 611,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "interface/switch_007.ogg",
+      "family": "interface",
+      "durationMs": 614,
+      "brightness": "warm",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/click1.ogg",
+      "family": "ui",
+      "durationMs": 94,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["button press", "selection", "simulated user action", "tiny accent only"]
+    },
+    {
+      "file": "ui/click3.ogg",
+      "family": "ui",
+      "durationMs": 86,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["button press", "selection", "simulated user action", "tiny accent only"]
+    },
+    {
+      "file": "ui/click4.ogg",
+      "family": "ui",
+      "durationMs": 37,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "continuous",
+      "uses": ["button press", "selection", "simulated user action", "tiny accent only"]
+    },
+    {
+      "file": "ui/click5.ogg",
+      "family": "ui",
+      "durationMs": 32,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "continuous",
+      "uses": ["button press", "selection", "simulated user action", "tiny accent only"]
+    },
+    {
+      "file": "ui/mouseclick1.ogg",
+      "family": "ui",
+      "durationMs": 59,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "continuous",
+      "uses": ["button press", "selection", "simulated user action", "tiny accent only"]
+    },
+    {
+      "file": "ui/rollover4.ogg",
+      "family": "ui",
+      "durationMs": 113,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "ui/rollover5.ogg",
+      "family": "ui",
+      "durationMs": 112,
+      "brightness": "balanced",
+      "highFrequencyRisk": "medium",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "ui/switch11.ogg",
+      "family": "ui",
+      "durationMs": 297,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch12.ogg",
+      "family": "ui",
+      "durationMs": 54,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "continuous",
+      "uses": ["mode change", "tiny accent only", "toggle"]
+    },
+    {
+      "file": "ui/switch13.ogg",
+      "family": "ui",
+      "durationMs": 28,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "continuous",
+      "uses": ["mode change", "tiny accent only", "toggle"]
+    },
+    {
+      "file": "ui/switch14.ogg",
+      "family": "ui",
+      "durationMs": 33,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "continuous",
+      "uses": ["mode change", "tiny accent only", "toggle"]
+    },
+    {
+      "file": "ui/switch21.ogg",
+      "family": "ui",
+      "durationMs": 410,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch28.ogg",
+      "family": "ui",
+      "durationMs": 205,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["mode change", "tiny accent only", "toggle"]
+    },
+    {
+      "file": "ui/switch30.ogg",
+      "family": "ui",
+      "durationMs": 359,
+      "brightness": "bright",
+      "highFrequencyRisk": "medium",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "casino/card-fan-1.ogg",
+      "family": "casino",
+      "durationMs": 721,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-fan-2.ogg",
+      "family": "casino",
+      "durationMs": 1307,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-place-1.ogg",
+      "family": "casino",
+      "durationMs": 689,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-place-2.ogg",
+      "family": "casino",
+      "durationMs": 459,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-place-3.ogg",
+      "family": "casino",
+      "durationMs": 883,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-place-4.ogg",
+      "family": "casino",
+      "durationMs": 601,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-shove-1.ogg",
+      "family": "casino",
+      "durationMs": 766,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-shove-2.ogg",
+      "family": "casino",
+      "durationMs": 767,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-shove-3.ogg",
+      "family": "casino",
+      "durationMs": 693,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-shove-4.ogg",
+      "family": "casino",
+      "durationMs": 809,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-shuffle.ogg",
+      "family": "casino",
+      "durationMs": 3063,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-slide-2.ogg",
+      "family": "casino",
+      "durationMs": 584,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-slide-3.ogg",
+      "family": "casino",
+      "durationMs": 598,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-slide-4.ogg",
+      "family": "casino",
+      "durationMs": 459,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-slide-5.ogg",
+      "family": "casino",
+      "durationMs": 601,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-slide-6.ogg",
+      "family": "casino",
+      "durationMs": 601,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-slide-7.ogg",
+      "family": "casino",
+      "durationMs": 636,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/card-slide-8.ogg",
+      "family": "casino",
+      "durationMs": 671,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "sequential item", "swipe"]
+    },
+    {
+      "file": "casino/cards-pack-open-1.ogg",
+      "family": "casino",
+      "durationMs": 937,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "panel opening", "sequential item", "soft reveal", "swipe"]
+    },
+    {
+      "file": "casino/cards-pack-open-2.ogg",
+      "family": "casino",
+      "durationMs": 732,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["card reveal", "panel opening", "sequential item", "soft reveal", "swipe"]
+    },
+    {
+      "file": "casino/chip-lay-2.ogg",
+      "family": "casino",
+      "durationMs": 230,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["tiny accent only"]
+    },
+    {
+      "file": "casino/chips-collide-1.ogg",
+      "family": "casino",
+      "durationMs": 259,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/chips-collide-2.ogg",
+      "family": "casino",
+      "durationMs": 230,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["tiny accent only"]
+    },
+    {
+      "file": "casino/chips-collide-3.ogg",
+      "family": "casino",
+      "durationMs": 259,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/chips-collide-4.ogg",
+      "family": "casino",
+      "durationMs": 216,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["tiny accent only"]
+    },
+    {
+      "file": "casino/chips-handle-1.ogg",
+      "family": "casino",
+      "durationMs": 616,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/chips-handle-2.ogg",
+      "family": "casino",
+      "durationMs": 546,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/chips-handle-3.ogg",
+      "family": "casino",
+      "durationMs": 230,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["tiny accent only"]
+    },
+    {
+      "file": "casino/chips-handle-4.ogg",
+      "family": "casino",
+      "durationMs": 359,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/chips-handle-6.ogg",
+      "family": "casino",
+      "durationMs": 460,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/chips-stack-1.ogg",
+      "family": "casino",
+      "durationMs": 287,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/chips-stack-3.ogg",
+      "family": "casino",
+      "durationMs": 374,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/chips-stack-4.ogg",
+      "family": "casino",
+      "durationMs": 230,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["tiny accent only"]
+    },
+    {
+      "file": "casino/chips-stack-5.ogg",
+      "family": "casino",
+      "durationMs": 187,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["tiny accent only"]
+    },
+    {
+      "file": "casino/chips-stack-6.ogg",
+      "family": "casino",
+      "durationMs": 187,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["tiny accent only"]
+    },
+    {
+      "file": "casino/dice-grab-1.ogg",
+      "family": "casino",
+      "durationMs": 704,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/dice-grab-2.ogg",
+      "family": "casino",
+      "durationMs": 827,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/dice-shake-1.ogg",
+      "family": "casino",
+      "durationMs": 1481,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/dice-shake-2.ogg",
+      "family": "casino",
+      "durationMs": 1380,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/dice-shake-3.ogg",
+      "family": "casino",
+      "durationMs": 1524,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "casino/dice-throw-2.ogg",
+      "family": "casino",
+      "durationMs": 402,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["general accent"]
+    },
+    {
+      "file": "interface/switch_001.ogg",
+      "family": "interface",
+      "durationMs": 618,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/rollover1.ogg",
+      "family": "ui",
+      "durationMs": 227,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["tiny accent only"]
+    },
+    {
+      "file": "ui/switch1.ogg",
+      "family": "ui",
+      "durationMs": 315,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch10.ogg",
+      "family": "ui",
+      "durationMs": 367,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch15.ogg",
+      "family": "ui",
+      "durationMs": 256,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch16.ogg",
+      "family": "ui",
+      "durationMs": 359,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch17.ogg",
+      "family": "ui",
+      "durationMs": 333,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch18.ogg",
+      "family": "ui",
+      "durationMs": 435,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch19.ogg",
+      "family": "ui",
+      "durationMs": 384,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch2.ogg",
+      "family": "ui",
+      "durationMs": 297,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch20.ogg",
+      "family": "ui",
+      "durationMs": 359,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch22.ogg",
+      "family": "ui",
+      "durationMs": 359,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch23.ogg",
+      "family": "ui",
+      "durationMs": 384,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch24.ogg",
+      "family": "ui",
+      "durationMs": 282,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch25.ogg",
+      "family": "ui",
+      "durationMs": 384,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch26.ogg",
+      "family": "ui",
+      "durationMs": 230,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "tiny accent only", "toggle"]
+    },
+    {
+      "file": "ui/switch27.ogg",
+      "family": "ui",
+      "durationMs": 282,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch29.ogg",
+      "family": "ui",
+      "durationMs": 307,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch3.ogg",
+      "family": "ui",
+      "durationMs": 367,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch31.ogg",
+      "family": "ui",
+      "durationMs": 435,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch32.ogg",
+      "family": "ui",
+      "durationMs": 435,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch33.ogg",
+      "family": "ui",
+      "durationMs": 512,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch34.ogg",
+      "family": "ui",
+      "durationMs": 461,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch35.ogg",
+      "family": "ui",
+      "durationMs": 333,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch36.ogg",
+      "family": "ui",
+      "durationMs": 307,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch37.ogg",
+      "family": "ui",
+      "durationMs": 307,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch38.ogg",
+      "family": "ui",
+      "durationMs": 424,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch4.ogg",
+      "family": "ui",
+      "durationMs": 420,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch5.ogg",
+      "family": "ui",
+      "durationMs": 315,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch6.ogg",
+      "family": "ui",
+      "durationMs": 350,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch7.ogg",
+      "family": "ui",
+      "durationMs": 192,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "textured",
+      "uses": ["mode change", "tiny accent only", "toggle"]
+    },
+    {
+      "file": "ui/switch8.ogg",
+      "family": "ui",
+      "durationMs": 332,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    },
+    {
+      "file": "ui/switch9.ogg",
+      "family": "ui",
+      "durationMs": 262,
+      "brightness": "bright",
+      "highFrequencyRisk": "high",
+      "envelope": "transient",
+      "uses": ["mode change", "toggle"]
+    }
+  ]
+}
