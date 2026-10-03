@@ -20,7 +20,7 @@ A plugin may ship an icon: `"icon": "icon.png"` in the manifest names a PNG insi
 | `packages/plugin-sdk/template` | — | What `cutpilot-plugin new` copies: a `definePlugin()` with placeholder logic and a test, per kind. |
 | `packages/plugin-sdk/fixtures` | — | Plugins the SDK's tests check against: one that passes, a bad manifest, a contract-breaking answer. |
 | `examples/python-plugin` | — | A plugin in Python (the official MCP Python SDK, run with `uv`): one extra tool, `word_stats`. Plugins can be written in any language. |
-| `plugins/*` | `@cutpilot/plugin-<kind>-<name>` | First-party plugins, built exactly like third-party ones: cloud transcription (ElevenLabs, OpenAI), follow the speaker (Apple Vision), music, html-motion, sound, remotion, hyperframes. See [plugins/README.md](plugins/README.md). |
+| `plugins/*` | `@cutpilot/plugin-<kind>-<name>` | First-party plugins, built exactly like third-party ones: cloud transcription (ElevenLabs, OpenAI), follow the speaker (Apple Vision), music, html-motion, sound, remotion, manim, hyperframes. See [plugins/README.md](plugins/README.md). |
 
 Nothing is published to npm yet. Until it is, the packages are `private` and are consumed from source (a new plugin can point at this checkout: `cutpilot-plugin new <id> --sdk file:<path to packages/plugin-sdk>`). Publishing waits for the owner's decision; [docs/publishing-the-sdk.md](docs/publishing-the-sdk.md) has the steps and the versioning policy.
 
