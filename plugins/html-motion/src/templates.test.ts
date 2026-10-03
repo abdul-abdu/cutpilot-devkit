@@ -6,8 +6,18 @@ import { compose, describeTemplate, esc, fit, shade, TEMPLATES, templateById } f
 const frame = { width: 1080, height: 1920, fps: 30, durationMs: 3000 };
 
 describe('templates', () => {
-  test('five templates, listed as the generator contract says', () => {
-    expect(TEMPLATES.map((t) => t.id)).toEqual(['title-card', 'chapter', 'quote', 'bullets', 'end-card']);
+  test('nine templates, listed as the generator contract says', () => {
+    expect(TEMPLATES.map((t) => t.id)).toEqual([
+      'title-card',
+      'chapter',
+      'quote',
+      'bullets',
+      'end-card',
+      'hook',
+      'offer',
+      'stat',
+      'social-proof',
+    ]);
     const listed = ListTemplatesOutputSchema.parse({ templates: TEMPLATES.map(describeTemplate) });
     for (const t of listed.templates) {
       expect(t.params).toMatchObject({ type: 'object' });
@@ -112,5 +122,47 @@ describe('templates', () => {
         )?.[1],
       );
     expect(size(1080, 1920)).toBeGreaterThan(size(1920, 1080));
+  });
+});
+
+describe('the ad templates (AD1-060)', () => {
+  const html = (id: string, params: Record<string, unknown>, over: Partial<typeof frame> = {}) => {
+    const t = templateById(id)!;
+    return compose(t, t.params.parse(params), { ...frame, ...over }, 'g.js').html;
+  };
+
+  test('hook: the highlight is accented inside the escaped line; without one the line is plain', () => {
+    const h = html('hook', { text: 'Still editing <by hand>?', highlight: '<by hand>' });
+    expect(h).toContain('Still editing <span id="hl">&lt;by hand&gt;</span>?');
+    expect(html('hook', { text: 'Fast cuts' })).not.toContain('id="hl"');
+    // a highlight that is not part of the line is ignored, not shown twice
+    expect(html('hook', { text: 'Fast cuts', highlight: 'slow' })).not.toContain('id="hl"');
+  });
+
+  test('offer: badge, offer, line and code in order; the badge pulses on long clips, not short ones', () => {
+    const t = templateById('offer')!;
+    const long = html('offer', t.example as Record<string, unknown>, { durationMs: 4000 });
+    for (const bit of ['id="badge"', 'id="offer"', 'id="line"', 'id="code"']) expect(long).toContain(bit);
+    expect(long).toMatch(/tl\.to\("#badge", \{ scale: 1\.08.*repeat: \d+/);
+    const short = html('offer', { offer: '-20%' }, { durationMs: 1500 });
+    expect(short).not.toContain('id="badge"');
+    expect(short).not.toContain('tl.to("#badge"');
+  });
+
+  test('stat: starts at 0 and counts up to the value with whole-number snapping', () => {
+    const h = html('stat', { value: 12000, suffix: '+', label: 'creators' });
+    expect(h).toContain('<span id="num">0</span>');
+    expect(h).toContain('tl.to("#num", { innerText: 12000,');
+    expect(h).toContain('snap: { innerText: 1 }');
+    expect(h).toContain('<span id="suf">+</span>');
+  });
+
+  test('social-proof: as many stars as the rating, the quote in quotation marks', () => {
+    const h = html('social-proof', { quote: 'Sundays back.', rating: 4 });
+    expect(h.match(/class="st"/g)).toHaveLength(4);
+    expect(h).toContain('\u201CSundays back.\u201D');
+    expect(h).not.toContain('id="name"');
+    const bad = templateById('social-proof')!.params.safeParse({ quote: 'x', rating: 6 });
+    expect(bad.success).toBe(false);
   });
 });

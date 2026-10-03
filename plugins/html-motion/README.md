@@ -1,6 +1,6 @@
 # HTML Motion
 
-Motion-graphics clips for a CutPilot edit: title cards, chapter headings, quotes, bullet lists and end cards. Each template is a small HTML page with a GSAP timeline. The plugin renders it at your edit's size (9:16, 1:1, 16:9, …) with [HyperFrames](https://github.com/heygen-com/hyperframes) and a local Chrome, and CutPilot puts the clip into the timeline as an **insert**, an undoable edit like any other. Your video is never touched.
+Motion-graphics clips for a CutPilot edit: title cards, chapter headings, quotes, bullet lists, end cards and the beats of a short ad (hook, offer, big number, social proof). Each template is a small HTML page with a GSAP timeline. The plugin renders it at your edit's size (9:16, 1:1, 16:9, …) with [HyperFrames](https://github.com/heygen-com/hyperframes) and a local Chrome, and CutPilot puts the clip into the timeline as an **insert**, an undoable edit like any other. Your video is never touched.
 
 It is a `generator` plugin. You don't call it directly: ask your AI for "a title card before the intro", "chapter headings before each part", or "an end card with my handle". CutPilot's `list_templates` and `add_insert` tools use it.
 
@@ -11,6 +11,10 @@ It is a `generator` plugin. You don't call it directly: ask your AI for "a title
 - **quote**: a quotation revealed word by word, and who said it (`author`). 5 s (2–15 s).
 - **bullets**: a heading and one to five points that come in one after another. 5 s (2–15 s).
 - **end-card**: a headline, a call to action on a pulsing button (`cta`), and a handle or link. 4 s (1.5–10 s).
+- **hook**: a stop-scroll opener, one bold line punched in hard, an optional `highlight` in the accent colour. 1.8 s (0.8–5 s).
+- **offer**: a deal card: the offer big, a line, a pulsing urgency `badge` and a promo `code`. 3 s (1.5–10 s).
+- **stat**: one number counting up, with `prefix`/`suffix` and a `label` saying what it is. 3 s (1.5–10 s).
+- **social-proof**: a star `rating` popping in, a short customer `quote`, who said it and a `stats` line. 3.5 s (1.5–10 s).
 
 Every template also takes `background`, `color` and `accent` (`#RRGGBB`). Text sizes follow the frame's short side and shrink for longer text, so the same template works in every aspect. `list_templates` gives each one's parameters as JSON Schema, with an example.
 
