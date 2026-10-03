@@ -229,6 +229,9 @@ describe.skipIf(!built)('every kind, generated, builds and passes testPlugin()',
     const vitest = join(ROOT, 'node_modules/vitest/vitest.mjs');
     const run = node([vitest, 'run', '--root', gen, '--reporter', 'dot']);
     expect(run.status, run.stdout + run.stderr).toBe(0);
-    expect(run.stdout).toMatch(new RegExp(`Test Files {2}${KINDS.length} passed`));
+    // CI forces colour, and vitest then colours the summary
+    // eslint-disable-next-line no-control-regex -- strip ANSI colours
+    const plain = run.stdout.replace(/\x1b\[[0-9;]*m/g, '');
+    expect(plain).toMatch(new RegExp(`Test Files {2}${KINDS.length} passed`));
   }, 60_000);
 });
