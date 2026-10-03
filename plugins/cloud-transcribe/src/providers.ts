@@ -25,6 +25,8 @@ export interface Provider {
   origin: string;
   /** the largest file it takes, in bytes */
   maxBytes: number;
+  /** the longest audio it takes, in ms, when shorter than maxBytes of CutPilot's wav */
+  maxMs?: number;
   /** where the user gets a key */
   keysUrl: string;
 }
@@ -38,6 +40,7 @@ export const PROVIDER: Record<ProviderId, Provider> = {
     secret: 'ELEVENLABS_API_KEY',
     origin: 'https://api.elevenlabs.io',
     maxBytes: 3 * 1024 * MB,
+    maxMs: 10 * 3600 * 1000,
     keysUrl: 'elevenlabs.io/app/settings/api-keys',
   },
   openai: {
@@ -64,6 +67,27 @@ export interface Transport {
 export interface Transcript {
   language: string;
   words: Word[];
+}
+
+/** CutPilot's wav: 16 kHz mono 16-bit, so 32,000 bytes a second after a 44-byte header. */
+export const WAV_BYTES_PER_SECOND = 32_000;
+export const wavMs = (bytes: number) => Math.round((Math.max(0, bytes - 44) / WAV_BYTES_PER_SECOND) * 1000);
+
+/** Scribe's model when the setting is blank. */
+export const DEFAULT_SCRIBE_MODEL = 'scribe_v1';
+
+/**
+ * The project's expected words (`prompt`: names, jargon, separated by commas, semicolons or
+ * lines) as Scribe key terms: each at most 50 characters, at most 100, no repeats.
+ */
+export function keyterms(prompt: string | undefined): string[] {
+  const seen = new Set<string>();
+  for (const raw of (prompt ?? '').split(/[,;\n]+/)) {
+    const term = raw.trim();
+    if (term && term.length <= 50) seen.add(term);
+    if (seen.size === 100) break;
+  }
+  return [...seen];
 }
 
 const firstLine = (s: string) => s.split(/\r?\n/)[0]!.trim().slice(0, 300);
@@ -194,12 +218,19 @@ export interface TranscribeRequest {
   prompt?: string;
 }
 
+/** The ElevenLabs settings: the Scribe model, and whether the prompt goes as key terms. */
+export interface ScribeOptions {
+  model?: string;
+  keyterms?: boolean;
+}
+
 /** Upload the audio to the provider and map its words. */
 export async function transcribeWith(
   p: Provider,
   key: string,
   req: TranscribeRequest,
   t: Transport,
+  scribe: ScribeOptions = {},
 ): Promise<Transcript> {
   let size: number;
   try {
@@ -216,16 +247,22 @@ export async function transcribeWith(
       p,
       `the audio is ${Math.round(size / MB)} MB; ${p.name} takes up to ${Math.round(p.maxBytes / MB)} MB`,
     );
+  if (p.maxMs && wavMs(size) > p.maxMs)
+    throw tooLarge(
+      p,
+      `the audio is ${(wavMs(size) / 3_600_000).toFixed(1)} h long; ${p.name} takes up to ${p.maxMs / 3_600_000} h`,
+    );
 
   const form = new FormData();
   form.append('file', await openAsBlob(req.audio, { type: 'audio/wav' }), basename(req.audio));
   const hint = req.language === 'auto' ? null : req.language;
 
   if (p.id === 'elevenlabs') {
-    form.append('model_id', 'scribe_v1');
+    form.append('model_id', scribe.model?.trim() || DEFAULT_SCRIBE_MODEL);
     if (hint) form.append('language_code', hint);
     form.append('timestamps_granularity', 'word');
     form.append('tag_audio_events', 'true');
+    if (scribe.keyterms) for (const k of keyterms(req.prompt)) form.append('keyterms', k);
     const res = await send(p, t, '/v1/speech-to-text', {
       method: 'POST',
       headers: { 'xi-api-key': key },

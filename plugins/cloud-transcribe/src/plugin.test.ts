@@ -22,6 +22,7 @@ import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { definePlugin, formatReport, silentWav, testPlugin } from '@cutpilot/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import { definition, makeDefinition, ORIGIN_ENV, type Options } from './plugin.js';
+import { keyterms } from './providers.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
 const FIXTURES = join(DIR, 'fixtures');
@@ -105,6 +106,48 @@ describe('ElevenLabs', () => {
     const file = form.get('file') as File;
     expect(file.name).toBe('audio.wav');
     expect(file.size).toBe(readFileSync(wav).length);
+  });
+
+  test('by default: scribe_v1 and no key terms, even with a prompt', async () => {
+    const f = fakeFetch(200, fixture('elevenlabs.json'));
+    structured<Words>(await transcribe(await connect({ fetch: f.fetch }), { prompt: 'CutPilot, Qaychi' }));
+    const form = f.calls[0]!.init.body as FormData;
+    expect(form.get('model_id')).toBe('scribe_v1');
+    expect(form.has('keyterms')).toBe(false);
+  });
+
+  test('the settings: another model, and the prompt as key terms', async () => {
+    const f = fakeFetch(200, fixture('elevenlabs.json'));
+    const env = { ...KEYS, CUTPILOT_SETTING_SCRIBE_MODEL: ' scribe_v2 ', CUTPILOT_SETTING_KEYTERMS: 'true' };
+    structured<Words>(
+      await transcribe(await connect({ fetch: f.fetch }, env), {
+        prompt: ' CutPilot, Qaychi;\nAbdul ,CutPilot,,',
+      }),
+    );
+    const form = f.calls[0]!.init.body as FormData;
+    expect(form.get('model_id')).toBe('scribe_v2');
+    expect(form.getAll('keyterms')).toEqual(['CutPilot', 'Qaychi', 'Abdul']);
+  });
+
+  test('key terms: at most 100, each up to 50 characters', () => {
+    expect(keyterms('x'.repeat(51))).toEqual([]);
+    expect(keyterms(Array.from({ length: 150 }, (_, i) => `t${i}`).join(','))).toHaveLength(100);
+    expect(keyterms(undefined)).toEqual([]);
+  });
+
+  test('audio over 10 hours is refused before uploading, with a fix', async () => {
+    const long = join(tmp, 'long.wav');
+    writeFileSync(long, '');
+    truncateSync(long, 44 + 10.5 * 3600 * 32_000);
+    const f = fakeFetch(200, {});
+    const e = error(await transcribe(await connect({ fetch: f.fetch }), { audio: long }));
+    expect(e).toMatchObject({
+      code: 'E_STT_FILE_TOO_LARGE',
+      message: 'the audio is 10.5 h long; ElevenLabs takes up to 10 h',
+    });
+    expect(e.fix).toMatch(/shorter/);
+    expect(f.calls).toHaveLength(0);
+    rmSync(long);
   });
 
   test('language auto sends no language; the language heard comes back as ISO 639-1', async () => {
