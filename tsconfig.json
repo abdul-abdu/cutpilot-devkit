@@ -9,6 +9,7 @@
     { "path": "plugins/remotion" },
     { "path": "plugins/music" },
     { "path": "plugins/cloud-transcribe" },
-    { "path": "plugins/follow-speaker" }
+    { "path": "plugins/follow-speaker" },
+    { "path": "plugins/manim" }
   ]
 }
