@@ -15,7 +15,16 @@ import { definePlugin, formatReport, KIND_TOOLS, testPlugin } from '@cutpilot/pl
 import { afterAll, describe, expect, test } from 'vitest';
 import { definition } from './plugin.js';
 import { expressionProblem, TEMPLATES } from './templates.js';
-import { errorLine, findLatex, findManim, findOnPath, lastError, progressOf, UV_MANIM } from './toolchain.js';
+import {
+  errorLine,
+  findLatex,
+  findManim,
+  findOnPath,
+  lastError,
+  progressOf,
+  UV_MANIM,
+  UV_PYTHON,
+} from './toolchain.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
 const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
@@ -168,7 +177,7 @@ describe('finding Manim', () => {
     const uv = fake(bin, 'uv');
     expect(findManim('', { PATH: bin, HOME: home })).toEqual({
       command: uv,
-      args: ['tool', 'run', '--from', UV_MANIM, 'manim'],
+      args: ['tool', 'run', '--python', UV_PYTHON, '--from', UV_MANIM, 'manim'],
       via: 'uv',
     });
     const manim = fake(bin, 'manim');

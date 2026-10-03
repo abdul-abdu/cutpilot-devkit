@@ -12,7 +12,7 @@
   "args": ["dist/index.js"],
   "kinds": ["generator"],
   "permissions": {
-    "network": ["pypi.org", "files.pythonhosted.org"],
+    "network": ["pypi.org", "files.pythonhosted.org", "releases.astral.sh"],
     "secrets": [],
     "reads": []
   },

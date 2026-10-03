@@ -24,7 +24,7 @@ Manim, found in this order:
 1. **Manim command** in CutPilot → Plugins → Manim: a `manim` executable, or a Python that has manim (`…/bin/python3`).
 2. `manim` on PATH (also `~/.local/bin`, Homebrew, `/usr/local/bin`, which a GUI app's PATH leaves out).
 3. A `python3` that can `import manim`.
-4. [uv](https://docs.astral.sh/uv/): `uv tool run --from "manim>=0.19,<1" manim`, which downloads Manim from PyPI on first use (about 150 MB into uv's cache; the first render waits for it). That download is the only network the plugin declares (`pypi.org`, `files.pythonhosted.org`); with Manim installed it works offline.
+4. [uv](https://docs.astral.sh/uv/): `uv tool run --python ">=3.10,<3.14" --from "manim>=0.19,<1" manim`, which downloads Manim from PyPI on first use (about 150 MB into uv's cache; the first render waits for it, about a minute). When the machine has no Python 3.10–3.13, uv downloads one too (from `releases.astral.sh`): macOS's own `python3` is 3.9, where uv picks a Manim that can't start. Those downloads are the only network the plugin declares (`pypi.org`, `files.pythonhosted.org`, `releases.astral.sh`); with Manim installed it works offline.
 
 Installing Manim (see [its guide](https://docs.manim.community/en/stable/installation.html)):
 

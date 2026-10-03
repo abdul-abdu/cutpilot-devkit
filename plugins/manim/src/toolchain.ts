@@ -16,6 +16,11 @@ import { fileURLToPath } from 'node:url';
 
 /** What uv installs when Manim isn't on the machine. */
 export const UV_MANIM = 'manim>=0.19,<1';
+/**
+ * The Python uv runs it on: macOS's own python3 is 3.9, where uv resolves a Manim that can't
+ * start (no importlib_metadata), so a newer one, downloaded by uv when the machine has none.
+ */
+export const UV_PYTHON = '>=3.10,<3.14';
 
 /** The Python file that draws the templates and wraps custom scenes. */
 export const runtimePath = (): string =>
@@ -72,7 +77,12 @@ export function findManim(setting: string | undefined, env: NodeJS.ProcessEnv = 
     if (py && hasManim(py)) return { command: py, args: ['-m', 'manim'], via: 'python' };
   }
   const uv = findOnPath('uv', env);
-  if (uv) return { command: uv, args: ['tool', 'run', '--from', UV_MANIM, 'manim'], via: 'uv' };
+  if (uv)
+    return {
+      command: uv,
+      args: ['tool', 'run', '--python', UV_PYTHON, '--from', UV_MANIM, 'manim'],
+      via: 'uv',
+    };
   return null;
 }
 
