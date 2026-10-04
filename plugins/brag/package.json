@@ -1,6 +1,6 @@
 {
   "name": "@cutpilot/plugin-tools-brag",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CutPilot plugin: /brag in CutPilot. Your AI turns what you built into a short launch video with brag's method; the plugin writes, checks, snapshots and renders it with HyperFrames.",
   "type": "module",
   "private": true,

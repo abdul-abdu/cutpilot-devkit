@@ -105,7 +105,7 @@ export function copyAsset(
     throw new PluginFailure(
       'E_PLUGIN_BAD_INPUT',
       `there is no file at ${from}`,
-      'pass the absolute path of an existing file (a logo, screenshot, video clip, font or audio file)',
+      'pass a path the user gave you or a tool returned, never a guessed one; for a track from find_music (an id, not a file), render without music, then add it in CutPilot with open_project and set_music',
     );
   const name = as?.trim() || from.split(/[\\/]/).pop()!;
   const root = realpathSync(project);

@@ -227,7 +227,12 @@ export const definition: PluginDefinition = {
         "Copy a file into the project's composition/assets/: a logo, screenshot, product image, video clip, font or music file from this computer (file), or one of the bundled sound effects (sound, from list_sounds). Returns src, the path to use in the composition (e.g. assets/logo.svg).",
       input: {
         project: z.string().min(1).describe('the folder start_project returned'),
-        file: z.string().optional().describe('absolute path of a file on this computer'),
+        file: z
+          .string()
+          .optional()
+          .describe(
+            'absolute path of a file on this computer that the user gave you or a tool returned; never a guessed path (find_music gives track ids, not files)',
+          ),
         sound: z
           .string()
           .optional()

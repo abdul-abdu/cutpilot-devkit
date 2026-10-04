@@ -164,9 +164,13 @@ describe('tools', () => {
     expect(errorOf(await call(c, 'add_asset', { project, sound: 'nope.ogg' })).message).toMatch(
       /no bundled sound/,
     );
-    expect(errorOf(await call(c, 'add_asset', { project, file: join(tmp, 'missing.png') })).code).toBe(
-      'E_PLUGIN_BAD_INPUT',
-    );
+    // a guessed path to a library track: the fix says how music from find_music gets in
+    expect(
+      errorOf(await call(c, 'add_asset', { project, file: join(tmp, 'music', 'tracks', 'bright-side.ogg') })),
+    ).toMatchObject({
+      code: 'E_PLUGIN_BAD_INPUT',
+      fix: expect.stringMatching(/never a guessed one.*set_music/),
+    });
     expect(errorOf(await call(c, 'add_asset', { project, file: logo, as: '../../x.svg' })).code).toBe(
       'E_PLUGIN_BAD_INPUT',
     );
