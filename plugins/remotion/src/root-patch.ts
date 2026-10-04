@@ -1,5 +1,5 @@
 /**
- * The one change this plugin makes outside src/cutpilot: `<CutPilotCompositions />` in the
+ * The one change this plugin makes outside src/nodcut: `<NodCutCompositions />` in the
  * user's root component (the one passed to registerRoot), and its import. Applied once, with a
  * backup and a diff to show; when the file isn't laid out in a way that can be patched safely,
  * nothing is written and the user gets the two lines to add instead.
@@ -89,10 +89,10 @@ export function findRootFile(entryFile: string): string | null {
   return resolveImport(entryFile, spec);
 }
 
-export const COMPONENT = 'CutPilotCompositions';
+export const COMPONENT = 'NodCutCompositions';
 const ALREADY_RE = new RegExp(`<${COMPONENT}\\s*/>`);
 
-/** The import specifier of src/cutpilot from the root file, e.g. `./cutpilot`. */
+/** The import specifier of src/nodcut from the root file, e.g. `./nodcut`. */
 export function importSpec(rootFile: string, projectDir: string): string {
   const rel = relative(dirname(rootFile), scenesDir(projectDir)).split(sep).join('/');
   return rel.startsWith('.') ? rel : `./${rel}`;
@@ -102,7 +102,7 @@ export type PatchResult =
   { kind: 'already' } | { kind: 'patched'; text: string } | { kind: 'manual'; reason: string };
 
 /**
- * Add `<CutPilotCompositions />` and its import to a root component's source. It goes just
+ * Add `<NodCutCompositions />` and its import to a root component's source. It goes just
  * before the closing `</>` of the fragment the component returns, so that file must have
  * exactly one; anything else (no fragment, several, a JS file without JSX) is left to the user.
  */
@@ -210,7 +210,7 @@ const manualText = (file: string | null, spec: string, reason: string) =>
   `and this import at the top of that file: import { ${COMPONENT} } from '${spec}';`;
 
 /**
- * Make sure the root component registers CutPilot's scenes; the first time, back up and patch.
+ * Make sure the root component registers NodCut's scenes; the first time, back up and patch.
  * With `write: false`, only say what would happen.
  */
 export function ensureRootPatched(
@@ -218,7 +218,7 @@ export function ensureRootPatched(
   { write = true, now = new Date() }: { write?: boolean; now?: Date } = {},
 ): RootPatch {
   const entry = findEntryPoint(projectDir);
-  const fallbackSpec = './cutpilot';
+  const fallbackSpec = './nodcut';
   if (!entry)
     return {
       state: 'manual',

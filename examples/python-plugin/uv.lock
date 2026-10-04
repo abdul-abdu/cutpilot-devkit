@@ -230,7 +230,7 @@ wheels = [
 ]
 
 [[package]]
-name = "cutpilot-word-stats"
+name = "nodcut-word-stats"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

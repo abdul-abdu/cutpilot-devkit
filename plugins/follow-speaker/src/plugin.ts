@@ -2,15 +2,15 @@
  * The plugin: an `analyzer:reframe-track` that runs the face helper over the kept ranges of
  * the edit and turns its faces into a calm crop path that follows the main speaker.
  */
-import type { PluginDefinition } from '@cutpilot/plugin-sdk';
+import type { PluginDefinition } from '@nodcut/plugin-sdk';
 import { follow, mergeRanges } from './follow.js';
 import { detectFaces, helperPath } from './helper.js';
 
-/** Frames per second the helper looks at, unless CutPilot asks for another rate. */
+/** Frames per second the helper looks at, unless NodCut asks for another rate. */
 export const DEFAULT_FPS = 5;
 
 export interface Options {
-  /** the helper to run; default: helperPath() ($CUTPILOT_FACE_HELPER, else bin/face-helper on a Mac) */
+  /** the helper to run; default: helperPath() ($NODCUT_FACE_HELPER, else bin/face-helper on a Mac) */
   helper?: string;
 }
 

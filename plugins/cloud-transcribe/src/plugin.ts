@@ -1,13 +1,8 @@
 /**
- * The plugin: a `transcriber` that sends CutPilot's 16 kHz wav to ElevenLabs Scribe or
+ * The plugin: a `transcriber` that sends NodCut's 16 kHz wav to ElevenLabs Scribe or
  * OpenAI whisper-1 with the user's own key, plus `test_key` for the app's "Test key" button.
  */
-import {
-  PluginFailure,
-  type ExtraTool,
-  type PluginContext,
-  type PluginDefinition,
-} from '@cutpilot/plugin-sdk';
+import { PluginFailure, type ExtraTool, type PluginContext, type PluginDefinition } from '@nodcut/plugin-sdk';
 import { z } from 'zod';
 import {
   checkKey,
@@ -20,11 +15,11 @@ import {
 } from './providers.js';
 
 /** For tests: send every request to this origin (a local stub) instead of the provider's. */
-export const ORIGIN_ENV = 'CUTPILOT_CLOUD_TRANSCRIBE_ORIGIN';
+export const ORIGIN_ENV = 'NODCUT_CLOUD_TRANSCRIBE_ORIGIN';
 
 export interface Options {
   fetch?: typeof fetch;
-  /** default: $CUTPILOT_CLOUD_TRANSCRIBE_ORIGIN, else the provider's own */
+  /** default: $NODCUT_CLOUD_TRANSCRIBE_ORIGIN, else the provider's own */
   origin?: string;
 }
 
@@ -34,7 +29,7 @@ function providerOf(ctx: PluginContext, asked?: string) {
     throw new PluginFailure(
       'E_PLUGIN_BAD_INPUT',
       `unknown provider "${String(id)}"`,
-      `set Provider to ${PROVIDERS.join(' or ')} in CutPilot → Plugins → Cloud transcription → Settings`,
+      `set Provider to ${PROVIDERS.join(' or ')} in NodCut → Plugins → Cloud transcription → Settings`,
     );
   return PROVIDER[id];
 }

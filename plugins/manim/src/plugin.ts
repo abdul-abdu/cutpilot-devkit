@@ -2,19 +2,14 @@
  * The plugin: a `generator` (list_templates, generate) and two extra tools, doctor and
  * scene_guide. generate checks the parameters against the template's schema, writes a job (the
  * template, its parameters, the length) into a folder named by everything that affects the
- * picture, runs Manim on python/cutpilot_manim.py at the edit's size and fps, and returns the MP4;
- * CutPilot copies it into the project. The same request again is answered from that folder.
+ * picture, runs Manim on python/nodcut_manim.py at the edit's size and fps, and returns the MP4;
+ * NodCut copies it into the project. The same request again is answered from that folder.
  */
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import {
-  PluginFailure,
-  type ExtraTool,
-  type PluginContext,
-  type PluginDefinition,
-} from '@cutpilot/plugin-sdk';
+import { PluginFailure, type ExtraTool, type PluginContext, type PluginDefinition } from '@nodcut/plugin-sdk';
 import type { z } from 'zod';
 import { describeTemplate, TEMPLATES, templateById } from './templates.js';
 import {
@@ -31,8 +26,8 @@ import {
 
 const VERSION = '0.1.0';
 
-/** Where rendered clips are kept (the OS clears its temp folder; CutPilot keeps its own copy). */
-export const cacheDir = () => join(tmpdir(), 'cutpilot-manim');
+/** Where rendered clips are kept (the OS clears its temp folder; NodCut keeps its own copy). */
+export const cacheDir = () => join(tmpdir(), 'nodcut-manim');
 
 const issues = (e: z.ZodError) =>
   e.issues.map((i) => (i.path.length ? `${i.path.join('.')}: ${i.message}` : i.message)).join('; ');
@@ -46,7 +41,7 @@ const INSTALL: Record<string, string> = {
     'install Manim (winget install astral-sh.uv, then uv tool install manim), or just uv and the plugin fetches Manim itself',
 };
 const installFix = () =>
-  `${INSTALL[process.platform] ?? INSTALL.linux}; or set "Manim command" in CutPilot → Plugins → Manim`;
+  `${INSTALL[process.platform] ?? INSTALL.linux}; or set "Manim command" in NodCut → Plugins → Manim`;
 
 const NO_MANIM = (setting: string) =>
   setting.trim()
@@ -215,7 +210,7 @@ export const definition: PluginDefinition = {
       rmSync(dir, { recursive: true, force: true });
       mkdirSync(dir, { recursive: true });
       // the runtime runs from the job folder, so Python's caches never land in the plugin
-      writeFileSync(join(dir, 'cutpilot_manim.py'), runtime);
+      writeFileSync(join(dir, 'nodcut_manim.py'), runtime);
       const { code, ...rest } = params as { code?: string };
       if (code !== undefined) writeFileSync(join(dir, 'scene.py'), code);
       writeFileSync(
@@ -238,8 +233,8 @@ export const definition: PluginDefinition = {
         runner,
         [
           'render',
-          'cutpilot_manim.py',
-          'CutPilotScene',
+          'nodcut_manim.py',
+          'NodCutScene',
           '--resolution',
           `${frame.width},${frame.height}`,
           '--fps',
@@ -257,7 +252,7 @@ export const definition: PluginDefinition = {
         {
           cwd: dir,
           signal: ctx.signal,
-          env: manimEnv({ CUTPILOT_MANIM_JOB: join(dir, 'job.json') }),
+          env: manimEnv({ NODCUT_MANIM_JOB: join(dir, 'job.json') }),
           onLine: (l) => {
             const f = progressOf(l);
             if (f !== null) done = f;

@@ -2,7 +2,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CONTRACT_VERSION } from '@cutpilot/plugin-api';
+import { CONTRACT_VERSION } from '@nodcut/plugin-api';
 import { describe, expect, test } from 'vitest';
 
 const PACKAGES = fileURLToPath(new URL('../../', import.meta.url));
@@ -13,7 +13,7 @@ const sdk = pkg('plugin-sdk');
 describe('the npm packages', () => {
   test('are released together, the SDK depending on the same plugin-api', () => {
     expect(sdk.version).toBe(api.version);
-    expect(sdk.dependencies['@cutpilot/plugin-api']).toBe('workspace:*'); // pnpm publish writes the version
+    expect(sdk.dependencies['@nodcut/plugin-api']).toBe('workspace:*'); // pnpm publish writes the version
   });
 
   test('the major version is the plugin contract version (from 1.0.0 on)', () => {
@@ -33,7 +33,7 @@ describe('the npm packages', () => {
       expect(p.files).toContain('dist');
     }
     expect(sdk.files).toContain('template');
-    expect(sdk.bin).toEqual({ 'cutpilot-plugin': './dist/bin.js' });
+    expect(sdk.bin).toEqual({ 'nodcut-plugin': './dist/bin.js' });
     expect(existsSync(join(PACKAGES, 'plugin-sdk/src/bin.ts'))).toBe(true);
   });
 });

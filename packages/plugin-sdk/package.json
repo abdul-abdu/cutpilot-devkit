@@ -1,7 +1,7 @@
 {
-  "name": "@cutpilot/plugin-sdk",
+  "name": "@nodcut/plugin-sdk",
   "version": "0.1.0",
-  "description": "Build CutPilot plugins: definePlugin() and a test harness.",
+  "description": "Build NodCut plugins: definePlugin() and a test harness.",
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -15,7 +15,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "cutpilot-plugin": "./dist/bin.js"
+    "nodcut-plugin": "./dist/bin.js"
   },
   "files": [
     "dist",
@@ -26,19 +26,19 @@
     "build": "tsc -b"
   },
   "dependencies": {
-    "@cutpilot/plugin-api": "workspace:*",
+    "@nodcut/plugin-api": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "zod": "^4.1.0"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
     "directory": "packages/plugin-sdk"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
-    "cutpilot",
+    "nodcut",
     "video",
     "mcp",
     "plugin"
@@ -47,8 +47,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/packages/plugin-sdk#readme",
+  "homepage": "https://github.com/abdul-abdu/nodcut-devkit/tree/main/packages/plugin-sdk#readme",
   "bugs": {
-    "url": "https://github.com/abdul-abdu/cutpilot-devkit/issues"
+    "url": "https://github.com/abdul-abdu/nodcut-devkit/issues"
   }
 }

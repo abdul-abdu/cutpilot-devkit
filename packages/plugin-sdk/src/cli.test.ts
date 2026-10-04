@@ -17,7 +17,7 @@ async function run(...argv: string[]): Promise<{ code: number; text: string }> {
   return { code, text: lines.join('\n') };
 }
 
-describe('cutpilot-plugin validate', () => {
+describe('nodcut-plugin validate', () => {
   test('ok: every check ✓, exit 0', async () => {
     const r = await run('validate', join(FIXTURES, 'ok'));
     expect(r).toEqual({
@@ -29,7 +29,7 @@ describe('cutpilot-plugin validate', () => {
   test('bad-manifest: ✗ with the fix, exit 1', async () => {
     const r = await run('validate', join(FIXTURES, 'bad-manifest'));
     expect(r.code).toBe(1);
-    expect(r.text).toMatch(/^✗ manifest — id: ids are kebab-case.*\n {4}fix: fix cutpilot-plugin.json\n/);
+    expect(r.text).toMatch(/^✗ manifest — id: ids are kebab-case.*\n {4}fix: fix nodcut-plugin.json\n/);
   });
 
   test('--json prints the report', async () => {
@@ -38,22 +38,22 @@ describe('cutpilot-plugin validate', () => {
     expect(JSON.parse(r.text)).toMatchObject({ ok: false, checks: [{ name: 'manifest', result: 'fail' }] });
   });
 
-  test('--strings: what a language pack lacks of a CutPilot version (P3-067)', async () => {
+  test('--strings: what a language pack lacks of a NodCut version (P3-067)', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'cp-strings-'));
     try {
       const file = join(dir, 'strings.json');
       writeFileSync(
         file,
-        JSON.stringify({ cutpilot: '0.3.0', messages: ['Export', 'Settings'], menu: ['File'] }),
+        JSON.stringify({ nodcut: '0.3.0', messages: ['Export', 'Settings'], menu: ['File'] }),
       );
       const r = await run('validate', join(FIXTURES, 'language'), '--strings', file);
       expect(r.code).toBe(1);
       expect(r.text).toContain(
-        '✗ language de covers CutPilot 0.3.0 — 1 strings missing (they show in English), like "Settings"',
+        '✗ language de covers NodCut 0.3.0 — 1 strings missing (they show in English), like "Settings"',
       );
       writeFileSync(file, '{"messages": []}');
       expect((await run('validate', join(FIXTURES, 'language'), '--strings', file)).text).toMatch(
-        /^--strings .* isn't a CutPilot strings.json/,
+        /^--strings .* isn't a NodCut strings.json/,
       );
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -70,7 +70,7 @@ describe('cutpilot-plugin validate', () => {
   });
 });
 
-describe.skipIf(!built)('cutpilot-plugin test', () => {
+describe.skipIf(!built)('nodcut-plugin test', () => {
   test('ok: starts, offers its tools, answers per contract; exit 0', async () => {
     const r = await run('test', join(FIXTURES, 'ok'));
     expect(r.code).toBe(0);
@@ -95,7 +95,7 @@ describe.skipIf(!built)('cutpilot-plugin test', () => {
     expect(r.code).toBe(1);
     expect(r.text).toContain(
       '✗ transcribe answers per contract — E_PLUGIN_CONTRACT: transcribe returned words.1.start: words are in time order\n' +
-        '    fix: the plugin must return what the transcriber contract says (see @cutpilot/plugin-api)',
+        '    fix: the plugin must return what the transcriber contract says (see @nodcut/plugin-api)',
     );
     expect(r.text).toMatch(/fixture-bad-output: 1 check failed$/);
   });

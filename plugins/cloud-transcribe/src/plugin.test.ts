@@ -1,7 +1,7 @@
 /**
  * The tools through MCP (in memory) with a fake fetch that plays recorded responses, real HTTP
- * against a local stub, the plugin as CutPilot starts it (needs `pnpm build`), and, with
- * CUTPILOT_LIVE_STT=1 and a key, the real providers.
+ * against a local stub, the plugin as NodCut starts it (needs `pnpm build`), and, with
+ * NODCUT_LIVE_STT=1 and a key, the real providers.
  */
 import { execFileSync } from 'node:child_process';
 import {
@@ -19,14 +19,14 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { definePlugin, formatReport, silentWav, testPlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin, formatReport, silentWav, testPlugin } from '@nodcut/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import { definition, makeDefinition, ORIGIN_ENV, type Options } from './plugin.js';
 import { keyterms } from './providers.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
 const FIXTURES = join(DIR, 'fixtures');
-const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(DIR, 'nodcut-plugin.json'), 'utf8'));
 const fixture = (name: string) => JSON.parse(readFileSync(join(FIXTURES, name), 'utf8'));
 const ERRORS = fixture('errors.json') as Record<string, { status: number; body: unknown }>;
 const tmp = mkdtempSync(join(tmpdir(), 'cp-stt-'));
@@ -40,7 +40,7 @@ afterAll(async () => {
   rmSync(tmp, { recursive: true, force: true });
 });
 
-const KEYS = { CUTPILOT_SECRET_ELEVENLABS_API_KEY: 'el-key', CUTPILOT_SECRET_OPENAI_API_KEY: 'oa-key' };
+const KEYS = { NODCUT_SECRET_ELEVENLABS_API_KEY: 'el-key', NODCUT_SECRET_OPENAI_API_KEY: 'oa-key' };
 
 async function connect(o: Options, env: NodeJS.ProcessEnv = KEYS) {
   const plugin = definePlugin({ ...makeDefinition(o), manifest }, env);
@@ -110,7 +110,7 @@ describe('ElevenLabs', () => {
 
   test('by default: scribe_v1 and no key terms, even with a prompt', async () => {
     const f = fakeFetch(200, fixture('elevenlabs.json'));
-    structured<Words>(await transcribe(await connect({ fetch: f.fetch }), { prompt: 'CutPilot, Qaychi' }));
+    structured<Words>(await transcribe(await connect({ fetch: f.fetch }), { prompt: 'NodCut, Qaychi' }));
     const form = f.calls[0]!.init.body as FormData;
     expect(form.get('model_id')).toBe('scribe_v1');
     expect(form.has('keyterms')).toBe(false);
@@ -118,15 +118,15 @@ describe('ElevenLabs', () => {
 
   test('the settings: another model, and the prompt as key terms', async () => {
     const f = fakeFetch(200, fixture('elevenlabs.json'));
-    const env = { ...KEYS, CUTPILOT_SETTING_SCRIBE_MODEL: ' scribe_v2 ', CUTPILOT_SETTING_KEYTERMS: 'true' };
+    const env = { ...KEYS, NODCUT_SETTING_SCRIBE_MODEL: ' scribe_v2 ', NODCUT_SETTING_KEYTERMS: 'true' };
     structured<Words>(
       await transcribe(await connect({ fetch: f.fetch }, env), {
-        prompt: ' CutPilot, Qaychi;\nAbdul ,CutPilot,,',
+        prompt: ' NodCut, Qaychi;\nAbdul ,NodCut,,',
       }),
     );
     const form = f.calls[0]!.init.body as FormData;
     expect(form.get('model_id')).toBe('scribe_v2');
-    expect(form.getAll('keyterms')).toEqual(['CutPilot', 'Qaychi', 'Abdul']);
+    expect(form.getAll('keyterms')).toEqual(['NodCut', 'Qaychi', 'Abdul']);
   });
 
   test('key terms: at most 100, each up to 50 characters', () => {
@@ -176,18 +176,18 @@ describe('ElevenLabs', () => {
     const e = error(await transcribe(await connect({ fetch: f.fetch }, {})));
     expect(e).toMatchObject({ code: 'E_PLUGIN_NEEDS_SECRET' });
     expect(e.message).toMatch(/ElevenLabs/);
-    expect(e.fix).toMatch(/ELEVENLABS_API_KEY in CutPilot → Plugins → Cloud transcription → Keys/);
+    expect(e.fix).toMatch(/ELEVENLABS_API_KEY in NodCut → Plugins → Cloud transcription → Keys/);
     expect(f.calls).toHaveLength(0);
   });
 });
 
 describe('OpenAI', () => {
-  const env = { ...KEYS, CUTPILOT_SETTING_PROVIDER: 'openai' };
+  const env = { ...KEYS, NODCUT_SETTING_PROVIDER: 'openai' };
 
   test('uploads the wav with the request whisper-1 expects and maps the answer', async () => {
     const f = fakeFetch(200, fixture('openai.json'));
     const r = structured<Words>(
-      await transcribe(await connect({ fetch: f.fetch }, env), { language: 'ru', prompt: 'CutPilot' }),
+      await transcribe(await connect({ fetch: f.fetch }, env), { language: 'ru', prompt: 'NodCut' }),
     );
     expect(r.language).toBe('en'); // what it heard, not the hint
     expect(r.words.slice(0, 2)).toEqual([
@@ -202,7 +202,7 @@ describe('OpenAI', () => {
     expect(form.get('response_format')).toBe('verbose_json');
     expect(form.getAll('timestamp_granularities[]')).toEqual(['word']);
     expect(form.get('language')).toBe('ru');
-    expect(form.get('prompt')).toBe('CutPilot');
+    expect(form.get('prompt')).toBe('NodCut');
   });
 
   test('a file over 25 MB is refused before uploading, with a fix', async () => {
@@ -287,7 +287,7 @@ describe('test_key', () => {
   });
 
   test('no key: not OK, with where to enter it', async () => {
-    const r = await check({ fetch: fakeFetch(200, {}).fetch }, { CUTPILOT_SETTING_PROVIDER: 'openai' });
+    const r = await check({ fetch: fakeFetch(200, {}).fetch }, { NODCUT_SETTING_PROVIDER: 'openai' });
     expect(r).toMatchObject({ ok: false, provider: 'OpenAI' });
     expect(r.fix).toMatch(/Keys/);
   });
@@ -336,14 +336,14 @@ describe('over HTTP', () => {
     const el = structured<Words>(await transcribe(await connect({ origin: s.origin })));
     expect(el.words).toHaveLength(12);
     const oa = structured<Words>(
-      await transcribe(await connect({ origin: s.origin }, { ...KEYS, CUTPILOT_SETTING_PROVIDER: 'openai' })),
+      await transcribe(await connect({ origin: s.origin }, { ...KEYS, NODCUT_SETTING_PROVIDER: 'openai' })),
     );
     expect(oa.words).toHaveLength(15);
     expect(s.seen).toEqual(['POST /v1/speech-to-text', 'POST /v1/audio/transcriptions']);
   });
 });
 
-describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it', () => {
+describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as NodCut starts it', () => {
   test('testPlugin without keys: starts, offers transcribe and test_key; the call is skipped', async () => {
     const r = await testPlugin(DIR);
     expect(r.ok, formatReport(r)).toBe(true);
@@ -366,7 +366,7 @@ describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it'
     async (provider) => {
       const s = await stub();
       const dir = mkdtempSync(join(tmp, 'harness-'));
-      writeFileSync(join(dir, 'cutpilot-plugin.json'), JSON.stringify({ ...manifest, args: ['start.mjs'] }));
+      writeFileSync(join(dir, 'nodcut-plugin.json'), JSON.stringify({ ...manifest, args: ['start.mjs'] }));
       copyFileSync(join(DIR, 'icon.png'), join(dir, 'icon.png'));
       writeFileSync(
         join(dir, 'start.mjs'),
@@ -385,11 +385,11 @@ describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it'
 
 // ── live ─────────────────────────────────────────────────────────────────────
 
-const LIVE = process.env.CUTPILOT_LIVE_STT === '1';
+const LIVE = process.env.NODCUT_LIVE_STT === '1';
 
-/** A spoken English sentence as a 16 kHz mono wav: $CUTPILOT_LIVE_STT_AUDIO, or made with say / espeak-ng. */
+/** A spoken English sentence as a 16 kHz mono wav: $NODCUT_LIVE_STT_AUDIO, or made with say / espeak-ng. */
 function speech(): string | null {
-  if (process.env.CUTPILOT_LIVE_STT_AUDIO) return process.env.CUTPILOT_LIVE_STT_AUDIO;
+  if (process.env.NODCUT_LIVE_STT_AUDIO) return process.env.NODCUT_LIVE_STT_AUDIO;
   const text = 'Hello everyone, and welcome back to the channel. Today, three quick tips.';
   const raw = join(tmp, process.platform === 'darwin' ? 'speech.aiff' : 'speech-raw.wav');
   const out = join(tmp, 'speech.wav');
@@ -403,7 +403,7 @@ function speech(): string | null {
   }
 }
 
-describe.skipIf(!LIVE)('live (CUTPILOT_LIVE_STT=1 and ELEVENLABS_API_KEY or OPENAI_API_KEY)', () => {
+describe.skipIf(!LIVE)('live (NODCUT_LIVE_STT=1 and ELEVENLABS_API_KEY or OPENAI_API_KEY)', () => {
   const providers = [
     ['elevenlabs', process.env.ELEVENLABS_API_KEY],
     ['openai', process.env.OPENAI_API_KEY],
@@ -412,11 +412,11 @@ describe.skipIf(!LIVE)('live (CUTPILOT_LIVE_STT=1 and ELEVENLABS_API_KEY or OPEN
     '%s transcribes real speech',
     async (provider) => {
       const audio = speech();
-      if (!audio) throw new Error('no speech: set CUTPILOT_LIVE_STT_AUDIO to a 16 kHz mono wav');
+      if (!audio) throw new Error('no speech: set NODCUT_LIVE_STT_AUDIO to a 16 kHz mono wav');
       const env = {
-        CUTPILOT_SETTING_PROVIDER: provider,
-        CUTPILOT_SECRET_ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY,
-        CUTPILOT_SECRET_OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+        NODCUT_SETTING_PROVIDER: provider,
+        NODCUT_SECRET_ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY,
+        NODCUT_SECRET_OPENAI_API_KEY: process.env.OPENAI_API_KEY,
       };
       const c = await connect({}, env);
       expect(structured<{ ok: boolean }>(await c.callTool({ name: 'test_key', arguments: {} })).ok).toBe(

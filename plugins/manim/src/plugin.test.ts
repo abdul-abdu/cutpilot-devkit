@@ -1,6 +1,6 @@
 /**
  * The tools through MCP (in memory), the parts that find and read Manim, real renders, and the
- * plugin as CutPilot starts it (needs `pnpm build`). Renders need Manim: one installed (a manim
+ * plugin as NodCut starts it (needs `pnpm build`). Renders need Manim: one installed (a manim
  * on PATH, or a Python that imports it), or uv with MANIM_E2E=1 set (uv downloads Manim from
  * PyPI the first time, so CI, which has no network, skips them).
  */
@@ -11,7 +11,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { definePlugin, formatReport, KIND_TOOLS, testPlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin, formatReport, KIND_TOOLS, testPlugin } from '@nodcut/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import { definition } from './plugin.js';
 import { expressionProblem, TEMPLATES } from './templates.js';
@@ -27,7 +27,7 @@ import {
 } from './toolchain.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
-const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(DIR, 'nodcut-plugin.json'), 'utf8'));
 const runner = findManim(undefined);
 const canRender = !!runner && (runner.via !== 'uv' || !!process.env.MANIM_E2E);
 const hasLatex = !!findLatex().latex && !!findLatex().dvisvgm;
@@ -123,7 +123,7 @@ describe('tools', () => {
   });
 
   test('a Manim setting that points nowhere is named, not replaced by another Manim', async () => {
-    const c = await connect({ CUTPILOT_SETTING_MANIM_COMMAND: '/nowhere/manim' });
+    const c = await connect({ NODCUT_SETTING_MANIM_COMMAND: '/nowhere/manim' });
     const r = errorOf(
       await c.callTool({
         name: 'generate',
@@ -191,11 +191,11 @@ describe('finding Manim', () => {
 
 describe("reading Manim's output", () => {
   test('progress, the runtime’s error line, and Manim’s own last error', () => {
-    expect(progressOf('CUTPILOT_PROGRESS 0.333')).toBe(0.333);
+    expect(progressOf('NODCUT_PROGRESS 0.333')).toBe(0.333);
     expect(progressOf('Animation 0: Write(Text(...)):  65%|██████')).toBeNull();
     const tail = [
       'Animation 1: Create(Circle):  50%|',
-      "CUTPILOT_ERROR NameError: name 'Squre' is not defined (line 7: self.play(Transform(c, Squre())))",
+      "NODCUT_ERROR NameError: name 'Squre' is not defined (line 7: self.play(Transform(c, Squre())))",
       '╭──── Traceback ────╮',
       "│ NameError: name 'Squre' is not defined │",
     ];
@@ -325,7 +325,7 @@ describe.skipIf(!canRender)('renders (Manim)', () => {
   }, 600_000);
 });
 
-describe.skipIf(!existsSync(join(DIR, 'dist/index.js')) || !canRender)('as CutPilot starts it', () => {
+describe.skipIf(!existsSync(join(DIR, 'dist/index.js')) || !canRender)('as NodCut starts it', () => {
   test('testPlugin renders every template with its example', async () => {
     const r = await testPlugin(DIR, { templates: 'all', timeoutMs: 300_000 });
     const expected = (id: string) => (id === 'equation' && !hasLatex ? 'fail' : 'pass');

@@ -31,16 +31,16 @@ const WebUrl = z.string().regex(/^https:\/\/[^\s]+$/, 'an https URL');
 
 export const PublisherSchema = z.object({
   name: z.string().min(1).max(60),
-  /** the store checked who this is (CutPilot itself, or a known author) */
+  /** the store checked who this is (NodCut itself, or a known author) */
   verified: z.boolean().default(false),
 });
 
 export const RegistryVersionSchema = z.object({
   version: z.string().regex(VERSION_RE, 'versions are semver'),
-  cutpilot: z.string().refine((r) => parseRange(r) !== null, 'a semver range'),
+  nodcut: z.string().refine((r) => parseRange(r) !== null, 'a semver range'),
   contract: z.number().int().positive(),
   /**
-   * the kinds of this version; any name, so a kind added later doesn't make an older CutPilot
+   * the kinds of this version; any name, so a kind added later doesn't make an older NodCut
    * refuse the whole catalog (P3-067): `latestCompatible` passes over a version it can't run
    */
   kinds: z.array(z.string().min(1).max(60)).default([]),
@@ -111,7 +111,7 @@ const byVersionDesc = (a: RegistryVersion, b: RegistryVersion) =>
 /** Versions newest first. */
 export const sortedVersions = (p: RegistryPlugin): RegistryVersion[] => [...p.versions].sort(byVersionDesc);
 
-/** Kinds this plugin-api knows; a version with another kind is for a newer CutPilot. */
+/** Kinds this plugin-api knows; a version with another kind is for a newer NodCut. */
 const knownKind = (k: string) => PluginKindSchema.safeParse(k).success;
 
 /** The newest version this engine can run (its contract, engine range and kinds), or null. */
@@ -119,7 +119,7 @@ export function latestCompatible(p: RegistryPlugin, engineVersion: string): Regi
   return (
     sortedVersions(p).find(
       (v) =>
-        v.contract === CONTRACT_VERSION && satisfies(engineVersion, v.cutpilot) && v.kinds.every(knownKind),
+        v.contract === CONTRACT_VERSION && satisfies(engineVersion, v.nodcut) && v.kinds.every(knownKind),
     ) ?? null
   );
 }

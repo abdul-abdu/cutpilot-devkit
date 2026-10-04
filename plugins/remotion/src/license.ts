@@ -1,6 +1,6 @@
 /**
- * Bring your own licence. The user, not CutPilot, is Remotion's licensee: nothing here works until
- * the user enters their own Remotion licence key in CutPilot → Plugins → Remotion (a secret only
+ * Bring your own licence. The user, not NodCut, is Remotion's licensee: nothing here works until
+ * the user enters their own Remotion licence key in NodCut → Plugins → Remotion (a secret only
  * the user can set; the AI can't). "free-license" declares they qualify for Remotion's free
  * licence; a Company License key comes from remotion.pro. The key goes to Remotion's renderer as
  * `licenseKey`, as Remotion asks, and nowhere else.
@@ -12,7 +12,7 @@
 import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { PluginFailure, type PluginContext } from '@cutpilot/plugin-sdk';
+import { PluginFailure, type PluginContext } from '@nodcut/plugin-sdk';
 import { writeAtomic } from './scenes.js';
 
 export const LICENSE_SECRET = 'REMOTION_LICENSE_KEY';
@@ -20,11 +20,11 @@ export const FREE_LICENSE = 'free-license';
 
 export const LICENSE_NOTICE =
   'This plugin uses your own installation of Remotion, which is licensed separately by Remotion AG. ' +
-  'CutPilot does not include or license Remotion. You are responsible for complying with Remotion’s license: ' +
+  'NodCut does not include or license Remotion. You are responsible for complying with Remotion’s license: ' +
   'it’s free for individuals and companies of up to 3 people; larger companies need a Remotion Company License — remotion.pro.';
 
 const KEY_FIX =
-  `enter your Remotion licence key as ${LICENSE_SECRET} in CutPilot → Plugins → Remotion: "${FREE_LICENSE}" ` +
+  `enter your Remotion licence key as ${LICENSE_SECRET} in NodCut → Plugins → Remotion: "${FREE_LICENSE}" ` +
   'if you qualify for the free licence (individuals, companies of up to 3 people, non-profits), ' +
   'or your Company License key from remotion.pro. Only the user can do this; ask them.';
 
@@ -58,13 +58,13 @@ export interface Acceptance {
 
 /** Where the records are kept: a folder of this plugin's own, outside the user's project. */
 export function stateDir(env: NodeJS.ProcessEnv = process.env): string {
-  if (env.CUTPILOT_REMOTION_STATE_DIR) return env.CUTPILOT_REMOTION_STATE_DIR;
+  if (env.NODCUT_REMOTION_STATE_DIR) return env.NODCUT_REMOTION_STATE_DIR;
   const home = env.HOME || homedir();
   if (process.platform === 'darwin')
-    return join(home, 'Library', 'Application Support', 'CutPilot', 'plugin-remotion');
+    return join(home, 'Library', 'Application Support', 'NodCut', 'plugin-remotion');
   if (process.platform === 'win32')
-    return join(env.APPDATA || join(home, 'AppData', 'Roaming'), 'CutPilot', 'plugin-remotion');
-  return join(env.XDG_CONFIG_HOME || join(home, '.config'), 'cutpilot', 'plugin-remotion');
+    return join(env.APPDATA || join(home, 'AppData', 'Roaming'), 'NodCut', 'plugin-remotion');
+  return join(env.XDG_CONFIG_HOME || join(home, '.config'), 'nodcut', 'plugin-remotion');
 }
 
 export function readAcceptances(dir: string): Acceptance[] {

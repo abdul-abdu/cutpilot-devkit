@@ -1,13 +1,13 @@
 /**
- * Errors between the engine and plugins. Like every CutPilot error, each has a one-line
+ * Errors between the engine and plugins. Like every NodCut error, each has a one-line
  * message and a one-line `fix` that tells the reader (often an AI agent) what to do next.
  */
 import { z } from 'zod';
 
 export const PLUGIN_ERROR_CODES = [
-  /** cutpilot-plugin.json is missing or invalid */
+  /** nodcut-plugin.json is missing or invalid */
   'E_PLUGIN_BAD_MANIFEST',
-  /** contract version or engine version range doesn't fit this CutPilot */
+  /** contract version or engine version range doesn't fit this NodCut */
   'E_PLUGIN_UNSUPPORTED',
   /** the plugin crashed, exited, or reported a failure */
   'E_PLUGIN_FAILED',

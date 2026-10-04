@@ -1,9 +1,9 @@
 {
-  "name": "cutpilot-devkit",
+  "name": "nodcut-devkit",
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Build plugins for CutPilot: the plugin API, the SDK and the first-party plugins (MIT).",
+  "description": "Build plugins for NodCut: the plugin API, the SDK and the first-party plugins (MIT).",
   "license": "MIT",
   "engines": {
     "node": ">=22"
@@ -13,7 +13,7 @@
     "build": "tsc -b",
     "clean": "tsc -b --clean",
     "bundle": "node scripts/bundle-plugin.mjs",
-    "cutpilot-plugin": "node packages/plugin-sdk/dist/bin.js",
+    "nodcut-plugin": "node packages/plugin-sdk/dist/bin.js",
     "typecheck": "tsc -b && tsc -p tsconfig.test.json",
     "lint": "eslint .",
     "format": "prettier --write .",

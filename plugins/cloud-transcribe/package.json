@@ -1,7 +1,7 @@
 {
-  "name": "@cutpilot/plugin-stt-cloud",
+  "name": "@nodcut/plugin-stt-cloud",
   "version": "0.2.0",
-  "description": "CutPilot plugin: transcription in the cloud with ElevenLabs Scribe or OpenAI whisper-1, with your own API key.",
+  "description": "NodCut plugin: transcription in the cloud with ElevenLabs Scribe or OpenAI whisper-1, with your own API key.",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -12,17 +12,17 @@
     "build": "tsc -b"
   },
   "dependencies": {
-    "@cutpilot/plugin-sdk": "workspace:*",
+    "@nodcut/plugin-sdk": "workspace:*",
     "zod": "^4.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
     "directory": "plugins/cloud-transcribe"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
-    "cutpilot",
+    "nodcut",
     "transcription",
     "speech-to-text",
     "elevenlabs",

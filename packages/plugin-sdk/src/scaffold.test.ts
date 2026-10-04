@@ -48,7 +48,7 @@ describe('scaffoldPlugin', () => {
         '.gitignore',
         'AGENTS.md',
         'README.md',
-        'cutpilot-plugin.json',
+        'nodcut-plugin.json',
         'package.json',
         'src/index.test.ts',
         'src/index.ts',
@@ -60,10 +60,10 @@ describe('scaffoldPlugin', () => {
     expect(pkg).toMatchObject({
       name: 'my-titles',
       type: 'module',
-      dependencies: { '@cutpilot/plugin-sdk': `^${sdkVersion()}` },
+      dependencies: { '@nodcut/plugin-sdk': `^${sdkVersion()}` },
     });
     expect(json(join(r.dir, 'tsconfig.json')).extends).toBeUndefined();
-    expect(readFileSync(join(r.dir, 'README.md'), 'utf8')).toContain('cutpilot plugin install . --link');
+    expect(readFileSync(join(r.dir, 'README.md'), 'utf8')).toContain('nodcut plugin install . --link');
     const agents = readFileSync(join(r.dir, 'AGENTS.md'), 'utf8');
     expect(agents).toContain('never edits the timeline');
     expect(agents).toContain('my-titles__<tool>');
@@ -82,9 +82,7 @@ describe('scaffoldPlugin', () => {
       const want = SCAFFOLD_KINDS[kind];
       expect(v.manifest!.kinds).toEqual(want ? [want] : []);
     }
-    expect(json(join(tmp, 'manifests/transcriber/cutpilot-plugin.json')).permissions.reads).toEqual([
-      'audio',
-    ]);
+    expect(json(join(tmp, 'manifests/transcriber/nodcut-plugin.json')).permissions.reads).toEqual(['audio']);
   });
 
   test('a manifest kind works as --kind too, and a name and SDK spec are kept', () => {
@@ -96,11 +94,11 @@ describe('scaffoldPlugin', () => {
       sdk: 'file:/opt/sdk',
     });
     expect(r.kind).toBe('music');
-    expect(json(join(r.dir, 'cutpilot-plugin.json'))).toMatchObject({
+    expect(json(join(r.dir, 'nodcut-plugin.json'))).toMatchObject({
       name: 'My Tunes',
       kinds: ['asset:music'],
     });
-    expect(json(join(r.dir, 'package.json')).dependencies['@cutpilot/plugin-sdk']).toBe('file:/opt/sdk');
+    expect(json(join(r.dir, 'package.json')).dependencies['@nodcut/plugin-sdk']).toBe('file:/opt/sdk');
   });
 
   test('refuses a bad id, an unknown kind, a non-empty folder and a file', () => {
@@ -137,7 +135,7 @@ describe('scaffoldPlugin', () => {
     for (const [name, range] of Object.entries(TEMPLATE_DEV_DEPENDENCIES)) expect(range).toBe(root[name]);
   });
 
-  test('cutpilot-plugin new: writes the folder and says what to do next; refusals exit 1 with a fix', async () => {
+  test('nodcut-plugin new: writes the folder and says what to do next; refusals exit 1 with a fix', async () => {
     const lines: string[] = [];
     const cwd = process.cwd();
     process.chdir(tmp);
@@ -189,7 +187,7 @@ describe.skipIf(!built)('every kind, generated, builds and passes testPlugin()',
       mkdirSync(join(gen, 'node_modules', name, '..'), { recursive: true });
       symlinkSync(to, join(gen, 'node_modules', name), 'junction');
     };
-    link(PKG, '@cutpilot/plugin-sdk');
+    link(PKG, '@nodcut/plugin-sdk');
     link(join(ROOT, 'node_modules/@types/node'), '@types/node');
     link(join(ROOT, 'node_modules/vitest'), 'vitest');
   });

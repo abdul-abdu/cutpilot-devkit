@@ -1,9 +1,9 @@
-// `npm test` builds the plugin first: testPlugin() starts dist/index.js the way CutPilot does.
+// `npm test` builds the plugin first: testPlugin() starts dist/index.js the way NodCut does.
 import { writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { formatReport, testPlugin } from '@cutpilot/plugin-sdk';
+import { formatReport, testPlugin } from '@nodcut/plugin-sdk';
 import { expect, test } from 'vitest';
 import { centreKeyframes } from './plugin.js';
 

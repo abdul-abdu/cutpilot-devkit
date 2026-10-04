@@ -1,16 +1,16 @@
 /**
- * Scenes in the user's Remotion project: one file per scene in `src/cutpilot/<id>.tsx` (the
+ * Scenes in the user's Remotion project: one file per scene in `src/nodcut/<id>.tsx` (the
  * agent's code, which default-exports the component, then a metadata block this plugin writes),
- * and `src/cutpilot/index.tsx`, which this plugin owns and rewrites from the scene files: it
- * registers each scene as `<Composition id="cutpilot-<id>" …/>`. Nothing else in the project
+ * and `src/nodcut/index.tsx`, which this plugin owns and rewrites from the scene files: it
+ * registers each scene as `<Composition id="nodcut-<id>" …/>`. Nothing else in the project
  * is written here.
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve, sep } from 'node:path';
-import { PluginFailure } from '@cutpilot/plugin-sdk';
+import { PluginFailure } from '@nodcut/plugin-sdk';
 import { z } from 'zod';
 
-/** What the spec allows in a file name: no dots, no slashes, so no way out of src/cutpilot. */
+/** What the spec allows in a file name: no dots, no slashes, so no way out of src/nodcut. */
 export const SCENE_ID_RE = /^[a-z0-9-]{1,64}$/;
 /**
  * A scene is also a template of this generator (add_insert takes its id), and template ids are
@@ -19,7 +19,7 @@ export const SCENE_ID_RE = /^[a-z0-9-]{1,64}$/;
 const TEMPLATE_ID_RE = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const TEMPLATE_ID_MAX = 40;
 
-export const COMPOSITION_PREFIX = 'cutpilot-';
+export const COMPOSITION_PREFIX = 'nodcut-';
 export const compositionId = (sceneId: string) => `${COMPOSITION_PREFIX}${sceneId}`;
 
 /** The scene id, or a PluginFailure that says what an id looks like. */
@@ -38,14 +38,14 @@ export function checkSceneId(id: unknown): string {
   return id;
 }
 
-export const scenesDir = (projectDir: string) => join(projectDir, 'src', 'cutpilot');
+export const scenesDir = (projectDir: string) => join(projectDir, 'src', 'nodcut');
 
-/** The scene's file, checked to be inside src/cutpilot (an id that passed checkSceneId always is). */
+/** The scene's file, checked to be inside src/nodcut (an id that passed checkSceneId always is). */
 export function sceneFile(projectDir: string, id: string): string {
   const dir = resolve(scenesDir(projectDir));
   const file = resolve(dir, `${checkSceneId(id)}.tsx`);
   if (!file.startsWith(dir + sep))
-    throw new PluginFailure('E_REMOTION_BAD_SCENE_ID', `${id} leads out of src/cutpilot`, 'use a plain id');
+    throw new PluginFailure('E_REMOTION_BAD_SCENE_ID', `${id} leads out of src/nodcut`, 'use a plain id');
   return file;
 }
 
@@ -76,9 +76,9 @@ export interface Scene {
 }
 
 const META_MARKER =
-  '// ── CutPilot scene metadata: written by the Remotion plugin; change it with remotion__update_scene ──';
+  '// ── NodCut scene metadata: written by the Remotion plugin; change it with remotion__update_scene ──';
 const META_RE = new RegExp(
-  `\\n?${META_MARKER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\nexport const cutpilotScene = (.*);\\n?$`,
+  `\\n?${META_MARKER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\nexport const nodcutScene = (.*);\\n?$`,
 );
 
 /** Why the agent's code can't be a scene file, or null. */
@@ -86,14 +86,14 @@ export function codeProblem(code: string): string | null {
   if (!code.trim()) return 'the code is empty';
   if (!/\bexport\s+default\b/.test(code))
     return 'the code must `export default` the scene component (e.g. export default function Scene(props) {…})';
-  if (/\bcutpilotScene\b/.test(code) || code.includes(META_MARKER))
-    return 'leave out cutpilotScene: the plugin writes the scene metadata itself from durationInFrames, fps, width, height and defaultProps';
+  if (/\bnodcutScene\b/.test(code) || code.includes(META_MARKER))
+    return 'leave out nodcutScene: the plugin writes the scene metadata itself from durationInFrames, fps, width, height and defaultProps';
   return null;
 }
 
 /** The text of a scene file: the agent's code, then the metadata block. */
 export function sceneSource(code: string, meta: SceneMeta): string {
-  return `${code.replace(/\s+$/, '')}\n\n${META_MARKER}\nexport const cutpilotScene = ${JSON.stringify(meta)};\n`;
+  return `${code.replace(/\s+$/, '')}\n\n${META_MARKER}\nexport const nodcutScene = ${JSON.stringify(meta)};\n`;
 }
 
 /** The agent's code and the metadata of a scene file, or null when it isn't one of ours. */
@@ -111,7 +111,7 @@ export function parseSceneSource(text: string): { code: string; meta: SceneMeta 
   return { code: text.slice(0, m.index).replace(/\s+$/, '') + '\n', meta: meta.data };
 }
 
-/** The scenes in src/cutpilot, by id; files that aren't scene files are left alone and skipped. */
+/** The scenes in src/nodcut, by id; files that aren't scene files are left alone and skipped. */
 export function listScenes(projectDir: string): Scene[] {
   const dir = scenesDir(projectDir);
   if (!existsSync(dir)) return [];
@@ -136,15 +136,15 @@ export function readScene(projectDir: string, id: string): Scene | null {
 /** A JS identifier for a scene id (`promo-intro` → `promo_intro`), unique among the ids given. */
 const ident = (id: string, i: number) => `S${i}_${id.replace(/-/g, '_')}`;
 
-export const INDEX_HEADER = `// Written by the CutPilot Remotion plugin, and rewritten whenever a scene changes: don't edit it.
-// Each file next to it is a scene; this registers them as compositions named cutpilot-<scene id>.`;
+export const INDEX_HEADER = `// Written by the NodCut Remotion plugin, and rewritten whenever a scene changes: don't edit it.
+// Each file next to it is a scene; this registers them as compositions named nodcut-<scene id>.`;
 
-/** src/cutpilot/index.tsx for these scene ids (sorted, so the file only changes when they do). */
+/** src/nodcut/index.tsx for these scene ids (sorted, so the file only changes when they do). */
 export function indexSource(ids: readonly string[]): string {
   const sorted = [...ids].sort();
-  if (!sorted.length) return `${INDEX_HEADER}\n\nexport const CutPilotCompositions = () => null;\n`;
+  if (!sorted.length) return `${INDEX_HEADER}\n\nexport const NodCutCompositions = () => null;\n`;
   const imports = sorted.map(
-    (id, i) => `import ${ident(id, i)}, { cutpilotScene as ${ident(id, i)}_meta } from './${id}';`,
+    (id, i) => `import ${ident(id, i)}, { nodcutScene as ${ident(id, i)}_meta } from './${id}';`,
   );
   const comps = sorted.map((id, i) => {
     const s = ident(id, i);
@@ -168,7 +168,7 @@ ${imports.join('\n')}
 
 type Props = Record<string, unknown>;
 
-export const CutPilotCompositions = () => (
+export const NodCutCompositions = () => (
   <>
 ${comps.join('\n')}
   </>
@@ -178,7 +178,7 @@ ${comps.join('\n')}
 
 /** Write a file through a temporary name, so a bundler watching src/ never sees half of it. */
 export function writeAtomic(file: string, text: string): void {
-  const tmp = `${file}.cutpilot-tmp`;
+  const tmp = `${file}.nodcut-tmp`;
   writeFileSync(tmp, text);
   renameSync(tmp, file);
 }

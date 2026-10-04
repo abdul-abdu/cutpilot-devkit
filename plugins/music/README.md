@@ -1,8 +1,8 @@
 # Music
 
-Background music for a CutPilot edit, picked by mood and length from a small library that ships inside the plugin. Nothing is downloaded and nothing leaves your computer.
+Background music for a NodCut edit, picked by mood and length from a small library that ships inside the plugin. Nothing is downloaded and nothing leaves your computer.
 
-It is an `asset:music` plugin. You don't call it directly: ask your AI for "calm music under this, quiet while I talk" and CutPilot's `find_music` and `set_music` use it. CutPilot copies the track into the project, loops it to the length of the edit when the track allows it, ducks it under speech, and keeps its licence and credit line with the project.
+It is an `asset:music` plugin. You don't call it directly: ask your AI for "calm music under this, quiet while I talk" and NodCut's `find_music` and `set_music` use it. NodCut copies the track into the project, loops it to the length of the edit when the track allows it, ducks it under speech, and keeps its licence and credit line with the project.
 
 ## The library
 
@@ -46,7 +46,7 @@ node plugins/music/scripts/make-library.mjs --only rainy-desk
 }
 ```
 
-`file` is relative to `library/`. The first mood is the track's main one. `loopable` means the end runs into the start without an audible seam, so CutPilot may repeat the track to cover a longer edit.
+`file` is relative to `library/`. The first mood is the track's main one. `loopable` means the end runs into the start without an audible seam, so NodCut may repeat the track to cover a longer edit.
 
 ## How it picks
 

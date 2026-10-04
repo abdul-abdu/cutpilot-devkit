@@ -7,7 +7,7 @@
 import { spawn } from 'node:child_process';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { basename, delimiter, dirname, isAbsolute, join } from 'node:path';
-import { PluginFailure, type PluginContext } from '@cutpilot/plugin-sdk';
+import { PluginFailure, type PluginContext } from '@nodcut/plugin-sdk';
 import { installedVersions } from './project.js';
 
 /** Where Node lives when a GUI app's PATH doesn't say: Homebrew, the nodejs.org installer, the system. */
@@ -126,7 +126,7 @@ export const BEAT_MS = 5000;
 
 /**
  * Run one step with the user's npm or npx, reporting progress for each line it prints and, while
- * it prints nothing, every `beatMs`: CutPilot ends a plugin call after 120 s without progress,
+ * it prints nothing, every `beatMs`: NodCut ends a plugin call after 120 s without progress,
  * and `npm install --loglevel=error` can be silent for minutes on a slow connection.
  */
 export function run(
@@ -140,7 +140,7 @@ export function run(
 ): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const env: NodeJS.ProcessEnv = { ...process.env, CI: '1', npm_config_yes: 'true' };
-    // under the CutPilot app this process runs as Electron-as-Node; the user's npm must not
+    // under the NodCut app this process runs as Electron-as-Node; the user's npm must not
     delete env.ELECTRON_RUN_AS_NODE;
     const binDir = dirname(bin);
     env.PATH = [binDir, ...(env.PATH ?? '').split(delimiter)].filter(Boolean).join(delimiter);

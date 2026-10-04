@@ -1,5 +1,5 @@
 /**
- * Finding the user's Node for create_project when CutPilot was opened from the Dock: its PATH
+ * Finding the user's Node for create_project when NodCut was opened from the Dock: its PATH
  * has no nvm, fnm, Volta, asdf or mise folder, so their install folders are searched.
  */
 import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -111,7 +111,7 @@ describe.skipIf(process.platform === 'win32')('run', () => {
     };
   };
 
-  test('a silent step still reports progress, so CutPilot does not take it for a hung plugin', async () => {
+  test('a silent step still reports progress, so NodCut does not take it for a hung plugin', async () => {
     const { seen, ctx: c } = ctx();
     const lines = await run(quietNpm(0.7), ['install', '--no-audit'], dir, c, 0.3, 0.8, 100);
     expect(lines).toEqual(['added 1 package']);

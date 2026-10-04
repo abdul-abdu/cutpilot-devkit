@@ -1,6 +1,6 @@
-// An extra tool: AI clients connected to CutPilot see it as `<plugin id>__suggest_titles`.
+// An extra tool: AI clients connected to NodCut see it as `<plugin id>__suggest_titles`.
 // Extra tools are read-only: they return text or data, and never change an edit.
-import { defineTool, z, type PluginDefinition } from '@cutpilot/plugin-sdk';
+import { defineTool, z, type PluginDefinition } from '@nodcut/plugin-sdk';
 
 const STOP_WORDS = new Set(
   'about after also because been before being could does from have here into just like more most only other over really should some than that their them then there these they this those very want what when where which while with would your'.split(

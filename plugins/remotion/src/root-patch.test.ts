@@ -27,17 +27,17 @@ function project(files: Record<string, string>): string {
 
 describe('patching the root component', () => {
   test('the blank template: the tag before </>, the import after the last import, in its style', () => {
-    const r = patchRootSource(BLANK_ROOT, './cutpilot');
+    const r = patchRootSource(BLANK_ROOT, './nodcut');
     expect(r).toEqual({
       kind: 'patched',
       text: `import { MyComposition } from "./Composition";
-import { CutPilotCompositions } from "./cutpilot";
+import { NodCutCompositions } from "./nodcut";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
       <MyComposition />
-      <CutPilotCompositions />
+      <NodCutCompositions />
     </>
   );
 };
@@ -46,42 +46,42 @@ export const RemotionRoot: React.FC = () => {
   });
 
   test('already patched: nothing to do, also when it was added by hand', () => {
-    const once = patchRootSource(BLANK_ROOT, './cutpilot');
-    expect(once.kind === 'patched' && patchRootSource(once.text, './cutpilot')).toEqual({ kind: 'already' });
-    expect(patchRootSource('export const R = () => <><CutPilotCompositions/></>;', './cutpilot')).toEqual({
+    const once = patchRootSource(BLANK_ROOT, './nodcut');
+    expect(once.kind === 'patched' && patchRootSource(once.text, './nodcut')).toEqual({ kind: 'already' });
+    expect(patchRootSource('export const R = () => <><NodCutCompositions/></>;', './nodcut')).toEqual({
       kind: 'already',
     });
   });
 
   test('a fragment on one line, no imports, tabs and multi-line imports', () => {
-    expect(patchRootSource('export const R = () => <><A /></>;\n', './cutpilot')).toEqual({
+    expect(patchRootSource('export const R = () => <><A /></>;\n', './nodcut')).toEqual({
       kind: 'patched',
-      text: "import { CutPilotCompositions } from './cutpilot';\nexport const R = () => <><A /><CutPilotCompositions /></>;\n",
+      text: "import { NodCutCompositions } from './nodcut';\nexport const R = () => <><A /><NodCutCompositions /></>;\n",
     });
     const tabs = `import {\n\tA,\n\tB,\n} from './comps'\n\nexport const R = () => (\n\t<>\n\t\t<A />\n\t</>\n)\n`;
-    expect(patchRootSource(tabs, '../cutpilot')).toEqual({
+    expect(patchRootSource(tabs, '../nodcut')).toEqual({
       kind: 'patched',
-      text: `import {\n\tA,\n\tB,\n} from './comps'\nimport { CutPilotCompositions } from '../cutpilot'\n\nexport const R = () => (\n\t<>\n\t\t<A />\n\t\t<CutPilotCompositions />\n\t</>\n)\n`,
+      text: `import {\n\tA,\n\tB,\n} from './comps'\nimport { NodCutCompositions } from '../nodcut'\n\nexport const R = () => (\n\t<>\n\t\t<A />\n\t\t<NodCutCompositions />\n\t</>\n)\n`,
     });
   });
 
   test('no fragment, or more than one: left to the user, with the reason', () => {
     const single = `import { Composition } from 'remotion';\nexport const R = () => <Composition id="a" />;\n`;
-    expect(patchRootSource(single, './cutpilot')).toEqual({
+    expect(patchRootSource(single, './nodcut')).toEqual({
       kind: 'manual',
       reason: "its root component doesn't return a fragment (<>…</>)",
     });
     const two = `const A = () => <><B /></>;\nexport const R = () => <><A /></>;\n`;
-    expect(patchRootSource(two, './cutpilot')).toEqual({
+    expect(patchRootSource(two, './nodcut')).toEqual({
       kind: 'manual',
       reason: "it has 2 fragments, so the right place isn't certain",
     });
   });
 
-  test('import specifier from the root file to src/cutpilot', () => {
-    expect(importSpec('/p/src/Root.tsx', '/p')).toBe('./cutpilot');
-    expect(importSpec('/p/src/remotion/Root.tsx', '/p')).toBe('../cutpilot');
-    expect(importSpec('/p/remotion/Root.tsx', '/p')).toBe('../src/cutpilot');
+  test('import specifier from the root file to src/nodcut', () => {
+    expect(importSpec('/p/src/Root.tsx', '/p')).toBe('./nodcut');
+    expect(importSpec('/p/src/remotion/Root.tsx', '/p')).toBe('../nodcut');
+    expect(importSpec('/p/remotion/Root.tsx', '/p')).toBe('../src/nodcut');
   });
 });
 
@@ -150,11 +150,11 @@ describe('ensureRootPatched', () => {
     const r = ensureRootPatched(p, { now });
     expect(r.state).toBe('patched');
     expect(r.file).toBe('src/Root.tsx');
-    expect(r.backup).toBe('src/cutpilot/backups/src_Root.tsx.2026-10-01T12-00-00-000Z.bak');
+    expect(r.backup).toBe('src/nodcut/backups/src_Root.tsx.2026-10-01T12-00-00-000Z.bak');
     expect(readFileSync(join(p, r.backup!), 'utf8')).toBe(BLANK_ROOT);
-    expect(r.diff).toContain('+import { CutPilotCompositions } from "./cutpilot";');
-    expect(r.diff).toContain('+      <CutPilotCompositions />');
-    expect(readFileSync(join(p, 'src/Root.tsx'), 'utf8')).toContain('<CutPilotCompositions />');
+    expect(r.diff).toContain('+import { NodCutCompositions } from "./nodcut";');
+    expect(r.diff).toContain('+      <NodCutCompositions />');
+    expect(readFileSync(join(p, 'src/Root.tsx'), 'utf8')).toContain('<NodCutCompositions />');
     expect(ensureRootPatched(p)).toEqual({ state: 'already', file: 'src/Root.tsx' });
   });
 
@@ -171,8 +171,8 @@ describe('ensureRootPatched', () => {
     writeFileSync(join(p, 'src/Root.tsx'), odd);
     const r = ensureRootPatched(p);
     expect(r.state).toBe('manual');
-    expect(r.instructions).toContain("import { CutPilotCompositions } from './cutpilot';");
-    expect(r.instructions).toContain('<CutPilotCompositions />');
+    expect(r.instructions).toContain("import { NodCutCompositions } from './nodcut';");
+    expect(r.instructions).toContain('<NodCutCompositions />');
     expect(readFileSync(join(p, 'src/Root.tsx'), 'utf8')).toBe(odd);
     expect(ensureRootPatched(project({ 'package.json': '{}' })).state).toBe('manual');
   });

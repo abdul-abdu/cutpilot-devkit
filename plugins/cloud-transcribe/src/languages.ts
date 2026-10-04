@@ -1,5 +1,5 @@
 /**
- * Language codes. CutPilot speaks ISO 639-1 (`en`, `ru`, `uz`); OpenAI answers with an English
+ * Language codes. NodCut speaks ISO 639-1 (`en`, `ru`, `uz`); OpenAI answers with an English
  * name (`english`), ElevenLabs with ISO 639-3 (`eng`) or 639-1. Both map to 639-1 here; a
  * language without a two-letter code keeps its three-letter one (the contract allows it).
  */

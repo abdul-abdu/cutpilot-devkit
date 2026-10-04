@@ -1,8 +1,8 @@
-"""word-stats: a CutPilot plugin written in Python with the official MCP Python SDK.
+"""word-stats: a NodCut plugin written in Python with the official MCP Python SDK.
 
-CutPilot starts it with the manifest's command (`uv run ... server.py`) in this folder and talks
+NodCut starts it with the manifest's command (`uv run ... server.py`) in this folder and talks
 MCP over stdin/stdout. It offers one read-only extra tool, which AI clients connected to
-CutPilot see as `word-stats__word_stats`. stdout belongs to MCP: log to stderr.
+NodCut see as `word-stats__word_stats`. stdout belongs to MCP: log to stderr.
 """
 
 from __future__ import annotations

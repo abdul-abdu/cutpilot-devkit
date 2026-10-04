@@ -1,5 +1,5 @@
 // The manifest is fine; the answer isn't: definePlugin refuses it with E_PLUGIN_CONTRACT.
-import { definePlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin } from '@nodcut/plugin-sdk';
 
 await definePlugin({
   transcribe: () => ({

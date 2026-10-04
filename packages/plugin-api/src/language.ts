@@ -1,6 +1,6 @@
 /**
- * Language packs: a `language` plugin translates CutPilot's interface (P3-067). It is data
- * only, so CutPilot never starts it: the manifest's `languages` names, per language, a catalogue
+ * Language packs: a `language` plugin translates NodCut's interface (P3-067). It is data
+ * only, so NodCut never starts it: the manifest's `languages` names, per language, a catalogue
  * of the window's strings and one of the menu bar's labels, both keyed by the English text.
  */
 import { z } from 'zod';
@@ -55,7 +55,7 @@ export const PluralFormsSchema = z
 /**
  * The window's strings. A key is the English text (`Export…`, `Cut {n} words`), or for a count
  * its English singular (`{n} change`) with the forms as the value. `{name}` placeholders are
- * filled in by CutPilot; a key may start with a context, `workspace|Review`, that English hides.
+ * filled in by NodCut; a key may start with a context, `workspace|Review`, that English hides.
  */
 export const MessageCatalogueSchema = z.record(
   z.string().min(1).max(2000),
@@ -63,7 +63,7 @@ export const MessageCatalogueSchema = z.record(
 );
 export type MessageCatalogue = z.infer<typeof MessageCatalogueSchema>;
 
-/** The menu bar's labels, keyed by the English label (`Export…`, `Quit CutPilot`). */
+/** The menu bar's labels, keyed by the English label (`Export…`, `Quit NodCut`). */
 export const MenuCatalogueSchema = z.record(z.string().min(1).max(200), z.string().max(200));
 export type MenuCatalogue = z.infer<typeof MenuCatalogueSchema>;
 
@@ -102,8 +102,8 @@ export function catalogueProblems(catalogue: MessageCatalogue | MenuCatalogue): 
 }
 
 /**
- * How a catalogue compares with the strings CutPilot uses (its published list for a version):
- * the ones it lacks show in English; the ones CutPilot no longer uses are ignored.
+ * How a catalogue compares with the strings NodCut uses (its published list for a version):
+ * the ones it lacks show in English; the ones NodCut no longer uses are ignored.
  */
 export function catalogueCoverage(
   catalogue: Record<string, unknown>,
@@ -123,7 +123,7 @@ const issueLines = (file: string, e: z.ZodError) =>
 
 /**
  * One language of a pack from its parsed files (`menu` undefined when the manifest names none).
- * The engine and `cutpilot-plugin validate` both judge a pack with this, so they agree.
+ * The engine and `nodcut-plugin validate` both judge a pack with this, so they agree.
  */
 export function parseLanguagePack(language: Language, messages: unknown, menu?: unknown): LanguagePackResult {
   const m = MessageCatalogueSchema.safeParse(messages);
@@ -140,13 +140,13 @@ export function parseLanguagePack(language: Language, messages: unknown, menu?: 
 }
 
 /**
- * The strings a CutPilot version shows, published with each release for pack authors
- * (`cutpilot-plugin validate --strings strings.json` reports what a pack lacks).
+ * The strings a NodCut version shows, published with each release for pack authors
+ * (`nodcut-plugin validate --strings strings.json` reports what a pack lacks).
  */
 export const StringsSchema = z
   .object({
-    /** the CutPilot version these are from */
-    cutpilot: z.string(),
+    /** the NodCut version these are from */
+    nodcut: z.string(),
     /** the window's: `MessageCatalogue` keys (a count by its English singular) */
     messages: z.array(z.string()),
     /** the menu bar's: `MenuCatalogue` keys */

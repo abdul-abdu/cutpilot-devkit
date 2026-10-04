@@ -1,8 +1,8 @@
 # HTML Motion
 
-Motion-graphics clips for a CutPilot edit: title cards, chapter headings, quotes, bullet lists, end cards and the beats of a short ad (hook, offer, big number, social proof). Each template is a small HTML page with a GSAP timeline. The plugin renders it at your edit's size (9:16, 1:1, 16:9, …) with [HyperFrames](https://github.com/heygen-com/hyperframes) and a local Chrome, and CutPilot puts the clip into the timeline as an **insert**, an undoable edit like any other. Your video is never touched.
+Motion-graphics clips for a NodCut edit: title cards, chapter headings, quotes, bullet lists, end cards and the beats of a short ad (hook, offer, big number, social proof). Each template is a small HTML page with a GSAP timeline. The plugin renders it at your edit's size (9:16, 1:1, 16:9, …) with [HyperFrames](https://github.com/heygen-com/hyperframes) and a local Chrome, and NodCut puts the clip into the timeline as an **insert**, an undoable edit like any other. Your video is never touched.
 
-It is a `generator` plugin. You don't call it directly: ask your AI for "a title card before the intro", "chapter headings before each part", or "an end card with my handle". CutPilot's `list_templates` and `add_insert` tools use it.
+It is a `generator` plugin. You don't call it directly: ask your AI for "a title card before the intro", "chapter headings before each part", or "an end card with my handle". NodCut's `list_templates` and `add_insert` tools use it.
 
 ## Templates
 
@@ -20,7 +20,7 @@ Every template also takes `background`, `color` and `accent` (`#RRGGBB`). Text s
 
 ## What it needs
 
-- Google Chrome (or Chromium, Edge, Brave). If none is installed it also finds a Chrome that Puppeteer downloaded (`npx puppeteer browsers install chrome-headless-shell`), or the one named by `PUPPETEER_EXECUTABLE_PATH`. You can also set **Chrome executable** in CutPilot → Plugins → HTML Motion.
+- Google Chrome (or Chromium, Edge, Brave). If none is installed it also finds a Chrome that Puppeteer downloaded (`npx puppeteer browsers install chrome-headless-shell`), or the one named by `PUPPETEER_EXECUTABLE_PATH`. You can also set **Chrome executable** in NodCut → Plugins → HTML Motion.
 - ffmpeg with ffprobe on PATH (macOS: `brew install ffmpeg`).
 
 It works offline: the plugin declares no network and gets no access to your videos. GSAP is copied next to each page, fonts are your system's, and HyperFrames runs without telemetry or update checks. Ask your AI to run `html-motion__doctor` if a render fails; it says what is missing.
@@ -29,9 +29,9 @@ Settings: **Chrome executable** (blank: find one) and **Render quality** (`draft
 
 ## How it works
 
-`generate` checks the parameters against the template's schema and the length against its bounds, then writes a HyperFrames project (`index.html`, `vendor/gsap.min.js`) into a folder under the temp directory named by a hash of everything that affects the picture: template, parameters, size, fps, length, quality, and the plugin and HyperFrames versions. It renders `clip.mp4` there, checks it with ffprobe, and returns its path. Asking for the same clip again returns that file without rendering. CutPilot copies the clip into the project, so the temp folder can be cleared at any time.
+`generate` checks the parameters against the template's schema and the length against its bounds, then writes a HyperFrames project (`index.html`, `vendor/gsap.min.js`) into a folder under the temp directory named by a hash of everything that affects the picture: template, parameters, size, fps, length, quality, and the plugin and HyperFrames versions. It renders `clip.mp4` there, checks it with ffprobe, and returns its path. Asking for the same clip again returns that file without rendering. NodCut copies the clip into the project, so the temp folder can be cleared at any time.
 
-HyperFrames renders whole frames per second, so fps is rounded (29.97 → 30); CutPilot resamples inserts to the edit's frame rate when it renders.
+HyperFrames renders whole frames per second, so fps is rounded (29.97 → 30); NodCut resamples inserts to the edit's frame rate when it renders.
 
 A 3 s title card at 1080×1920 renders in about 8 s on a Linux container with the headless shell, most of which is Chrome starting.
 
@@ -40,7 +40,7 @@ A 3 s title card at 1080×1920 renders in about 8 s on a Linux container with th
 ```sh
 pnpm build
 pnpm vitest run plugins/html-motion   # renders every template (needs Chrome + ffmpeg)
-cutpilot plugin install plugins/html-motion --link
+nodcut plugin install plugins/html-motion --link
 pnpm bundle plugins/html-motion       # → build/html-motion, for a copied install or the store
 ```
 

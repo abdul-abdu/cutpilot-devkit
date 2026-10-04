@@ -20,12 +20,12 @@ function folder(name: string, manifest: Record<string, unknown> | string, files:
     version: '1.0.0',
     description: 'test',
     contract: 1,
-    cutpilot: '*',
+    nodcut: '*',
     command: 'node',
     args: ['index.mjs'],
   };
   writeFileSync(
-    join(dir, 'cutpilot-plugin.json'),
+    join(dir, 'nodcut-plugin.json'),
     typeof manifest === 'string' ? manifest : JSON.stringify({ ...base, ...manifest }),
   );
   for (const f of files) {
@@ -56,19 +56,17 @@ describe('validatePluginFolder', () => {
     expect(r.manifest).toBeUndefined();
     expect(r.checks).toHaveLength(1);
     const c = r.checks[0]!;
-    expect(c).toMatchObject({ name: 'manifest', result: 'fail', fix: 'fix cutpilot-plugin.json' });
+    expect(c).toMatchObject({ name: 'manifest', result: 'fail', fix: 'fix nodcut-plugin.json' });
     expect(c.detail).toContain('id: ids are kebab-case');
-    expect(c.detail).toContain('contract: this CutPilot speaks plugin contract 1');
-    expect(formatReport(r)).toMatch(
-      /^✗ manifest — .*\n {4}fix: fix cutpilot-plugin.json\n.*: 1 check failed$/,
-    );
+    expect(c.detail).toContain('contract: this NodCut speaks plugin contract 1');
+    expect(formatReport(r)).toMatch(/^✗ manifest — .*\n {4}fix: fix nodcut-plugin.json\n.*: 1 check failed$/);
   });
 
   test("the bad-output fixture's manifest is fine: what it returns is testPlugin's business", () => {
     expect(validatePluginFolder(join(FIXTURES, 'bad-output')).ok).toBe(true);
   });
 
-  test('a language pack: nothing to start, each catalogue judged as CutPilot judges it (P3-067)', () => {
+  test('a language pack: nothing to start, each catalogue judged as NodCut judges it (P3-067)', () => {
     const r = validatePluginFolder(join(FIXTURES, 'language'));
     expect(r.checks).toEqual([
       { name: 'manifest', result: 'pass', detail: 'fixture-language 1.0.0' },
@@ -76,14 +74,14 @@ describe('validatePluginFolder', () => {
       { name: 'language de', result: 'pass', detail: 'Deutsch, 5 strings' },
     ]);
     const strings = {
-      cutpilot: '0.3.0',
+      nodcut: '0.3.0',
       messages: ['Export', 'Settings', '{n} change'],
       menu: ['File', 'Edit'],
     };
     const covered = validatePluginFolder(join(FIXTURES, 'language'), { strings });
     expect(covered.ok).toBe(false);
     expect(covered.checks.at(-1)).toEqual({
-      name: 'language de covers CutPilot 0.3.0',
+      name: 'language de covers NodCut 0.3.0',
       result: 'fail',
       detail: '2 strings missing (they show in English), like "Settings", "Edit"; 2 no longer used',
       fix: 'translate them in de.json and de.menu.json',
@@ -123,12 +121,12 @@ describe('validatePluginFolder', () => {
     expect(validatePluginFolder(empty)).toMatchObject({
       plugin: empty,
       ok: false,
-      checks: [{ name: 'manifest', result: 'fail', fix: `add cutpilot-plugin.json to ${empty}` }],
+      checks: [{ name: 'manifest', result: 'fail', fix: `add nodcut-plugin.json to ${empty}` }],
     });
     const broken = folder('broken', '{ "id": ');
     expect(validatePluginFolder(broken).checks[0]).toMatchObject({
       result: 'fail',
-      fix: 'make cutpilot-plugin.json valid JSON',
+      fix: 'make nodcut-plugin.json valid JSON',
     });
   });
 

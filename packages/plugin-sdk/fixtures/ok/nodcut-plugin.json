@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "A transcriber and an extra tool that answer as their contracts say.",
   "contract": 1,
-  "cutpilot": ">=0.1",
+  "nodcut": ">=0.1",
   "command": "node",
   "args": ["index.mjs"],
   "kinds": ["transcriber"],

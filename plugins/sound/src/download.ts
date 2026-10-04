@@ -10,7 +10,7 @@ import { chmod, mkdir, readdir, rename, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Readable, Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import { PluginFailure } from '@cutpilot/plugin-sdk';
+import { PluginFailure } from '@nodcut/plugin-sdk';
 import type { Download } from './catalog.js';
 
 export interface DownloadOptions {

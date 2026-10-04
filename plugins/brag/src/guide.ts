@@ -1,6 +1,6 @@
 /**
  * The method the AI follows, adapted from /brag (https://github.com/latent-spaces/brag, MIT,
- * Copyright (c) 2026 Shunit Haviv Hakimi) for CutPilot: brag owns the story (angle, hook,
+ * Copyright (c) 2026 Shunit Haviv Hakimi) for NodCut: brag owns the story (angle, hook,
  * storyboard, tone, what to show, share copy); HyperFrames builds and renders it. Upstream, the
  * agent runs HyperFrames itself and reads its own HyperFrames skills; here the plugin runs it
  * (start_project, write_file, add_asset, check, snapshot, render) and these pages carry what the
@@ -24,14 +24,14 @@ export const TONES = [
   'app-store',
 ] as const;
 
-const WORKFLOW = `# /brag in CutPilot: you built it, now brag
+const WORKFLOW = `# /brag in NodCut: you built it, now brag
 
 Turn something the user made (an app, a site, a product, a project) into a short, polished, shareable launch video: music, motion and share copy. You own the story; HyperFrames builds and renders it through this plugin's tools. Adapted from /brag by latent-spaces (MIT).
 
 Options the user may give, as flags or plain words: tone (a preset or freeform direction, e.g. "fake Series A launch from 2016"), format (landscape 1920x1080 by default, vertical 1080x1920, square 1080x1080), duration (15–25 s; about 20 by default), no music, no sfx, a title.
 
 ## 1. Inspect
-Gather material from what you can reach: the project's files if you can read them (index.html, styles, README, package.json, routes and the key components), the live site if you can fetch it, the user's footage in this CutPilot project (its transcript and frames), and what the user tells you. Read beyond the landing page: the best material is the product in use, its 2–3 beats: entry → key action → result.
+Gather material from what you can reach: the project's files if you can read them (index.html, styles, README, package.json, routes and the key components), the live site if you can fetch it, the user's footage in this NodCut project (its transcript and frames), and what the user tells you. Read beyond the landing page: the best material is the product in use, its 2–3 beats: entry → key action → result.
 
 Answer these nine before planning:
 1. What is it? One sentence.
@@ -51,12 +51,12 @@ Shape: Hook (2–3 s) → Reveal (2–4 s) → 2–3 sharp highlights (5–12 s)
 What to show, best first: recreate a working-app moment (the product doing its thing); recreate a UI element in HTML (hero card, progress meter, swipe UI); animate the core concept; let the copy be the visual (giant type).
 
 ## 3. Compose
-Copy what the video uses into the project with add_asset: the logo, screenshots, product images, footage (a clip of the user's own video works), fonts, and music. Music, one of: a file the user has (ask for its absolute path); music made with generate_sound (kind "music"), which returns a file path but needs a CutPilot project from open_project; or a track from CutPilot's music library, which find_music lists by id, not by file, so it cannot go through add_asset: render brag.mp4 without music, then open_project on brag.mp4 and set_music with that id (CutPilot fades and loops it) and render there. Never guess a path to a file: add_asset takes only a path the user gave you or a tool returned. With no music, say so and decide whether silence is the stronger choice. Sound effects: list_sounds, then add_asset with "sound"; choose them after the motion exists, so each lands with what moves.
+Copy what the video uses into the project with add_asset: the logo, screenshots, product images, footage (a clip of the user's own video works), fonts, and music. Music, one of: a file the user has (ask for its absolute path); music made with generate_sound (kind "music"), which returns a file path but needs a NodCut project from open_project; or a track from NodCut's music library, which find_music lists by id, not by file, so it cannot go through add_asset: render brag.mp4 without music, then open_project on brag.mp4 and set_music with that id (NodCut fades and loops it) and render there. Never guess a path to a file: add_asset takes only a path the user gave you or a tool returned. With no music, say so and decide whether silence is the stronger choice. Sound effects: list_sounds, then add_asset with "sound"; choose them after the motion exists, so each lands with what moves.
 Write composition/index.html with write_file (call guide with topic "hyperframes" first: the rules a composition must follow). Recreate the product's UI in HTML and CSS with its real copy, colours and fonts rather than panning over screenshots.
 Then check (HyperFrames lint plus a browser pass for layout, overflow and contrast) and fix every error. Look at stills with snapshot, from every scene and from mid-transition, and fix overflow, collisions and low contrast. A plain crossfade between two busy layouts makes a muddy double exposure: stagger it (old content out, then new content in) or dip through the background.
 
 ## 4. Deliver
-render with posterAt: the time of the strongest settled frame (text fully in, not mid-transition). It writes brag.mp4, brag.jpg, and bakes the poster in as frame 0 so every platform's thumbnail shows it. Write share-copy.txt with write_file: 1–3 sentences, postable as is, specific, in the tone; no "excited to share". Then offer to put brag.mp4 into the user's CutPilot project, tell them where the files are, give one sentence on the creative angle, and offer to re-roll a scene or try another tone.
+render with posterAt: the time of the strongest settled frame (text fully in, not mid-transition). It writes brag.mp4, brag.jpg, and bakes the poster in as frame 0 so every platform's thumbnail shows it. Write share-copy.txt with write_file: 1–3 sentences, postable as is, specific, in the tone; no "excited to share". Then offer to put brag.mp4 into the user's NodCut project, tell them where the files are, give one sentence on the creative angle, and offer to re-roll a scene or try another tone.
 
 ## Creative laws (every tone)
 - Short: 15–25 s, 18–22 is the sweet spot.

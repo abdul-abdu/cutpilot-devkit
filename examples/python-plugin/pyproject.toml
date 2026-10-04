@@ -1,7 +1,7 @@
 [project]
-name = "cutpilot-word-stats"
+name = "nodcut-word-stats"
 version = "0.1.0"
-description = "A CutPilot plugin written in Python: word statistics for a transcript."
+description = "A NodCut plugin written in Python: word statistics for a transcript."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"

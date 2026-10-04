@@ -1,7 +1,7 @@
 /**
  * The first-party language packs (P3-067) are complete and well-formed against the strings the
  * app shows (`strings/strings.json`, written by the app's `pnpm strings`): every string
- * translated, every placeholder kept, nothing CutPilot no longer uses.
+ * translated, every placeholder kept, nothing NodCut no longer uses.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';

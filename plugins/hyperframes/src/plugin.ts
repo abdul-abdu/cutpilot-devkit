@@ -2,12 +2,12 @@
  * The plugin's tools. All are extra (free-form) tools: HyperFrames fits no plugin kind, so an AI
  * client sees them as hyperframes__doctor, hyperframes__compose, hyperframes__lint and
  * hyperframes__render, and passes them what it read from the engine (get_words, preview_data).
- * Nothing here touches the CutPilot timeline: the plugin writes a project folder and an MP4.
+ * Nothing here touches the NodCut timeline: the plugin writes a project folder and an MP4.
  */
 import { copyFileSync, existsSync, mkdirSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, extname, isAbsolute, join, resolve } from 'node:path';
-import { ASPECTS, PluginFailure, type ExtraTool, type PluginDefinition } from '@cutpilot/plugin-sdk';
+import { ASPECTS, PluginFailure, type ExtraTool, type PluginDefinition } from '@nodcut/plugin-sdk';
 import { z } from 'zod';
 import {
   CaptionsSchema,
@@ -25,7 +25,7 @@ import { probe, type Probe } from './probe.js';
 const tool = <S extends z.ZodRawShape>(t: ExtraTool<S>): ExtraTool => t as unknown as ExtraTool;
 
 const QUALITIES = ['draft', 'looks', 'delivery'] as const;
-const PROJECT_FILE = 'cutpilot-edit.json';
+const PROJECT_FILE = 'nodcut-edit.json';
 
 const Dim = z.number().int().min(16).max(7680);
 
@@ -66,7 +66,7 @@ const noBrowser = () =>
   new PluginFailure(
     'E_HYPERFRAMES_NO_BROWSER',
     'no Chrome to render with',
-    'install Google Chrome, or set "Chrome executable" in CutPilot → Plugins → HyperFrames',
+    'install Google Chrome, or set "Chrome executable" in NodCut → Plugins → HyperFrames',
   );
 
 const slug = (s: string) =>
@@ -171,7 +171,7 @@ export const definition: PluginDefinition = {
           );
 
         const project = resolve(
-          a.project ?? join(tmpdir(), 'cutpilot-hyperframes', slug(basename(a.source, extname(a.source)))),
+          a.project ?? join(tmpdir(), 'nodcut-hyperframes', slug(basename(a.source, extname(a.source)))),
         );
         mkdirSync(join(project, 'assets'), { recursive: true });
         mkdirSync(join(project, 'vendor'), { recursive: true });

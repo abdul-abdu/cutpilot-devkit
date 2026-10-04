@@ -1,12 +1,12 @@
 // A generator: clips made from templates (a title card, a chapter heading, an end card).
-// CutPilot asks for a clip at its timeline's size, frame rate and length, and puts the MP4 it
+// NodCut asks for a clip at its timeline's size, frame rate and length, and puts the MP4 it
 // gets back into the edit as an insert.
 import { execFile } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
-import { findOnPath, PluginFailure, z, type PluginDefinition } from '@cutpilot/plugin-sdk';
+import { findOnPath, PluginFailure, z, type PluginDefinition } from '@nodcut/plugin-sdk';
 
 const run = promisify(execFile);
 

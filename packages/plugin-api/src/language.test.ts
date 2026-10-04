@@ -38,7 +38,7 @@ describe('language catalogues (P3-067)', () => {
     expect(catalogueProblems({ 'One clip': { one: 'Ein Clip', other: '{n} Clips' } })).toEqual([]);
   });
 
-  test('coverage against the strings CutPilot uses', () => {
+  test('coverage against the strings NodCut uses', () => {
     expect(catalogueCoverage({ Export: 'Exportieren', Gone: 'Weg' }, ['Export', 'Settings'])).toEqual({
       missing: ['Settings'],
       unused: ['Gone'],

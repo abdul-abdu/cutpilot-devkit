@@ -1,4 +1,4 @@
-/** `cutpilot-plugin.json`: what a plugin is, what it needs, and how to start it. */
+/** `nodcut-plugin.json`: what a plugin is, what it needs, and how to start it. */
 import { z } from 'zod';
 import { LanguageSchema } from './language.js';
 import { parseRange, VERSION_RE } from './version.js';
@@ -6,7 +6,7 @@ import { parseRange, VERSION_RE } from './version.js';
 /** The plugin contract this package describes. The engine refuses other versions. */
 export const CONTRACT_VERSION = 1;
 
-export const MANIFEST_FILE = 'cutpilot-plugin.json';
+export const MANIFEST_FILE = 'nodcut-plugin.json';
 
 /** kebab-case, at most 40 characters, so `<id>__<tool>` fits MCP's 64 */
 export const PluginIdSchema = z
@@ -58,7 +58,7 @@ export const PermissionsSchema = z
   .object({
     /** hosts the plugin talks to; empty = works offline */
     network: z.array(HostSchema).default([]),
-    /** secrets the user enters in CutPilot; passed as CUTPILOT_SECRET_<NAME> */
+    /** secrets the user enters in NodCut; passed as NODCUT_SECRET_<NAME> */
     secrets: z.array(SecretNameSchema).default([]),
     reads: z.array(PluginReadSchema).default([]),
   })
@@ -74,7 +74,7 @@ export type SettingType = (typeof SETTING_TYPES)[number];
 
 export const SettingSchema = z
   .object({
-    /** passed as CUTPILOT_SETTING_<KEY in upper snake case> */
+    /** passed as NODCUT_SETTING_<KEY in upper snake case> */
     key: z.string().regex(/^[a-z][a-zA-Z0-9]*$/, 'setting keys are camelCase, like provider'),
     label: z.string().min(1).max(60),
     type: z.enum(SETTING_TYPES),
@@ -107,7 +107,7 @@ export const SettingSchema = z
 export type Setting = z.infer<typeof SettingSchema>;
 
 /**
- * How to start the plugin, run in its folder; a data-only plugin (a language pack) has none. `node` means CutPilot's own Node.js (the user may
+ * How to start the plugin, run in its folder; a data-only plugin (a language pack) has none. `node` means NodCut's own Node.js (the user may
  * not have one); another bare name is looked up on PATH (e.g. `uv`, `python3`); a path is
  * relative to the plugin folder and must stay inside it.
  */
@@ -143,10 +143,10 @@ export const ManifestSchema = z
     homepage: z.url().optional(),
     icon: IconPathSchema.optional(),
     contract: z.literal(CONTRACT_VERSION, {
-      error: `this CutPilot speaks plugin contract ${CONTRACT_VERSION}`,
+      error: `this NodCut speaks plugin contract ${CONTRACT_VERSION}`,
     }),
     /** engine versions the plugin works with, e.g. ">=0.3 <1" */
-    cutpilot: z.string().refine((r) => parseRange(r) !== null, 'cutpilot is a semver range, like >=0.3 <1'),
+    nodcut: z.string().refine((r) => parseRange(r) !== null, 'nodcut is a semver range, like >=0.3 <1'),
     command: CommandSchema.optional(),
     args: z.array(z.string()).default([]),
     kinds: z.array(PluginKindSchema).default([]),
@@ -199,7 +199,7 @@ export type Manifest = z.infer<typeof ManifestSchema>;
 
 export type ManifestResult = { ok: true; manifest: Manifest } | { ok: false; problems: string[] };
 
-/** Check a parsed `cutpilot-plugin.json`; problems read like `permissions.secrets.0: secret names look like …`. */
+/** Check a parsed `nodcut-plugin.json`; problems read like `permissions.secrets.0: secret names look like …`. */
 export function parseManifest(json: unknown): ManifestResult {
   const r = ManifestSchema.safeParse(json);
   if (r.success) return { ok: true, manifest: r.data };
@@ -209,6 +209,6 @@ export function parseManifest(json: unknown): ManifestResult {
   };
 }
 
-/** `apiKey` → `CUTPILOT_SETTING_API_KEY`; `ELEVENLABS_API_KEY` → `CUTPILOT_SECRET_ELEVENLABS_API_KEY` */
-export const settingEnv = (key: string) => `CUTPILOT_SETTING_${key.replace(/([A-Z])/g, '_$1').toUpperCase()}`;
-export const secretEnv = (name: string) => `CUTPILOT_SECRET_${name}`;
+/** `apiKey` → `NODCUT_SETTING_API_KEY`; `ELEVENLABS_API_KEY` → `NODCUT_SECRET_ELEVENLABS_API_KEY` */
+export const settingEnv = (key: string) => `NODCUT_SETTING_${key.replace(/([A-Z])/g, '_$1').toUpperCase()}`;
+export const secretEnv = (name: string) => `NODCUT_SECRET_${name}`;

@@ -20,14 +20,14 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { definePlugin, formatReport, testPlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin, formatReport, testPlugin } from '@nodcut/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import { definition, readCheck } from './plugin.js';
 import { allSounds, inside, projectsRoot, slug, soundsDir } from './project.js';
 import { findChrome, findOnPath } from './toolchain.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
-const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(DIR, 'nodcut-plugin.json'), 'utf8'));
 // resolved: macOS's temp folder is reached through a link (/var → /private/var), and the tools
 // answer resolved paths
 const tmp = realpathSync(mkdtempSync(join(tmpdir(), 'cp-brag-')));
@@ -50,8 +50,8 @@ const chrome = testChrome();
 const ffprobe = findOnPath('ffprobe');
 const canRender = !!chrome && !!findOnPath('ffmpeg') && !!ffprobe;
 const ENV = {
-  CUTPILOT_SETTING_OUTPUT_DIR: join(tmp, 'projects'),
-  CUTPILOT_SETTING_BROWSER_PATH: chrome ?? '',
+  NODCUT_SETTING_OUTPUT_DIR: join(tmp, 'projects'),
+  NODCUT_SETTING_BROWSER_PATH: chrome ?? '',
 };
 
 const clients: Client[] = [];
@@ -227,7 +227,7 @@ describe('helpers', () => {
     expect(inside(p, 'composition/index.html')).toBe(join(realpathSync(p), 'composition', 'index.html'));
     expect(() => inside(p, '../x')).toThrow(/not a path inside/);
 
-    const c = await connect({ ...ENV, CUTPILOT_SETTING_OUTPUT_DIR: join(link, 'projects') });
+    const c = await connect({ ...ENV, NODCUT_SETTING_OUTPUT_DIR: join(link, 'projects') });
     const { project } = await start(c);
     expect(project).toBe(realpathSync(project));
     expect(
@@ -330,7 +330,7 @@ describe.skipIf(!canRender)('with Chrome and ffmpeg', () => {
   }, 300_000);
 
   test('render writes brag.mp4 with music and a poster baked in as frame 0', async () => {
-    const c = await connect({ ...ENV, CUTPILOT_SETTING_QUALITY: 'draft' });
+    const c = await connect({ ...ENV, NODCUT_SETTING_QUALITY: 'draft' });
     const { project } = await start(c, { name: 'Render check', format: 'square', durationS: 2 });
     // a second of tone as the music
     const tone = join(tmp, 'tone.wav');
@@ -405,7 +405,7 @@ describe.skipIf(!canRender)('with Chrome and ffmpeg', () => {
   }, 900_000);
 });
 
-describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it', () => {
+describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as NodCut starts it', () => {
   test('testPlugin: manifest, icon, starts, offers its tools', async () => {
     const r = await testPlugin(DIR, { timeoutMs: 60_000 });
     expect(r.ok, formatReport(r)).toBe(true);

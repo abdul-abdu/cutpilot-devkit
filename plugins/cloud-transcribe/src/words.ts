@@ -1,5 +1,5 @@
 /**
- * From a provider's answer to CutPilot's words: integer milliseconds, punctuation on the word
+ * From a provider's answer to NodCut's words: integer milliseconds, punctuation on the word
  * it belongs to, non-speech events marked, times in order. Pure functions, no network.
  */
 import { z } from 'zod';

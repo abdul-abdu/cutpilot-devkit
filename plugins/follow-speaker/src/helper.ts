@@ -6,7 +6,7 @@ import { spawn } from 'node:child_process';
 import { accessSync, constants, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PluginFailure } from '@cutpilot/plugin-sdk';
+import { PluginFailure } from '@nodcut/plugin-sdk';
 import { z } from 'zod';
 import type { Range } from './follow.js';
 import type { Sample } from './tracker.js';
@@ -14,9 +14,9 @@ import type { Sample } from './tracker.js';
 /** The plugin folder (dist/.. at run time). */
 export const PLUGIN_DIR = fileURLToPath(new URL('..', import.meta.url));
 /** Set to run another helper (tests use a stand-in written in Node). */
-export const HELPER_ENV = 'CUTPILOT_FACE_HELPER';
+export const HELPER_ENV = 'NODCUT_FACE_HELPER';
 
-/** The helper to run: $CUTPILOT_FACE_HELPER, else bin/face-helper on a Mac. */
+/** The helper to run: $NODCUT_FACE_HELPER, else bin/face-helper on a Mac. */
 export function helperPath(
   env: NodeJS.ProcessEnv = process.env,
   platform: NodeJS.Platform = process.platform,
@@ -45,7 +45,7 @@ export function helperPath(
     throw new PluginFailure(
       'E_FACE_HELPER_MISSING',
       `the face helper isn't in the plugin (${file})`,
-      'reinstall Follow the speaker from CutPilot → Plugins; when building from source, run helper/build.sh first',
+      'reinstall Follow the speaker from NodCut → Plugins; when building from source, run helper/build.sh first',
     );
   }
   return file;
@@ -123,7 +123,7 @@ export function detectFaces(
         new PluginFailure(
           'E_FACE_HELPER_FAILED',
           `the face helper couldn't start: ${e.message}`,
-          'reinstall Follow the speaker from CutPilot → Plugins',
+          'reinstall Follow the speaker from NodCut → Plugins',
         ),
       ),
     );
@@ -154,7 +154,7 @@ export function detectFaces(
           new PluginFailure(
             'E_FACE_HELPER_FAILED',
             `the face helper printed a line this plugin can't read: ${bad}`,
-            'reinstall Follow the speaker from CutPilot → Plugins',
+            'reinstall Follow the speaker from NodCut → Plugins',
           ),
         );
       resolve(out);

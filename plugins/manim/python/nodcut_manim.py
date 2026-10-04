@@ -1,14 +1,14 @@
 """
-CutPilot's Manim scenes. The plugin runs
+NodCut's Manim scenes. The plugin runs
 
-    manim render cutpilot_manim.py CutPilotScene -r W,H --fps N ...
+    manim render nodcut_manim.py NodCutScene -r W,H --fps N ...
 
-with CUTPILOT_MANIM_JOB naming a JSON file: {"template", "params", "duration" (seconds),
+with NODCUT_MANIM_JOB naming a JSON file: {"template", "params", "duration" (seconds),
 "result" (where to write what was rendered), "code" (custom-scene only: a .py file, which
 sees DURATION as a global)}. Every scene is laid out in Manim units from the frame's size, so
 one template fits 9:16, 1:1 and 16:9; nothing here needs LaTeX except the equation template.
 The scene is padded with a still frame to the length asked, its real length is written to the
-result file, and progress and errors go to stderr as CUTPILOT_PROGRESS / CUTPILOT_ERROR lines.
+result file, and progress and errors go to stderr as NODCUT_PROGRESS / NODCUT_ERROR lines.
 """
 
 import ast
@@ -21,7 +21,7 @@ import traceback
 
 from manim import *  # noqa: F403 (the scenes use Manim's whole vocabulary)
 
-JOB = json.loads(open(os.environ["CUTPILOT_MANIM_JOB"], encoding="utf-8").read())
+JOB = json.loads(open(os.environ["NODCUT_MANIM_JOB"], encoding="utf-8").read())
 P = JOB.get("params", {})
 DURATION = float(JOB["duration"])
 
@@ -253,7 +253,7 @@ TEMPLATES = {
 
 def report(scene):
     """A progress line for the plugin: the share of the clip rendered so far."""
-    print(f"CUTPILOT_PROGRESS {min(1.0, elapsed() / DURATION):.3f}", file=sys.stderr, flush=True)
+    print(f"NODCUT_PROGRESS {min(1.0, elapsed() / DURATION):.3f}", file=sys.stderr, flush=True)
 
 
 def explain(e):
@@ -263,7 +263,7 @@ def explain(e):
     msg = " ".join(str(e).split())[:400]
     if isinstance(e, SyntaxError):
         msg, at = e.msg, f" (line {e.lineno}: {(e.text or '').strip()})"
-    print(f"CUTPILOT_ERROR {type(e).__name__}: {msg}{at}", file=sys.stderr, flush=True)
+    print(f"NODCUT_ERROR {type(e).__name__}: {msg}{at}", file=sys.stderr, flush=True)
 
 
 class Reporting:
@@ -300,7 +300,7 @@ def finish(scene):
 
 if JOB["template"] == "custom-scene":
     sys.path.insert(0, os.path.dirname(JOB["code"]))
-    spec = importlib.util.spec_from_file_location("cutpilot_user_scene", JOB["code"])
+    spec = importlib.util.spec_from_file_location("nodcut_user_scene", JOB["code"])
     user = importlib.util.module_from_spec(spec)
     user.DURATION = DURATION  # the clip's length in seconds, for the scene to time itself by
     try:
@@ -312,10 +312,10 @@ if JOB["template"] == "custom-scene":
     scenes = [v for k, v in vars(user).items() if isinstance(v, type) and issubclass(v, Scene) and v.__module__ == user.__name__]
     chosen = getattr(user, name, None) if name else (scenes[-1] if scenes else None)
     if chosen is None or not (isinstance(chosen, type) and issubclass(chosen, Scene)):
-        print(f"CUTPILOT_ERROR NoScene: no Scene class {name or ''} in the code".replace("  ", " "), file=sys.stderr)
+        print(f"NODCUT_ERROR NoScene: no Scene class {name or ''} in the code".replace("  ", " "), file=sys.stderr)
         raise SystemExit(1)
 
-    class CutPilotScene(Reporting, chosen):
+    class NodCutScene(Reporting, chosen):
         def draw(self):
             if P.get("background"):
                 self.camera.background_color = P["background"]
@@ -323,7 +323,7 @@ if JOB["template"] == "custom-scene":
 
 else:
 
-    class CutPilotScene(Reporting, Scene):
+    class NodCutScene(Reporting, Scene):
         def draw(self):
             self.camera.background_color = P["background"]
             TEMPLATES[JOB["template"]](self, P, DURATION)

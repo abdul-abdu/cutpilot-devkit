@@ -1,7 +1,7 @@
 {
-  "name": "@cutpilot/plugin-asset-sound",
+  "name": "@nodcut/plugin-asset-sound",
   "version": "0.1.1",
-  "description": "CutPilot plugin: sound effects, music and voice-overs generated locally with audio.cpp (Stable Audio 3, Supertonic 3).",
+  "description": "NodCut plugin: sound effects, music and voice-overs generated locally with audio.cpp (Stable Audio 3, Supertonic 3).",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -12,17 +12,17 @@
     "build": "tsc -b"
   },
   "dependencies": {
-    "@cutpilot/plugin-sdk": "workspace:*",
+    "@nodcut/plugin-sdk": "workspace:*",
     "zod": "^4.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
     "directory": "plugins/sound"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
-    "cutpilot",
+    "nodcut",
     "audio",
     "text-to-speech",
     "sound-effects",

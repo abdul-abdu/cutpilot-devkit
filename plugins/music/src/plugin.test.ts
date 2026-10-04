@@ -1,6 +1,6 @@
 /**
  * The shipped library (its facts match its files), the tools through MCP (in memory), the plugin
- * as CutPilot starts it and as `pnpm bundle` packs it (both need `pnpm build`).
+ * as NodCut starts it and as `pnpm bundle` packs it (both need `pnpm build`).
  */
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -9,14 +9,14 @@ import { isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { definePlugin, formatReport, testPlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin, formatReport, testPlugin } from '@nodcut/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import { bundlePlugin } from '../../../scripts/bundle-plugin.mjs';
 import { LIBRARY_DIR, loadLibrary } from './library.js';
 import { definition, makeDefinition } from './plugin.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
-const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(DIR, 'nodcut-plugin.json'), 'utf8'));
 const tmp = mkdtempSync(join(tmpdir(), 'cp-music-'));
 const clients: Client[] = [];
 afterAll(async () => {
@@ -167,7 +167,7 @@ describe('tools', () => {
   });
 });
 
-describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it', () => {
+describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as NodCut starts it', () => {
   test('testPlugin passes: finds a track and gets its file', async () => {
     const r = await testPlugin(DIR);
     expect(r.ok, formatReport(r)).toBe(true);

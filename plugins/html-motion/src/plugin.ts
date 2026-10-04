@@ -2,19 +2,14 @@
  * The plugin: a `generator` (list_templates, generate) and one extra tool, doctor. generate
  * checks the parameters against the template's schema, writes a HyperFrames project in a
  * folder named by everything that affects the picture, renders it with a local Chrome, checks
- * the MP4 with ffprobe and returns its path; CutPilot copies it into the project. The same
+ * the MP4 with ffprobe and returns its path; NodCut copies it into the project. The same
  * request again is answered from that folder without rendering.
  */
 import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import {
-  PluginFailure,
-  type ExtraTool,
-  type PluginContext,
-  type PluginDefinition,
-} from '@cutpilot/plugin-sdk';
+import { PluginFailure, type ExtraTool, type PluginContext, type PluginDefinition } from '@nodcut/plugin-sdk';
 import type { z } from 'zod';
 import { compose, describeTemplate, TEMPLATES, templateById } from './templates.js';
 import { cliVersion, gsapPath, probe, runCli, toolchain } from './toolchain.js';
@@ -22,8 +17,8 @@ import { cliVersion, gsapPath, probe, runCli, toolchain } from './toolchain.js';
 const VERSION = '0.1.0';
 const QUALITIES = ['draft', 'looks', 'delivery'] as const;
 
-/** Where rendered clips are kept (the OS clears its temp folder; CutPilot keeps its own copy). */
-export const cacheDir = () => join(tmpdir(), 'cutpilot-html-motion');
+/** Where rendered clips are kept (the OS clears its temp folder; NodCut keeps its own copy). */
+export const cacheDir = () => join(tmpdir(), 'nodcut-html-motion');
 
 const issues = (e: z.ZodError) =>
   e.issues.map((i) => (i.path.length ? `${i.path.join('.')}: ${i.message}` : i.message)).join('; ');
@@ -38,7 +33,7 @@ const NO_BROWSER = () =>
   new PluginFailure(
     'E_HTML_MOTION_NO_BROWSER',
     'no Chrome to render with',
-    'install Google Chrome, or set "Chrome executable" in CutPilot → Plugins → HTML Motion',
+    'install Google Chrome, or set "Chrome executable" in NodCut → Plugins → HTML Motion',
   );
 
 /** A render's progress line → 0..1 of the render (HyperFrames prints "… 46% Streaming frame …"). */
@@ -93,7 +88,7 @@ export const definition: PluginDefinition = {
         `${t.id} lasts ${t.minDurationMs / 1000}–${t.maxDurationMs / 1000} s, not ${durationMs / 1000} s`,
         `pass durationMs between ${t.minDurationMs} and ${t.maxDurationMs}, or leave it out (${t.defaultDurationMs})`,
       );
-    // HyperFrames renders whole frames per second; CutPilot resamples the clip to the edit's rate
+    // HyperFrames renders whole frames per second; NodCut resamples the clip to the edit's rate
     const fps = Math.min(60, Math.max(1, Math.round(input.fps)));
     const frame = { width: input.width, height: input.height, fps, durationMs };
     const quality = QUALITIES.includes(ctx.settings.quality as never)

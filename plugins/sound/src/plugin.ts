@@ -1,7 +1,7 @@
 /**
  * The plugin: an `asset:sound` (list_voices, generate_sound) plus doctor, setup and remove.
  * Nothing is bundled: `setup` downloads audio.cpp and the model a job needs into the data
- * folder (`~/.cutpilot/sound`), once the user has agreed to each licence `doctor` shows.
+ * folder (`~/.nodcut/sound`), once the user has agreed to each licence `doctor` shows.
  * generate_sound runs the CLI on one request and returns the wav; the same request with the
  * same seed is answered from the cache.
  */
@@ -16,7 +16,7 @@ import {
   type PluginContext,
   type PluginDefinition,
   type SoundKind,
-} from '@cutpilot/plugin-sdk';
+} from '@nodcut/plugin-sdk';
 import { z } from 'zod';
 import {
   DEFAULT_VOICE,
@@ -59,7 +59,7 @@ export interface Layout {
 
 export function layout(setting: unknown): Layout {
   const dir = resolve(
-    typeof setting === 'string' && setting.trim() ? setting.trim() : join(homedir(), '.cutpilot', 'sound'),
+    typeof setting === 'string' && setting.trim() ? setting.trim() : join(homedir(), '.nodcut', 'sound'),
   );
   return { dir, runtime: join(dir, 'runtime'), models: join(dir, 'models'), cache: join(dir, 'cache') };
 }
@@ -327,7 +327,7 @@ export function makeDefinition(c: Catalog): PluginDefinition {
       }),
       remove: tool({
         description:
-          "Delete what sound__setup downloaded: one job's model (sfx, music, speech), the runtime, or all of it with the cache of made sounds. Sounds already placed in projects are unaffected (CutPilot keeps its own copies).",
+          "Delete what sound__setup downloaded: one job's model (sfx, music, speech), the runtime, or all of it with the cache of made sounds. Sounds already placed in projects are unaffected (NodCut keeps its own copies).",
         input: { what: z.enum(SETUP_WHAT).describe('runtime, sfx, music, speech or all') },
         handler: async ({ what }, ctx) => {
           const L = layout(ctx.settings.dataDir);

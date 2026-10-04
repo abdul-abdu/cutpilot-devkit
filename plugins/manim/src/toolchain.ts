@@ -24,7 +24,7 @@ export const UV_PYTHON = '>=3.10,<3.14';
 
 /** The Python file that draws the templates and wraps custom scenes. */
 export const runtimePath = (): string =>
-  join(dirname(fileURLToPath(import.meta.url)), '..', 'python', 'cutpilot_manim.py');
+  join(dirname(fileURLToPath(import.meta.url)), '..', 'python', 'nodcut_manim.py');
 
 /** Where tools live when a GUI app's PATH doesn't say. */
 export function extraDirs(home: string = homedir()): string[] {
@@ -208,10 +208,10 @@ export function runManim(r: Runner, args: string[], o: RunOptions): Promise<RunR
   });
 }
 
-/** The line the runtime printed about a failure (`CUTPILOT_ERROR NameError: … (line 7: …)`). */
+/** The line the runtime printed about a failure (`NODCUT_ERROR NameError: … (line 7: …)`). */
 export function errorLine(tail: string[]): string | null {
   for (let i = tail.length - 1; i >= 0; i--) {
-    const m = /CUTPILOT_ERROR (.+)$/.exec(tail[i]!);
+    const m = /NODCUT_ERROR (.+)$/.exec(tail[i]!);
     if (m) return m[1]!.trim();
   }
   return null;
@@ -226,8 +226,8 @@ export function lastError(tail: string[]): string {
   return (err ?? clean.slice(-3).join(' | ')).slice(0, 400);
 }
 
-/** `CUTPILOT_PROGRESS 0.42` → 0.42 */
+/** `NODCUT_PROGRESS 0.42` → 0.42 */
 export function progressOf(line: string): number | null {
-  const m = /CUTPILOT_PROGRESS (\d*\.?\d+)/.exec(line);
+  const m = /NODCUT_PROGRESS (\d*\.?\d+)/.exec(line);
   return m ? Math.min(1, Number(m[1])) : null;
 }

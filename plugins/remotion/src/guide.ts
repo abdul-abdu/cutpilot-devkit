@@ -1,5 +1,5 @@
 /** Short authoring rules for the AI writing scenes (the remotion__guide tool). */
-export const GUIDE = `# Writing a Remotion scene for CutPilot
+export const GUIDE = `# Writing a Remotion scene for NodCut
 
 A scene is ONE .tsx file: TypeScript + React, run by the user's own Remotion. Every frame is
 rendered on its own in a headless browser, possibly out of order and in parallel, so a frame must
@@ -32,7 +32,7 @@ depend ONLY on its frame number and props.
   object, not new code.
 - Fonts: system fonts, or @remotion/google-fonts if the project has it installed. Don't fetch CSS.
 - The file must \`export default\` the component. Don't register a <Composition>: the plugin does.
-  Don't export cutpilotScene: the plugin writes it from durationInFrames, fps, width, height, defaultProps.
+  Don't export nodcutScene: the plugin writes it from durationInFrames, fps, width, height, defaultProps.
 - Import only from "remotion", "react" and packages the project has installed.
 
 ## Common sizes

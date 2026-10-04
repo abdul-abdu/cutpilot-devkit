@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { TranscribeOutputSchema } from '@cutpilot/plugin-sdk';
+import { TranscribeOutputSchema } from '@nodcut/plugin-sdk';
 import fc from 'fast-check';
 import { describe, expect, test } from 'vitest';
 import { toIso1 } from './languages.js';

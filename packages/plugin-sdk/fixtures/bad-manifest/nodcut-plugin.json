@@ -1,0 +1,11 @@
+{
+  "id": "Bad_Manifest",
+  "name": "Fixture: bad manifest",
+  "version": "1.0.0",
+  "description": "A manifest NodCut refuses: the id isn't kebab-case, the contract is from the future, and a transcriber that doesn't ask to read the audio.",
+  "contract": 2,
+  "nodcut": ">=0.1",
+  "command": "node",
+  "args": ["index.mjs"],
+  "kinds": ["transcriber"]
+}

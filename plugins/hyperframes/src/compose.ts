@@ -1,6 +1,6 @@
 /**
- * A CutPilot edit as a HyperFrames composition. Pure: takes the edit and what ffprobe said about
- * the source, returns the HTML. HyperFrames times are seconds on the OUTPUT timeline; CutPilot's
+ * A NodCut edit as a HyperFrames composition. Pure: takes the edit and what ffprobe said about
+ * the source, returns the HTML. HyperFrames times are seconds on the OUTPUT timeline; NodCut's
  * are integer milliseconds in SOURCE time, so every time here goes through the segment map.
  *
  * The mapping, which is what this research plugin is about:
@@ -296,7 +296,7 @@ export function compose(spec: CompositionSpec, media: Media): Composition {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=${spec.width}, height=${spec.height}" />
-    <title>CutPilot edit</title>
+    <title>NodCut edit</title>
     <script src="${esc(media.gsap)}"></script>
     <style>
       :root { --ink: #ffffff; --accent: #ffd400; }

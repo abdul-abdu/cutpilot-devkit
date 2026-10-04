@@ -1,11 +1,11 @@
-// A transcriber: CutPilot sends a 16 kHz mono wav and gets timed words back, in milliseconds.
+// A transcriber: NodCut sends a 16 kHz mono wav and gets timed words back, in milliseconds.
 // The SDK checks the answer against the transcriber contract before it leaves the plugin.
 import { statSync } from 'node:fs';
-import type { PluginDefinition } from '@cutpilot/plugin-sdk';
+import type { PluginDefinition } from '@nodcut/plugin-sdk';
 
 const PLACEHOLDER = 'This placeholder transcript comes from your new plugin.';
 
-/** How long a wav from CutPilot is (16 kHz, mono, 16-bit: 32 000 bytes a second after the header). */
+/** How long a wav from NodCut is (16 kHz, mono, 16-bit: 32 000 bytes a second after the header). */
 export function wavDurationMs(file: string): number {
   return Math.max(0, Math.round(((statSync(file).size - 44) / 32_000) * 1000));
 }

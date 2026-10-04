@@ -1,7 +1,7 @@
 {
-  "name": "@cutpilot/plugin-render-hyperframes",
+  "name": "@nodcut/plugin-render-hyperframes",
   "version": "0.1.1",
-  "description": "CutPilot plugin (research): an edit as a HyperFrames HTML composition, rendered to MP4 with headless Chrome.",
+  "description": "NodCut plugin (research): an edit as a HyperFrames HTML composition, rendered to MP4 with headless Chrome.",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -12,19 +12,19 @@
     "build": "tsc -b"
   },
   "dependencies": {
-    "@cutpilot/plugin-sdk": "workspace:*",
+    "@nodcut/plugin-sdk": "workspace:*",
     "gsap": "^3.13.0",
     "hyperframes": "^0.8.80",
     "zod": "^4.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
     "directory": "plugins/hyperframes"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
-    "cutpilot",
+    "nodcut",
     "hyperframes",
     "video",
     "mcp",

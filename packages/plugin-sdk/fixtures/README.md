@@ -1,6 +1,6 @@
 # Fixture plugins
 
-Small plugins the SDK's own tests (and `cutpilot-plugin validate|test`) are checked against. Each one imports the SDK by its package name, which Node resolves to this package's `dist/`, so run `pnpm build` first.
+Small plugins the SDK's own tests (and `nodcut-plugin validate|test`) are checked against. Each one imports the SDK by its package name, which Node resolves to this package's `dist/`, so run `pnpm build` first.
 
 | Folder | What it is | `validate` | `test` |
 | --- | --- | --- | --- |

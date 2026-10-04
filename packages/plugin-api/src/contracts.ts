@@ -1,7 +1,7 @@
 /**
  * The tools each plugin kind must offer, with their input and output schemas. The engine
  * calls them; the SDK checks a plugin's answers against them before they leave the plugin.
- * Times are integer milliseconds in SOURCE time, as everywhere in CutPilot.
+ * Times are integer milliseconds in SOURCE time, as everywhere in NodCut.
  */
 import { z } from 'zod';
 import type { PluginKind } from './manifest.js';
@@ -101,7 +101,7 @@ export const MusicTrackSchema = z.object({
   durationMs: Ms.refine((d) => d > 0, 'a track has a length'),
   /** loops without an audible seam */
   loopable: z.boolean(),
-  /** e.g. "CC0", "Licensed for use in CutPilot projects" */
+  /** e.g. "CC0", "Licensed for use in NodCut projects" */
   license: z.string().min(1),
   /** the credit line to show, if the license asks for one */
   attribution: z.string().min(1).optional(),
@@ -345,7 +345,7 @@ export const KIND_TOOLS = {
       output: GenerateSoundOutputSchema,
     },
   },
-  // data only: CutPilot reads its catalogues and never starts it (language.ts)
+  // data only: NodCut reads its catalogues and never starts it (language.ts)
   language: {},
 } as const satisfies Record<PluginKind, Record<string, ToolContract>>;
 

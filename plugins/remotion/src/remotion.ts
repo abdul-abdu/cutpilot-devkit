@@ -4,7 +4,7 @@
  * @remotion/bundler and @remotion/renderer 4.x this file calls, written out here so the plugin
  * needs no Remotion package even to compile.
  *
- * The plugin is its own process (CutPilot starts it next to the engine), so bundling and
+ * The plugin is its own process (NodCut starts it next to the engine), so bundling and
  * rendering never run on the app's main thread; Remotion starts Chrome and its compositor as
  * further processes.
  */
@@ -12,7 +12,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { PluginFailure, type PluginContext } from '@cutpilot/plugin-sdk';
+import { PluginFailure, type PluginContext } from '@nodcut/plugin-sdk';
 import { projectRequire } from './project.js';
 
 export interface VideoConfig {
@@ -132,11 +132,11 @@ export function sourceFingerprint(projectDir: string): string {
   const walk = (dir: string, depth: number) => {
     if (depth > 12 || !existsSync(dir)) return;
     for (const name of readdirSync(dir).sort()) {
-      if (name === 'node_modules' || name.startsWith('.') || name.endsWith('.cutpilot-tmp')) continue;
+      if (name === 'node_modules' || name.startsWith('.') || name.endsWith('.nodcut-tmp')) continue;
       const p = join(dir, name);
       const st = statSync(p);
       if (st.isDirectory()) {
-        if (p === join(projectDir, 'src', 'cutpilot', 'backups')) continue;
+        if (p === join(projectDir, 'src', 'nodcut', 'backups')) continue;
         walk(p, depth + 1);
       } else h.update(`${p}\0${st.size}\0${st.mtimeMs}\n`);
     }
@@ -150,7 +150,7 @@ export function sourceFingerprint(projectDir: string): string {
 export const workDir = (projectDir: string) =>
   join(
     tmpdir(),
-    'cutpilot-remotion',
+    'nodcut-remotion',
     createHash('sha256').update(resolve(projectDir)).digest('hex').slice(0, 12),
   );
 
@@ -239,7 +239,7 @@ export async function ensureBrowser(
     );
 }
 
-/** Cancel Remotion's work when CutPilot cancels the call. */
+/** Cancel Remotion's work when NodCut cancels the call. */
 export function cancelOn(
   r: Remotion,
   signal: AbortSignal,

@@ -1,7 +1,7 @@
 {
-  "name": "@cutpilot/plugin-analyze-follow-speaker",
+  "name": "@nodcut/plugin-analyze-follow-speaker",
   "version": "0.1.0",
-  "description": "CutPilot plugin: a crop that follows the person talking, from Apple Vision face detection (macOS).",
+  "description": "NodCut plugin: a crop that follows the person talking, from Apple Vision face detection (macOS).",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -15,22 +15,22 @@
   "files": [
     "dist",
     "bin",
-    "cutpilot-plugin.json",
+    "nodcut-plugin.json",
     "icon.png",
     "README.md"
   ],
   "dependencies": {
-    "@cutpilot/plugin-sdk": "workspace:*",
+    "@nodcut/plugin-sdk": "workspace:*",
     "zod": "^4.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
     "directory": "plugins/follow-speaker"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
-    "cutpilot",
+    "nodcut",
     "reframe",
     "face-detection",
     "vertical-video",

@@ -12,11 +12,11 @@ import {
 
 const version = (v: string, over: Record<string, unknown> = {}) => ({
   version: v,
-  cutpilot: '>=0.1 <1',
+  nodcut: '>=0.1 <1',
   contract: 1,
   kinds: ['transcriber'],
   permissions: { network: ['api.elevenlabs.io'], secrets: ['ELEVENLABS_API_KEY'], reads: ['audio'] },
-  url: `packages/cloud-transcribe/${v}/cloud-transcribe-${v}.cutpilot-plugin`,
+  url: `packages/cloud-transcribe/${v}/cloud-transcribe-${v}.nodcut-plugin`,
   sha256: 'a'.repeat(64),
   bytes: 12_345,
   published: '2026-09-27T12:00:00Z',
@@ -25,12 +25,12 @@ const version = (v: string, over: Record<string, unknown> = {}) => ({
 const plugin = (over: Record<string, unknown> = {}) => ({
   id: 'cloud-transcribe',
   name: 'Cloud transcription',
-  publisher: { name: 'CutPilot', verified: true },
+  publisher: { name: 'NodCut', verified: true },
   description: 'Transcribe with ElevenLabs Scribe or OpenAI, using your own API key.',
   categories: ['transcription'],
   license: 'MIT',
   readme: '# Cloud transcription\n\nFast.',
-  versions: [version('1.0.0'), version('1.1.0'), version('2.0.0', { cutpilot: '>=0.5' })],
+  versions: [version('1.0.0'), version('1.1.0'), version('2.0.0', { nodcut: '>=0.5' })],
   ...over,
 });
 const index = (plugins: unknown[]) => ({ schema: 1, generated: '2026-09-27T12:00:00Z', plugins });
@@ -76,7 +76,7 @@ describe('registry index', () => {
     expect(latestCompatible(other, '0.3.0')).toBeNull();
   });
 
-  test("a kind this CutPilot doesn't know: the catalog still reads, that version is passed over (P3-067)", () => {
+  test("a kind this NodCut doesn't know: the catalog still reads, that version is passed over (P3-067)", () => {
     const r = RegistryIndexSchema.safeParse(
       index([
         plugin(),
@@ -95,12 +95,12 @@ describe('registry index', () => {
     expect(isNewer('1.1.0', '1.0.0')).toBe(true);
     expect(isNewer('1.0.0', '1.0.0')).toBe(false);
     expect(isNewer('1.0.0', '1.0.0-beta.1')).toBe(true);
+    expect(resolveHref('https://nodcut.app/plugins/v1/index.json', 'packages/a/1.0.0/a.nodcut-plugin')).toBe(
+      'https://nodcut.app/plugins/v1/packages/a/1.0.0/a.nodcut-plugin',
+    );
     expect(
-      resolveHref('https://cutpilot.app/plugins/v1/index.json', 'packages/a/1.0.0/a.cutpilot-plugin'),
-    ).toBe('https://cutpilot.app/plugins/v1/packages/a/1.0.0/a.cutpilot-plugin');
-    expect(
-      resolveHref('https://cutpilot.app/plugins/v1/index.json', 'https://github.com/x/y.cutpilot-plugin'),
-    ).toBe('https://github.com/x/y.cutpilot-plugin');
+      resolveHref('https://nodcut.app/plugins/v1/index.json', 'https://github.com/x/y.nodcut-plugin'),
+    ).toBe('https://github.com/x/y.nodcut-plugin');
     const before = { network: ['a.io'], secrets: [], reads: ['audio' as const] };
     const after = { network: ['a.io', 'b.io'], secrets: ['KEY'], reads: ['audio' as const] };
     expect(addedPermissions(before, after)).toEqual({ network: ['b.io'], secrets: ['KEY'], reads: [] });

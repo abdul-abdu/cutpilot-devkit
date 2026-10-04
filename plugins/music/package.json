@@ -1,7 +1,7 @@
 {
-  "name": "@cutpilot/plugin-asset-music",
+  "name": "@nodcut/plugin-asset-music",
   "version": "0.1.0",
-  "description": "CutPilot plugin: background music by mood, from a small library of loops shipped inside the plugin.",
+  "description": "NodCut plugin: background music by mood, from a small library of loops shipped inside the plugin.",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -15,22 +15,22 @@
   "files": [
     "dist",
     "library",
-    "cutpilot-plugin.json",
+    "nodcut-plugin.json",
     "icon.png",
     "README.md"
   ],
   "dependencies": {
-    "@cutpilot/plugin-sdk": "workspace:*",
+    "@nodcut/plugin-sdk": "workspace:*",
     "zod": "^4.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
     "directory": "plugins/music"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
-    "cutpilot",
+    "nodcut",
     "music",
     "background-music",
     "mcp",

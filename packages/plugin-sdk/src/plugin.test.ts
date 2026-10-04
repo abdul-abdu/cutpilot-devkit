@@ -17,7 +17,7 @@ const manifest = (over: Record<string, unknown> = {}) => ({
   version: '1.0.0',
   description: 'For tests.',
   contract: 1,
-  cutpilot: '*',
+  nodcut: '*',
   command: 'node',
   args: ['index.mjs'],
   kinds: ['transcriber'],
@@ -79,7 +79,7 @@ describe('definePlugin checks the definition against the manifest', () => {
 
   test('a bad manifest is reported field by field', () => {
     expect(problemsOf({ manifest: manifest({ version: 'one' }) })).toEqual([
-      expect.stringMatching(/^cutpilot-plugin\.json: version: versions are semver/),
+      expect.stringMatching(/^nodcut-plugin\.json: version: versions are semver/),
     ]);
   });
 });
@@ -104,7 +104,7 @@ describe('contract tools', () => {
       error: {
         code: 'E_PLUGIN_CONTRACT',
         message: 'transcribe returned words.0.end: a word ends at or after its start',
-        fix: 'the plugin must return what the transcriber contract says (see @cutpilot/plugin-api)',
+        fix: 'the plugin must return what the transcriber contract says (see @nodcut/plugin-api)',
       },
     });
   });
@@ -165,7 +165,7 @@ describe('context', () => {
           return { language: 'en', words: [] };
         },
       },
-      { CUTPILOT_SETTING_SAMPLE_FPS: '8', CUTPILOT_SECRET_API_KEY: 'k-123', CUTPILOT_SECRET_HOME: 'nope' },
+      { NODCUT_SETTING_SAMPLE_FPS: '8', NODCUT_SECRET_API_KEY: 'k-123', NODCUT_SECRET_HOME: 'nope' },
     );
     await c.callTool({ name: 'transcribe', arguments: { audio: '/a.wav', language: 'en' } });
     expect(seen).toEqual({ settings: { provider: 'a', sampleFps: 8 }, key: 'k-123', other: undefined });
@@ -184,7 +184,7 @@ describe('context', () => {
       error: {
         code: 'E_PLUGIN_NEEDS_SECRET',
         message: "API_KEY hasn't been entered",
-        fix: 'enter it in CutPilot → Plugins → Test plugin',
+        fix: 'enter it in NodCut → Plugins → Test plugin',
       },
     });
   });

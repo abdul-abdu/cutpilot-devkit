@@ -1,7 +1,7 @@
 // A reframe analyzer: for a 9:16 (or other) crop of a wider video, where the crop's centre should
-// be over time. CutPilot sends the source video and the parts of it the edit keeps; the plugin
+// be over time. NodCut sends the source video and the parts of it the edit keeps; the plugin
 // answers with keyframes (source time in ms, x and y as fractions of the frame).
-import type { Keyframe, PluginDefinition } from '@cutpilot/plugin-sdk';
+import type { Keyframe, PluginDefinition } from '@nodcut/plugin-sdk';
 
 /**
  * A placeholder: the centre of the frame at the start of every kept range. Replace it with your

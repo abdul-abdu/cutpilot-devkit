@@ -274,10 +274,10 @@ const endCard = define({
   params: z.object({
     headline: z.string().trim().min(1).max(60).describe('e.g. "Thanks for watching"'),
     cta: z.string().trim().min(1).max(40).optional().describe('the button text, e.g. "Subscribe for more"'),
-    handle: z.string().trim().min(1).max(60).optional().describe('e.g. "@cutpilot" or a web address'),
+    handle: z.string().trim().min(1).max(60).optional().describe('e.g. "@nodcut" or a web address'),
     ...Style,
   }),
-  example: { headline: 'Thanks for watching', cta: 'Subscribe for more', handle: '@cutpilot' },
+  example: { headline: 'Thanks for watching', cta: 'Subscribe for more', handle: '@nodcut' },
   defaultDurationMs: 4000,
   minDurationMs: 1500,
   maxDurationMs: 10000,

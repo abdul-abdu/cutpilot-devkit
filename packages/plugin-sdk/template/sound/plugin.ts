@@ -1,10 +1,10 @@
-// A sound maker: sound effects and music from a description, or speech from text. CutPilot puts
+// A sound maker: sound effects and music from a description, or speech from text. NodCut puts
 // the file it gets back into the edit. Return what you may hand out, with its license.
 import { randomUUID } from 'node:crypto';
 import { writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { PluginDefinition } from '@cutpilot/plugin-sdk';
+import type { PluginDefinition } from '@nodcut/plugin-sdk';
 
 const RATE = 22_050;
 

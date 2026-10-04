@@ -1,5 +1,5 @@
 // Answers every call the way its contract says: `testPlugin()` passes.
-import { definePlugin, z } from '@cutpilot/plugin-sdk';
+import { definePlugin, z } from '@nodcut/plugin-sdk';
 
 await definePlugin({
   transcribe: ({ language }) => ({

@@ -1,7 +1,7 @@
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { PluginFailure } from '@cutpilot/plugin-sdk';
+import { PluginFailure } from '@nodcut/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import { FREE_LICENSE, LICENSE_NOTICE, licenseKey, readAcceptances, recordAcceptance } from './license.js';
 import { installedVersions, linkedDir, MIN_VERSION, openProject, versionProblem } from './project.js';
@@ -86,7 +86,7 @@ describe('bring your own licence', () => {
     const e = failure(() => licenseKey(ctx()));
     expect(e.code).toBe('E_PLUGIN_NEEDS_SECRET');
     expect(e.message).toContain(LICENSE_NOTICE);
-    expect(e.fix).toContain('CutPilot → Plugins → Remotion');
+    expect(e.fix).toContain('NodCut → Plugins → Remotion');
     expect(e.fix).toContain(`"${FREE_LICENSE}"`);
     expect(e.fix).toContain('remotion.pro');
     expect(failure(() => licenseKey(ctx('  '))).code).toBe('E_PLUGIN_NEEDS_SECRET');
@@ -100,7 +100,7 @@ describe('bring your own licence', () => {
 
   test('the notice text is the one the user agrees to', () => {
     expect(LICENSE_NOTICE).toBe(
-      'This plugin uses your own installation of Remotion, which is licensed separately by Remotion AG. CutPilot does not include or license Remotion. You are responsible for complying with Remotion’s license: it’s free for individuals and companies of up to 3 people; larger companies need a Remotion Company License — remotion.pro.',
+      'This plugin uses your own installation of Remotion, which is licensed separately by Remotion AG. NodCut does not include or license Remotion. You are responsible for complying with Remotion’s license: it’s free for individuals and companies of up to 3 people; larger companies need a Remotion Company License — remotion.pro.',
     );
   });
 

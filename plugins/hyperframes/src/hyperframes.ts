@@ -114,7 +114,7 @@ export interface RunResult {
   tail: string;
 }
 
-/** Run a HyperFrames command with CutPilot's Node, offline, and the tools we found. */
+/** Run a HyperFrames command with NodCut's Node, offline, and the tools we found. */
 export function runCli(args: string[], o: RunOptions): Promise<RunResult> {
   const env: Record<string, string> = {
     HYPERFRAMES_NO_TELEMETRY: '1',
@@ -122,7 +122,7 @@ export function runCli(args: string[], o: RunOptions): Promise<RunResult> {
     HYPERFRAMES_SKIP_SKILLS: '1',
     CI: '1',
   };
-  // ELECTRON_RUN_AS_NODE: under the CutPilot app, process.execPath is Electron; without it the
+  // ELECTRON_RUN_AS_NODE: under the NodCut app, process.execPath is Electron; without it the
   // CLI would start as an Electron app and hang
   for (const k of [
     'PATH',

@@ -15,7 +15,7 @@ import {
   type ExtraTool,
   type PluginContext,
   type PluginDefinition,
-} from '@cutpilot/plugin-sdk';
+} from '@nodcut/plugin-sdk';
 import { z } from 'zod';
 import { BEAT_MS, createProject } from './create.js';
 import { GUIDE } from './guide.js';
@@ -124,7 +124,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
 
   /**
    * One Remotion job at a time: each starts a Chrome and uses every core. A call waiting for its
-   * turn reports progress while it waits: CutPilot ends a plugin call after 120 s without any,
+   * turn reports progress while it waits: NodCut ends a plugin call after 120 s without any,
    * and a render ahead of it (another chat, the app) can take longer than that.
    */
   let queue: Promise<unknown> = Promise.resolve();
@@ -244,7 +244,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
    */
   async function check(r: Ready, id: string, file: string, root: RootPatch, ctx: PluginContext) {
     ctx.progress(0.05, 'type-checking the scene');
-    const tc = typecheckScenes(r.project.dir, [file, join(r.project.dir, 'src', 'cutpilot', 'index.tsx')]);
+    const tc = typecheckScenes(r.project.dir, [file, join(r.project.dir, 'src', 'nodcut', 'index.tsx')]);
     const typescript = tc.ran ? (tc.ok ? 'ok' : tc.errors) : 'not checked: the project has no TypeScript';
     if (!tc.ok) {
       remember('check', 'E_REMOTION_TYPECHECK', tc.errors.join('\n'));
@@ -326,7 +326,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
 
   const create: ExtraTool = {
     description:
-      "Write a new Remotion scene into the user's linked Remotion project (src/cutpilot/<id>.tsx) and check it: " +
+      "Write a new Remotion scene into the user's linked Remotion project (src/nodcut/<id>.tsx) and check it: " +
       'TypeScript, then bundling and loading it as Remotion would. Errors come back verbatim in `check`; fix them with remotion__update_scene. ' +
       'Then call remotion__preview_frame at several frames and look at the images before rendering. ' +
       'Read remotion__guide once before your first scene. Takes a few seconds (the first bundle up to a minute).',
@@ -335,7 +335,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
       exclusive(ctx, async () => {
         const r = ready(ctx);
         const id = checkSceneId(a.id);
-        if (readScene(r.project.dir, id) || existsSync(join(r.project.dir, 'src', 'cutpilot', `${id}.tsx`)))
+        if (readScene(r.project.dir, id) || existsSync(join(r.project.dir, 'src', 'nodcut', `${id}.tsx`)))
           throw new PluginFailure(
             'E_REMOTION_SCENE_EXISTS',
             `scene ${id} already exists`,
@@ -387,7 +387,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
 
   const remove: ExtraTool = {
     description:
-      'Delete a scene made with remotion__create_scene (its file in src/cutpilot) and take it out of the registered compositions. ' +
+      'Delete a scene made with remotion__create_scene (its file in src/nodcut) and take it out of the registered compositions. ' +
       "Clips already added to the edit with add_insert stay; the user's other files are never touched.",
     input: { id: SceneId },
     handler: tracked('delete_scene', (a: { id: string }, ctx) => {
@@ -495,7 +495,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
 
   const render: ExtraTool = {
     description:
-      'Render a whole scene to a video file in the Remotion project (out/cutpilot/, never overwriting) and return its path. ' +
+      'Render a whole scene to a video file in the Remotion project (out/nodcut/, never overwriting) and return its path. ' +
       'To put a scene into the edit, use add_insert { template: "<scene id>", params: { …props } } instead: it renders at the timeline\'s size and places the clip. ' +
       'Use render for a file: an H.264 MP4, or with transparent: true a ProRes 4444 .mov with alpha for overlays in other editors. ' +
       'Long renders report progress and can be cancelled.',
@@ -568,7 +568,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
               `frameRange ${JSON.stringify(range)} is outside the scene's frames 0–${last}`,
               `pass frames from 0 to ${last}, first ≤ last`,
             );
-          const outDir = join(r.project.dir, 'out', 'cutpilot');
+          const outDir = join(r.project.dir, 'out', 'nodcut');
           mkdirSync(outDir, { recursive: true });
           const file = uniquePath(outDir, `${s.id}-${fileStamp()}`, codec === 'prores' ? 'mov' : 'mp4');
           await renderTo(r, ctx, c, serveUrl, props, file, {
@@ -707,7 +707,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
           : {
               entered: false,
               secret: LICENSE_SECRET,
-              enteredBy: 'the user, in CutPilot → Plugins → Remotion',
+              enteredBy: 'the user, in NodCut → Plugins → Remotion',
             },
         licenseNotice: LICENSE_NOTICE,
         versions,
@@ -739,7 +739,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
     description:
       "Make a new, blank Remotion project in a NEW folder the user chose (absolute path), with Remotion's own scaffolder (npx create-video) and npm, " +
       "on the user's machine. Needs Node.js and the internet; takes a minute or two (progress is reported). " +
-      'Afterwards the USER sets that folder as "Remotion project folder" in CutPilot → Plugins → Remotion. Ask before calling.',
+      'Afterwards the USER sets that folder as "Remotion project folder" in NodCut → Plugins → Remotion. Ask before calling.',
     input: {
       dir: z
         .string()
@@ -758,7 +758,7 @@ export function createDefinition(opts: Options = {}): PluginDefinition {
         remotion: made.version,
         root: { state: root.state, file: root.file },
         licenseNotice: LICENSE_NOTICE,
-        next: `ask the user to set "Remotion project folder" to ${made.projectDir} in CutPilot → Plugins → Remotion, then call remotion__status`,
+        next: `ask the user to set "Remotion project folder" to ${made.projectDir} in NodCut → Plugins → Remotion, then call remotion__status`,
         log: made.log,
       };
     }),

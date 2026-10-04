@@ -8,9 +8,9 @@ const FIRST_PARTY: Record<string, unknown> = {
     name: 'Cloud transcription',
     version: '1.0.0',
     description: 'Transcribe with ElevenLabs Scribe or OpenAI, using your own API key. Audio is uploaded.',
-    publisher: 'CutPilot',
+    publisher: 'NodCut',
     contract: 1,
-    cutpilot: '>=0.3 <1',
+    nodcut: '>=0.3 <1',
     command: 'node',
     args: ['dist/index.js'],
     kinds: ['transcriber'],
@@ -34,10 +34,10 @@ const FIRST_PARTY: Record<string, unknown> = {
     name: 'Follow the speaker',
     version: '1.0.0',
     description: 'Keeps the person talking in a vertical crop, using face detection on your Mac.',
-    publisher: 'CutPilot',
+    publisher: 'NodCut',
     icon: 'icon.png',
     contract: 1,
-    cutpilot: '^0.3.0',
+    nodcut: '^0.3.0',
     command: 'node',
     args: ['dist/index.js'],
     kinds: ['analyzer:reframe-track'],
@@ -50,7 +50,7 @@ const FIRST_PARTY: Record<string, unknown> = {
     version: '1.0.0',
     description: 'Royalty-free tracks by mood, mixed under speech.',
     contract: 1,
-    cutpilot: '>=0.3',
+    nodcut: '>=0.3',
     command: 'node',
     args: ['dist/index.js'],
     kinds: ['asset:music'],
@@ -76,7 +76,7 @@ describe('manifest', () => {
       version: '0.1.0',
       description: 'd',
       contract: 1,
-      cutpilot: '*',
+      nodcut: '*',
       command: 'bin/hello',
     });
     expect(r.ok && r.manifest).toMatchObject({
@@ -91,8 +91,8 @@ describe('manifest', () => {
     [{ id: 'Follow_Speaker' }, 'id: ids are kebab-case'],
     [{ id: 'a'.repeat(41) }, 'id: ids are at most 40 characters'],
     [{ version: '1.0' }, 'version: versions are semver'],
-    [{ contract: 2 }, 'contract: this CutPilot speaks plugin contract 1'],
-    [{ cutpilot: 'soon' }, 'cutpilot: cutpilot is a semver range'],
+    [{ contract: 2 }, 'contract: this NodCut speaks plugin contract 1'],
+    [{ nodcut: 'soon' }, 'nodcut: nodcut is a semver range'],
     [
       { kinds: ['analyzer:faces'] },
       'kinds.0: kinds are transcriber, analyzer:reframe-track, asset:music, generator, asset:sound, language',
@@ -150,9 +150,9 @@ describe('manifest', () => {
       id: 'lang-de',
       name: 'Deutsch',
       version: '1.0.0',
-      description: 'CutPilot in German.',
+      description: 'NodCut in German.',
       contract: 1,
-      cutpilot: '>=0.3',
+      nodcut: '>=0.3',
       kinds: ['language'],
       languages: [{ code: 'de', name: 'Deutsch', messages: 'de.json', menu: 'de.menu.json' }],
     };
@@ -216,8 +216,8 @@ describe('manifest', () => {
   });
 
   test('environment names for settings and secrets', () => {
-    expect(settingEnv('provider')).toBe('CUTPILOT_SETTING_PROVIDER');
-    expect(settingEnv('sampleFps')).toBe('CUTPILOT_SETTING_SAMPLE_FPS');
-    expect(secretEnv('ELEVENLABS_API_KEY')).toBe('CUTPILOT_SECRET_ELEVENLABS_API_KEY');
+    expect(settingEnv('provider')).toBe('NODCUT_SETTING_PROVIDER');
+    expect(settingEnv('sampleFps')).toBe('NODCUT_SETTING_SAMPLE_FPS');
+    expect(secretEnv('ELEVENLABS_API_KEY')).toBe('NODCUT_SECRET_ELEVENLABS_API_KEY');
   });
 });

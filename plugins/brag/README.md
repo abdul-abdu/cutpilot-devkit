@@ -1,6 +1,6 @@
 # Brag
 
-**You built it. Now brag.** [/brag](https://github.com/latent-spaces/brag) (by latent-spaces, MIT) is an agent skill that turns a project into a short, shareable launch video: music, motion and share copy, powered by [HyperFrames](https://hyperframes.heygen.com/). This plugin brings it to CutPilot. Your AI follows brag's method: inspect what you built, plan a 15–25 s story with a hook, write the composition, look at stills, render. The plugin gives it a project folder to work in, HyperFrames' checks, stills and render, a poster frame and 228 sound effects. The video is a file, so CutPilot's own tools can put it into an edit or leave it as is.
+**You built it. Now brag.** [/brag](https://github.com/latent-spaces/brag) (by latent-spaces, MIT) is an agent skill that turns a project into a short, shareable launch video: music, motion and share copy, powered by [HyperFrames](https://hyperframes.heygen.com/). This plugin brings it to NodCut. Your AI follows brag's method: inspect what you built, plan a 15–25 s story with a hook, write the composition, look at stills, render. The plugin gives it a project folder to work in, HyperFrames' checks, stills and render, a poster frame and 228 sound effects. The video is a file, so NodCut's own tools can put it into an edit or leave it as is.
 
 Ask your AI: "let's brag about my app", "make a launch video for this, vertical, yc-parody tone", "brag about the new export feature".
 
@@ -38,11 +38,11 @@ A project looks like this:
 
 ## How it differs from /brag
 
-- **The AI works through the plugin.** Upstream, the agent runs HyperFrames itself and writes files in your repo. In CutPilot the AI client (Claude Desktop, say) may have no shell or file access, so the plugin owns the project folder and runs HyperFrames. The method, the nine questions, the creative laws, the tones and the grounding rule come from brag's skill, condensed in `src/guide.ts`.
-- **What it inspects is what your AI can reach.** That means your project's files if its client can read them, your site if it can fetch it, your footage in CutPilot, and what you tell it. The plugin itself fetches nothing. A plugin's network permission names fixed hosts, so it can't capture an arbitrary site.
-- **Music is not bundled.** brag ships ende.app's "Happy Beats / Business Moves" tracks, and its own notes say the licence must be verified before redistributing, so they are left out. The AI uses a file you have, music made with `generate_sound` (kind music, which needs a CutPilot project), or a track from CutPilot's music library. `find_music` names library tracks by id, not by file, so for those the AI renders `brag.mp4` without music and adds the track in CutPilot with `set_music`. The sound effects are Kenney's, CC0 (`sounds/LICENSE.md`), with brag's per-file analysis in `sounds/index.json`.
+- **The AI works through the plugin.** Upstream, the agent runs HyperFrames itself and writes files in your repo. In NodCut the AI client (Claude Desktop, say) may have no shell or file access, so the plugin owns the project folder and runs HyperFrames. The method, the nine questions, the creative laws, the tones and the grounding rule come from brag's skill, condensed in `src/guide.ts`.
+- **What it inspects is what your AI can reach.** That means your project's files if its client can read them, your site if it can fetch it, your footage in NodCut, and what you tell it. The plugin itself fetches nothing. A plugin's network permission names fixed hosts, so it can't capture an arbitrary site.
+- **Music is not bundled.** brag ships ende.app's "Happy Beats / Business Moves" tracks, and its own notes say the licence must be verified before redistributing, so they are left out. The AI uses a file you have, music made with `generate_sound` (kind music, which needs a NodCut project), or a track from NodCut's music library. `find_music` names library tracks by id, not by file, so for those the AI renders `brag.mp4` without music and adds the track in NodCut with `set_music`. The sound effects are Kenney's, CC0 (`sounds/LICENSE.md`), with brag's per-file analysis in `sounds/index.json`.
 - **HyperFrames' agent skills aren't assumed.** Upstream defers composition details to the HyperFrames skills the agent has installed. Here `guide` carries the rules a composition must follow and serves HyperFrames' own docs pages from the CLI.
-- **No voiceover** (`--voice` upstream). CutPilot's sound plugin makes speech, and the AI can add it as an audio clip.
+- **No voiceover** (`--voice` upstream). NodCut's sound plugin makes speech, and the AI can add it as an audio clip.
 
 ## Things learned building it
 
@@ -55,6 +55,6 @@ A project looks like this:
 ```sh
 pnpm build
 pnpm vitest run plugins/brag     # check, snapshot and render run when Chrome and ffmpeg are found (or BRAG_TEST_CHROME)
-cutpilot plugin install plugins/brag --link
+nodcut plugin install plugins/brag --link
 pnpm bundle plugins/brag         # → build/brag, with sounds/
 ```

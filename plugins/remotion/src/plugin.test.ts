@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { definePlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin } from '@nodcut/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import { LICENSE_NOTICE } from './license.js';
 import { aspectOf, createDefinition } from './plugin.js';
@@ -17,7 +17,7 @@ import { workDir } from './remotion.js';
 import { fakeCalls, fakeProject } from './test-helpers/fake-project.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
-const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(DIR, 'nodcut-plugin.json'), 'utf8'));
 const tmp = mkdtempSync(join(tmpdir(), 'cp-remotion-plugin-'));
 
 const clients: Client[] = [];
@@ -35,8 +35,8 @@ const KEY = 'rm_sec_test123';
 
 async function connect({ project, key = KEY }: { project?: string; key?: string | null } = {}) {
   const env: NodeJS.ProcessEnv = {};
-  if (key) env.CUTPILOT_SECRET_REMOTION_LICENSE_KEY = key;
-  if (project) env.CUTPILOT_SETTING_PROJECT_DIR = project;
+  if (key) env.NODCUT_SECRET_REMOTION_LICENSE_KEY = key;
+  if (project) env.NODCUT_SETTING_PROJECT_DIR = project;
   const plugin = definePlugin({ ...createDefinition({ stateDir: join(tmp, 'state') }), manifest }, env);
   const [a, b] = InMemoryTransport.createLinkedPair();
   await plugin.server.connect(a);
@@ -96,7 +96,7 @@ describe('tools', () => {
 
   test("the manifest says Remotion is the user's own, and asks for nothing it doesn't use", () => {
     expect(manifest.description).toMatch(/YOUR OWN Remotion/);
-    expect(manifest.description).toMatch(/not included or licensed by CutPilot/);
+    expect(manifest.description).toMatch(/not included or licensed by NodCut/);
     expect(manifest.description).toMatch(/remotion\.pro/);
     expect(manifest.permissions.secrets).toEqual(['REMOTION_LICENSE_KEY']);
     expect(manifest.permissions.reads).toEqual([]);
@@ -120,7 +120,7 @@ describe('the licence comes first', () => {
       expect(e.message).toContain('licensed separately by Remotion AG');
     }
     expect(structured(await call(c, 'list_templates'))).toEqual({ templates: [] });
-    expect(existsSync(join(p, 'src', 'cutpilot'))).toBe(false);
+    expect(existsSync(join(p, 'src', 'nodcut'))).toBe(false);
     expect(fakeCalls(p)).toEqual([]);
     const s = structured(await call(c, 'status'));
     expect(s).toMatchObject({
@@ -155,23 +155,23 @@ describe('scenes', () => {
     const r = structured<Record<string, unknown>>(await call(c, 'create_scene', promo));
     expect(r).toMatchObject({
       scene: 'promo',
-      created: join('src', 'cutpilot', 'promo.tsx'),
-      compositionId: 'cutpilot-promo',
+      created: join('src', 'nodcut', 'promo.tsx'),
+      compositionId: 'nodcut-promo',
       check: {
         ok: true,
         typescript: 'not checked: the project has no TypeScript',
         bundle: 'ok',
-        composition: { id: 'cutpilot-promo', width: 1080, height: 1920, fps: 30, durationInFrames: 300 },
+        composition: { id: 'nodcut-promo', width: 1080, height: 1920, fps: 30, durationInFrames: 300 },
       },
       rootPatch: { file: join('src', 'Root.tsx') },
       licenseNotice: LICENSE_NOTICE,
     });
-    expect((r.rootPatch as { diff: string }).diff).toContain('+      <CutPilotCompositions />');
-    expect(readFileSync(join(p, 'src', 'cutpilot', 'promo.tsx'), 'utf8')).toContain(
-      'export const cutpilotScene = {"durationInFrames":300',
+    expect((r.rootPatch as { diff: string }).diff).toContain('+      <NodCutCompositions />');
+    expect(readFileSync(join(p, 'src', 'nodcut', 'promo.tsx'), 'utf8')).toContain(
+      'export const nodcutScene = {"durationInFrames":300',
     );
-    expect(readFileSync(join(p, 'src', 'cutpilot', 'index.tsx'), 'utf8')).toContain('id="cutpilot-promo"');
-    expect(readFileSync(join(p, 'src', 'Root.tsx'), 'utf8')).toContain('<CutPilotCompositions />');
+    expect(readFileSync(join(p, 'src', 'nodcut', 'index.tsx'), 'utf8')).toContain('id="nodcut-promo"');
+    expect(readFileSync(join(p, 'src', 'Root.tsx'), 'utf8')).toContain('<NodCutCompositions />');
 
     // the second scene: no patch, no notice (same project and version)
     const r2 = structured(await call(c, 'create_scene', { ...promo, id: 'outro' }));
@@ -202,8 +202,8 @@ describe('scenes', () => {
     expect(errorOf(await call(c, 'create_scene', { ...promo, code: 'export const A = 1;' }))).toMatchObject({
       code: 'E_PLUGIN_BAD_INPUT',
     });
-    expect(existsSync(join(p, 'src', 'cutpilot', 'promo.tsx'))).toBe(false);
-    expect(readFileSync(join(p, 'src', 'Root.tsx'), 'utf8')).not.toContain('CutPilot');
+    expect(existsSync(join(p, 'src', 'nodcut', 'promo.tsx'))).toBe(false);
+    expect(readFileSync(join(p, 'src', 'Root.tsx'), 'utf8')).not.toContain('NodCut');
   });
 
   test('bundler and composition errors come back verbatim in check, for the AI to fix', async () => {
@@ -241,7 +241,7 @@ describe('scenes', () => {
       }),
     );
     expect(r.check.composition).toMatchObject({ durationInFrames: 150, width: 1080 });
-    const text = readFileSync(join(p, 'src', 'cutpilot', 'promo.tsx'), 'utf8');
+    const text = readFileSync(join(p, 'src', 'nodcut', 'promo.tsx'), 'utf8');
     expect(text.startsWith(SCENE)).toBe(true);
     expect(text).toContain('"defaultProps":{"headline":"New"}');
     expect(errorOf(await call(c, 'update_scene', { id: 'nope', fps: 25 })).code).toBe('E_REMOTION_NO_SCENE');
@@ -250,8 +250,8 @@ describe('scenes', () => {
       ok: true,
       deleted: 'promo',
     });
-    expect(existsSync(join(p, 'src', 'cutpilot', 'promo.tsx'))).toBe(false);
-    expect(readFileSync(join(p, 'src', 'cutpilot', 'index.tsx'), 'utf8')).not.toContain('promo');
+    expect(existsSync(join(p, 'src', 'nodcut', 'promo.tsx'))).toBe(false);
+    expect(readFileSync(join(p, 'src', 'nodcut', 'index.tsx'), 'utf8')).not.toContain('promo');
     expect(errorOf(await call(c, 'delete_scene', { id: 'promo' })).code).toBe('E_REMOTION_NO_SCENE');
   });
 });
@@ -328,7 +328,7 @@ describe('preview and render', () => {
     expect(bundles()).toBe(2);
   });
 
-  test('render: H.264 into out/cutpilot with unique names, a production render with the key', async () => {
+  test('render: H.264 into out/nodcut with unique names, a production render with the key', async () => {
     const p = project();
     const c = await connect({ project: p });
     await call(c, 'create_scene', { ...promo, durationInFrames: 30 });
@@ -336,7 +336,7 @@ describe('preview and render', () => {
       await call(c, 'render', { id: 'promo' }),
     );
     const b = structured<{ file: string }>(await call(c, 'render', { id: 'promo' }));
-    expect(a.file.startsWith(join(p, 'out', 'cutpilot', 'promo-'))).toBe(true);
+    expect(a.file.startsWith(join(p, 'out', 'nodcut', 'promo-'))).toBe(true);
     expect(a.file.endsWith('.mp4')).toBe(true);
     expect(b.file).not.toBe(a.file);
     expect(existsSync(a.file) && existsSync(b.file)).toBe(true);
@@ -380,8 +380,8 @@ describe('preview and render', () => {
   test('a call waiting behind another Remotion job reports progress, so it is not timed out', async () => {
     const p = project();
     const env: NodeJS.ProcessEnv = {
-      CUTPILOT_SECRET_REMOTION_LICENSE_KEY: KEY,
-      CUTPILOT_SETTING_PROJECT_DIR: p,
+      NODCUT_SECRET_REMOTION_LICENSE_KEY: KEY,
+      NODCUT_SETTING_PROJECT_DIR: p,
     };
     const plugin = definePlugin(
       { ...createDefinition({ stateDir: join(tmp, 'state'), beatMs: 50 }), manifest },
@@ -429,7 +429,7 @@ describe('preview and render', () => {
     // the plugin side saw the cancellation and cleaned up
     await new Promise((r) => setTimeout(r, 300));
     expect(readFileSync(join(tmp, 'state', 'acceptances.json'), 'utf8')).toContain(p);
-    const out = join(p, 'out', 'cutpilot');
+    const out = join(p, 'out', 'nodcut');
     expect(existsSync(out) ? (await import('node:fs')).readdirSync(out) : []).toEqual([]);
   });
 });

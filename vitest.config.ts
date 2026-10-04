@@ -5,7 +5,7 @@ const pkg = (p: string) => fileURLToPath(new URL(`./packages/${p}`, import.meta.
 
 // Tests import the packages from source, so `pnpm test` needs no build
 // (except the SDK harness tests, which start real plugin processes against dist/).
-const alias = [{ find: /^@cutpilot\/(plugin-api|plugin-sdk)$/, replacement: pkg('$1/src/index.ts') }];
+const alias = [{ find: /^@nodcut\/(plugin-api|plugin-sdk)$/, replacement: pkg('$1/src/index.ts') }];
 
 export default defineConfig({
   resolve: { alias },

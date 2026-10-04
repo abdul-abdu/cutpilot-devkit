@@ -1,6 +1,6 @@
 /**
  * validatePluginFolder(): what can be checked in a plugin folder without starting it — the
- * manifest against `@cutpilot/plugin-api`, its icon, and that its command is there to run (or,
+ * manifest against `@nodcut/plugin-api`, its icon, and that its command is there to run (or,
  * for a language pack, its catalogues).
  * Fast and side-effect free, so editors and CLIs can run it on every save; `testPlugin()` starts
  * the plugin and checks the rest.
@@ -20,7 +20,7 @@ import {
   pngSize,
   type Manifest,
   type Strings,
-} from '@cutpilot/plugin-api';
+} from '@nodcut/plugin-api';
 
 export interface Check {
   name: string;
@@ -189,7 +189,7 @@ export function commandCheck(dir: string, m: Pick<Manifest, 'command' | 'args'>)
   return { name, result: 'pass', detail: shown };
 }
 
-/** A catalogue file as CutPilot reads it: refused when too big or not JSON. */
+/** A catalogue file as NodCut reads it: refused when too big or not JSON. */
 function readCatalogue(dir: string, file: string): { json?: unknown; problem?: string } {
   try {
     const size = statSync(join(dir, file)).size;
@@ -204,7 +204,7 @@ function readCatalogue(dir: string, file: string): { json?: unknown; problem?: s
 
 /**
  * A language pack's catalogues (P3-067), one check per language: read and judged the way
- * CutPilot judges them. With `strings` (the list a CutPilot version publishes), also what each
+ * NodCut judges them. With `strings` (the list a NodCut version publishes), also what each
  * one lacks: those strings show in English.
  */
 export function languageChecks(dir: string, m: Manifest, strings?: Strings): Check[] {
@@ -237,7 +237,7 @@ export function languageChecks(dir: string, m: Manifest, strings?: Strings): Che
     checks.push(
       missing.length
         ? {
-            name: `${name} covers CutPilot ${strings.cutpilot}`,
+            name: `${name} covers NodCut ${strings.nodcut}`,
             result: 'fail',
             detail: `${missing.length} strings missing (they show in English), like ${missing
               .slice(0, 3)
@@ -246,7 +246,7 @@ export function languageChecks(dir: string, m: Manifest, strings?: Strings): Che
             fix: `translate them in ${[l.messages, l.menu].filter(Boolean).join(' and ')}`,
           }
         : {
-            name: `${name} covers CutPilot ${strings.cutpilot}`,
+            name: `${name} covers NodCut ${strings.nodcut}`,
             result: 'pass',
             detail: `every string${note}`,
           },

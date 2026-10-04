@@ -1,7 +1,7 @@
 /**
- * testPlugin(): start a plugin the way CutPilot does (in its folder, `node` = this Node, a
+ * testPlugin(): start a plugin the way NodCut does (in its folder, `node` = this Node, a
  * minimal environment, its settings and secrets as variables), then check the manifest, the
- * tools it offers, and one call of each contract tool against `@cutpilot/plugin-api`.
+ * tools it offers, and one call of each contract tool against `@nodcut/plugin-api`.
  */
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -19,7 +19,7 @@ import {
   type Manifest,
   type Strings,
   type Template,
-} from '@cutpilot/plugin-api';
+} from '@nodcut/plugin-api';
 import type { z } from 'zod';
 import {
   commandCheck,
@@ -52,7 +52,7 @@ export interface TestOptions {
   sound?: Record<string, unknown>;
   /** per call; default 60 s */
   timeoutMs?: number;
-  /** the strings a CutPilot version shows, to say what a language pack lacks (P3-067) */
+  /** the strings a NodCut version shows, to say what a language pack lacks (P3-067) */
   strings?: Strings;
 }
 
@@ -76,14 +76,14 @@ export function silentWav(path: string, ms = 1000): string {
   return path;
 }
 
-/** How CutPilot starts a plugin's command. */
+/** How NodCut starts a plugin's command. */
 export function resolveCommand(dir: string, m: Pick<Manifest, 'command'>): string {
   if (m.command === undefined) throw new Error('a data-only plugin has no command to start');
   if (m.command === 'node') return process.execPath;
   return /[\\/]/.test(m.command) ? join(dir, m.command) : m.command;
 }
 
-/** The environment CutPilot gives a plugin: nothing of its own but these. */
+/** The environment NodCut gives a plugin: nothing of its own but these. */
 export function pluginEnv(
   m: Manifest,
   settings: Record<string, string | number | boolean> = {},
@@ -112,7 +112,7 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
   if (!m) return report(dir, checks);
   const add = (c: Check) => checks.push(c);
   const done = (plugin: string): TestReport => report(plugin, checks, m);
-  // a language pack is data only: CutPilot reads it and never starts it, so neither does this
+  // a language pack is data only: NodCut reads it and never starts it, so neither does this
   if (m.command === undefined) {
     add(commandCheck(dir, m));
     checks.push(...languageChecks(dir, m, opts.strings));
@@ -125,7 +125,7 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
     return done(m.id);
   }
 
-  const tmp = mkdtempSync(join(tmpdir(), 'cutpilot-plugin-test-'));
+  const tmp = mkdtempSync(join(tmpdir(), 'nodcut-plugin-test-'));
   const transport = new StdioClientTransport({
     command: resolveCommand(dir, m),
     args: m.args,
@@ -135,7 +135,7 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
   });
   let stderr = '';
   transport.stderr?.on('data', (d: Buffer) => (stderr = (stderr + d.toString()).slice(-4000)));
-  const client = new Client({ name: 'cutpilot-plugin-test', version: '1' });
+  const client = new Client({ name: 'nodcut-plugin-test', version: '1' });
   const tail = () => stderr.trim().split('\n').slice(-5).join(' | ') || 'no output';
   try {
     try {
@@ -211,7 +211,7 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
             name,
             result: 'fail',
             detail: issues(o.error),
-            fix: 'return what the contract in @cutpilot/plugin-api says',
+            fix: 'return what the contract in @nodcut/plugin-api says',
           });
           return undefined;
         }

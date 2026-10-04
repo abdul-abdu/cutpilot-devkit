@@ -1,6 +1,6 @@
 /**
  * The plugin with a stand-in face helper written in Node (the real one needs a Mac): through MCP
- * in memory, and as CutPilot starts it (needs `pnpm build`).
+ * in memory, and as NodCut starts it (needs `pnpm build`).
  */
 import {
   chmodSync,
@@ -17,14 +17,14 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { definePlugin, formatReport, ReframeTrackOutputSchema, testPlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin, formatReport, ReframeTrackOutputSchema, testPlugin } from '@nodcut/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import { bundlePlugin } from '../../../scripts/bundle-plugin.mjs';
 import { expectedSamples, HELPER_ENV, helperPath } from './helper.js';
 import { makeDefinition, type Options } from './plugin.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
-const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(DIR, 'nodcut-plugin.json'), 'utf8'));
 const tmp = mkdtempSync(join(tmpdir(), 'cp-follow-'));
 const clients: Client[] = [];
 afterAll(async () => {
@@ -211,7 +211,7 @@ describe('finding the helper', () => {
   });
 });
 
-describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it', () => {
+describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as NodCut starts it', () => {
   test('testPlugin without a video: starts, offers reframe_track; the call is skipped', async () => {
     const r = await testPlugin(DIR);
     expect(r.ok, formatReport(r)).toBe(true);
@@ -226,11 +226,11 @@ describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it'
 
   /**
    * The harness gives a plugin only its settings and secrets, so to use the stand-in helper this
-   * starts the built plugin from a copy of the folder whose entry sets CUTPILOT_FACE_HELPER first.
+   * starts the built plugin from a copy of the folder whose entry sets NODCUT_FACE_HELPER first.
    */
   test('testPlugin with the stand-in helper and a scene as the video', async () => {
     const dir = mkdtempSync(join(tmp, 'harness-'));
-    writeFileSync(join(dir, 'cutpilot-plugin.json'), JSON.stringify({ ...manifest, args: ['start.mjs'] }));
+    writeFileSync(join(dir, 'nodcut-plugin.json'), JSON.stringify({ ...manifest, args: ['start.mjs'] }));
     copyFileSync(join(DIR, 'icon.png'), join(dir, 'icon.png'));
     writeFileSync(
       join(dir, 'start.mjs'),

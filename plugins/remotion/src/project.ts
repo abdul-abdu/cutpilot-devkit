@@ -6,7 +6,7 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, isAbsolute, join } from 'node:path';
-import { PluginFailure } from '@cutpilot/plugin-sdk';
+import { PluginFailure } from '@nodcut/plugin-sdk';
 
 /** The packages a render needs; Remotion requires all of them at the same version. */
 export const REMOTION_PACKAGES = ['remotion', '@remotion/renderer', '@remotion/bundler'] as const;
@@ -16,7 +16,7 @@ export type RemotionPackage = (typeof REMOTION_PACKAGES)[number];
 export const SUPPORTED_MAJOR = 4;
 export const MIN_VERSION = '4.0.409';
 
-const SETTINGS_FIX = 'set "Remotion project folder" in CutPilot → Plugins → Remotion';
+const SETTINGS_FIX = 'set "Remotion project folder" in NodCut → Plugins → Remotion';
 
 /** A require() that resolves from the user's project, never from this plugin. */
 export const projectRequire = (projectDir: string) => createRequire(join(projectDir, 'package.json'));

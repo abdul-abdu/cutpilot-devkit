@@ -1,7 +1,7 @@
 {
-  "name": "@cutpilot/plugin-tools-brag",
+  "name": "@nodcut/plugin-tools-brag",
   "version": "0.1.1",
-  "description": "CutPilot plugin: /brag in CutPilot. Your AI turns what you built into a short launch video with brag's method; the plugin writes, checks, snapshots and renders it with HyperFrames.",
+  "description": "NodCut plugin: /brag in NodCut. Your AI turns what you built into a short launch video with brag's method; the plugin writes, checks, snapshots and renders it with HyperFrames.",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -14,24 +14,24 @@
   "files": [
     "dist",
     "sounds",
-    "cutpilot-plugin.json",
+    "nodcut-plugin.json",
     "icon.png",
     "README.md"
   ],
   "dependencies": {
-    "@cutpilot/plugin-sdk": "workspace:*",
+    "@nodcut/plugin-sdk": "workspace:*",
     "gsap": "^3.13.0",
     "hyperframes": "^0.8.80",
     "zod": "^4.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
     "directory": "plugins/brag"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
-    "cutpilot",
+    "nodcut",
     "brag",
     "launch-video",
     "hyperframes",

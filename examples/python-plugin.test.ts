@@ -1,7 +1,7 @@
 /**
  * The Python example passes testPlugin() like any other plugin. Skipped when uv isn't on PATH;
  * `uv sync` runs first with this environment (proxy settings included), since testPlugin()
- * starts the plugin with only PATH, HOME, LANG and TMPDIR, as CutPilot does.
+ * starts the plugin with only PATH, HOME, LANG and TMPDIR, as NodCut does.
  */
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';

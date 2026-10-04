@@ -22,7 +22,7 @@ import {
 import { homedir } from 'node:os';
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PluginFailure } from '@cutpilot/plugin-sdk';
+import { PluginFailure } from '@nodcut/plugin-sdk';
 
 export const MARKER = '.brag-project';
 
@@ -105,7 +105,7 @@ export function copyAsset(
     throw new PluginFailure(
       'E_PLUGIN_BAD_INPUT',
       `there is no file at ${from}`,
-      'pass a path the user gave you or a tool returned, never a guessed one; for a track from find_music (an id, not a file), render without music, then add it in CutPilot with open_project and set_music',
+      'pass a path the user gave you or a tool returned, never a guessed one; for a track from find_music (an id, not a file), render without music, then add it in NodCut with open_project and set_music',
     );
   const name = as?.trim() || from.split(/[\\/]/).pop()!;
   const root = realpathSync(project);

@@ -2,7 +2,7 @@
  * The plugin: an `asset:music` over the library shipped in `library/`. find_music picks
  * tracks by mood, words and length; get_music hands over a track's file with its licence.
  */
-import { PluginFailure, type PluginDefinition } from '@cutpilot/plugin-sdk';
+import { PluginFailure, type PluginDefinition } from '@nodcut/plugin-sdk';
 import { LIBRARY_DIR, loadLibrary, trackFile, type Library } from './library.js';
 import { pick, type Track } from './picker.js';
 

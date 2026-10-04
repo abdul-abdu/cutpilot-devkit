@@ -1,5 +1,5 @@
-// The smallest CutPilot plugin: one read-only tool that AI clients see as `hello__greet`.
-import { definePlugin } from '@cutpilot/plugin-sdk';
+// The smallest NodCut plugin: one read-only tool that AI clients see as `hello__greet`.
+import { definePlugin } from '@nodcut/plugin-sdk';
 import { z } from 'zod';
 
 await definePlugin({

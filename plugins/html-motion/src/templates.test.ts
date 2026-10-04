@@ -1,5 +1,5 @@
 /** The templates as data and HTML: pure, no browser. */
-import { ListTemplatesOutputSchema } from '@cutpilot/plugin-sdk';
+import { ListTemplatesOutputSchema } from '@nodcut/plugin-sdk';
 import { describe, expect, test } from 'vitest';
 import { compose, describeTemplate, esc, fit, shade, TEMPLATES, templateById } from './templates.js';
 

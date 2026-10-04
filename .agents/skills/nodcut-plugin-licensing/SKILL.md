@@ -1,15 +1,15 @@
 ---
-name: cutpilot-plugin-licensing
-description: Bring-your-own-licence rule for CutPilot plugins — when a plugin uses anything that is not free for everyone (a metered API such as ElevenLabs or OpenAI, a library with a commercial licence such as Remotion, a model or asset library with usage terms, a CLI or font that must be bought), the user brings and pays for their own key, licence or download; CutPilot never bundles, resells, proxies or hides it. Use when adding or reviewing a plugin that talks to a paid service, depends on a licensed library, downloads a model or asset with terms, or when a task mentions API keys, licence keys, pricing, quotas, credits, "free for individuals", attribution or redistribution.
+name: nodcut-plugin-licensing
+description: Bring-your-own-licence rule for NodCut plugins — when a plugin uses anything that is not free for everyone (a metered API such as ElevenLabs or OpenAI, a library with a commercial licence such as Remotion, a model or asset library with usage terms, a CLI or font that must be bought), the user brings and pays for their own key, licence or download; NodCut never bundles, resells, proxies or hides it. Use when adding or reviewing a plugin that talks to a paid service, depends on a licensed library, downloads a model or asset with terms, or when a task mentions API keys, licence keys, pricing, quotas, credits, "free for individuals", attribution or redistribution.
 ---
 
 # Plugins and paid things: the user brings their own
 
-CutPilot's plugins are MIT, but what a plugin **uses** often is not: a metered API, a library licensed per company, a model with a community licence, a sound library that wants a credit line. The rule for every plugin in this repo, first-party or not:
+NodCut's plugins are MIT, but what a plugin **uses** often is not: a metered API, a library licensed per company, a model with a community licence, a sound library that wants a credit line. The rule for every plugin in this repo, first-party or not:
 
-> **If it is not free for everyone, the user brings their own.** Their own API key, their own licence key, their own installation, their own agreement to the terms. CutPilot and the plugin never provide, resell, proxy, bundle, trial or hide the paid thing, and never pretend it is included.
+> **If it is not free for everyone, the user brings their own.** Their own API key, their own licence key, their own installation, their own agreement to the terms. NodCut and the plugin never provide, resell, proxy, bundle, trial or hide the paid thing, and never pretend it is included.
 
-Why: the plugin can stay MIT and public; CutPilot is not a party to the user's contract with the provider; no key or licence of ours is ever in a bundle a user can unpack; and the user sees what each feature costs and where the money goes. The code examples are `plugins/remotion` (a licensed library), `plugins/cloud-transcribe` (metered APIs) and `plugins/sound` (models with terms).
+Why: the plugin can stay MIT and public; NodCut is not a party to the user's contract with the provider; no key or licence of ours is ever in a bundle a user can unpack; and the user sees what each feature costs and where the money goes. The code examples are `plugins/remotion` (a licensed library), `plugins/cloud-transcribe` (metered APIs) and `plugins/sound` (models with terms).
 
 ## 1. Decide what the plugin depends on
 
@@ -27,8 +27,8 @@ Before writing the manifest, list everything the plugin needs that it does not c
 
 ## 2. Pattern: a metered API (bring your own key)
 
-- `permissions.secrets` names the key in UPPER_SNAKE (`ELEVENLABS_API_KEY`); `permissions.network` lists exactly the hosts it calls. The user enters the key in CutPilot → Plugins → the plugin → Keys; the plugin reads it with `ctx.requireSecret()`, which fails with `E_PLUGIN_NEEDS_SECRET` and says where to enter it. Never read `process.env.OPENAI_API_KEY` or a dotfile: the engine passes only declared secrets, and that is the point.
-- **The key goes to the provider and nowhere else.** No proxy through a CutPilot server, no "we'll call it for you", no telemetry carrying the key. Say so in the README.
+- `permissions.secrets` names the key in UPPER_SNAKE (`ELEVENLABS_API_KEY`); `permissions.network` lists exactly the hosts it calls. The user enters the key in NodCut → Plugins → the plugin → Keys; the plugin reads it with `ctx.requireSecret()`, which fails with `E_PLUGIN_NEEDS_SECRET` and says where to enter it. Never read `process.env.OPENAI_API_KEY` or a dotfile: the engine passes only declared secrets, and that is the point.
+- **The key goes to the provider and nowhere else.** No proxy through a NodCut server, no "we'll call it for you", no telemetry carrying the key. Say so in the README.
 - **Say what leaves the computer** (`plugins/cloud-transcribe/README.md`: "Your audio leaves your computer and goes to the provider you chose, under that provider's terms") and which local alternative exists.
 - **Offer a `test_key` tool** that checks the key with a request that uploads nothing and costs nothing (`plugins/cloud-transcribe/src/plugin.ts`); the app's Keys panel has a "Test key" button for it.
 - **Money errors teach.** Map the provider's billing answers to their own codes with a fix the user can act on: a bad key (`E_<X>_BAD_KEY`: check it, make a new one), out of credits (`E_<X>_QUOTA`: add credits, or switch provider), rate limits (wait). Never retry a paid call in a loop; never silently fall back to another paid provider the user did not choose.
@@ -43,7 +43,7 @@ Before writing the manifest, list everything the plugin needs that it does not c
 - **A guard test makes that permanent**: `plugins/remotion/src/no-bundled-remotion.test.ts` fails `pnpm check` if the library gets into the dependencies, a value import, the esbuild graph or the `pnpm bundle` output. Write the same test for your library, naming its packages.
 - **The licence key is a secret** (`REMOTION_LICENSE_KEY`), entered by the user, never by the AI. If the licensor has a free tier that needs no key, let the user declare it with a fixed word (`free-license`), so entering it is the act of acceptance and the plugin can tell the two kinds apart. The key is passed to the library the way the licensor asks (`licenseKey`) and nowhere else.
 - **Nothing runs without it.** Every tool, including `status`-like ones that would merely read, calls the licence check first (`plugins/remotion/src/license.ts`, `licenseKey(ctx)`); the failure carries the licensor's own notice and the fix. Explain what the library reports to its vendor (Remotion sends a usage event per production render) and what it does not send.
-- **A notice the AI shows the user**, one paragraph, in the licensor's words where they publish them, saying: this plugin uses your own installation of X, licensed separately by Y; CutPilot does not include or license X; you are responsible for complying. It is a constant in the plugin, in the README, in the manifest's `description` if it fits, and in the registry entry's description and `changes`.
+- **A notice the AI shows the user**, one paragraph, in the licensor's words where they publish them, saying: this plugin uses your own installation of X, licensed separately by Y; NodCut does not include or license X; you are responsible for complying. It is a constant in the plugin, in the README, in the manifest's `description` if it fits, and in the registry entry's description and `changes`.
 - **Record the acceptance** (when, which project, which library version, which kind of licence; never the key) under the plugin's app-data folder, and carry the notice in the first answer for each new pair, so the AI shows it again. Mark non-billable work as such when the licensor distinguishes it (previews as development renders).
 - **Installation of the library is the user's act**, under their name: the plugin may run the vendor's own installer for them (`npx create-video@latest` in a folder they chose) but never vendors it, patches it or mirrors its downloads.
 
@@ -53,24 +53,24 @@ Before writing the manifest, list everything the plugin needs that it does not c
 
 - **Nothing is bundled.** A `doctor` tool lists each download with its size, publisher, licence name and URL (`RUNTIME_LICENSE` and the catalog in `plugins/sound/src/catalog.ts`). A `setup` tool downloads **one** job's files only with `agree: true`, which the AI may set only after showing the user the licences; without it the plugin fails with its own `E_<X>_LICENSE` and the fix says to show the terms first.
 - Downloads come from the publisher's own hosts (listed in `permissions.network`), pinned by SHA-256, into a folder the user can see and a `remove` tool can empty.
-- **Terms that depend on the user** (revenue caps, non-commercial clauses, "Powered by …" attribution) are stated in the README in one line each and in `doctor`'s answer; the plugin cannot decide them for the user. Attribution a licence requires goes into the contract's `attribution` field so CutPilot keeps it with the project.
+- **Terms that depend on the user** (revenue caps, non-commercial clauses, "Powered by …" attribution) are stated in the README in one line each and in `doctor`'s answer; the plugin cannot decide them for the user. Attribution a licence requires goes into the contract's `attribution` field so NodCut keeps it with the project.
 
 ## 5. Pattern: assets the plugin ships or serves
 
-A plugin may contain or serve only what its author may redistribute: public domain, CC0, a licence bought **for redistribution**, or the author's own work. Each asset carries its `license` and `attribution` in the contract output (`packages/plugin-api/src/contracts.ts`: music and sound results), so CutPilot records them with the project. A library that is free to listen to but not to redistribute is a **key** or **terms** case, not an asset to bundle. Placeholders synthesized from scratch (`plugins/music`) are fine and say so.
+A plugin may contain or serve only what its author may redistribute: public domain, CC0, a licence bought **for redistribution**, or the author's own work. Each asset carries its `license` and `attribution` in the contract output (`packages/plugin-api/src/contracts.ts`: music and sound results), so NodCut records them with the project. A library that is free to listen to but not to redistribute is a **key** or **terms** case, not an asset to bundle. Placeholders synthesized from scratch (`plugins/music`) are fine and say so.
 
 ## 6. What this looks like to the user and the store
 
 - `permissions.secrets` and `permissions.network` tell the truth; the store shows "needs a key" and "works offline" from them. The manifest `description` (≤ 300 characters) says "with your own API key" / "bring your own licence" when that is the case, so the user knows before installing.
 - The README has a section named for it ("Licence: bring your own Remotion", "Setup" with "Make an API key"), with: who the licensee is, where to get the key, where to enter it, what the key is sent to, what leaves the computer, what it costs and who bills it. Link the provider's pricing and licence pages; never quote a price, it goes stale.
-- The registry entry (app repo, `cutpilot-plugin-publish`) repeats it in `description` and each version's `changes`. The entry's `license` is the plugin's **code** licence (MIT), not the thing it uses.
+- The registry entry (app repo, `nodcut-plugin-publish`) repeats it in `description` and each version's `changes`. The entry's `license` is the plugin's **code** licence (MIT), not the thing it uses.
 - The plugin's `package.json` `license` is MIT; a plugin that must carry another licence has its own `LICENSE` file in its folder, as the repo README says.
 
 ## 7. Never
 
-- A key, token, licence, account or credential of CutPilot's or the author's in the plugin, its fixtures, its bundle, its tests or its history (search before committing: `grep -rn "sk-\|key-\|license" plugins/<name>` minus the names of secrets).
+- A key, token, licence, account or credential of NodCut's or the author's in the plugin, its fixtures, its bundle, its tests or its history (search before committing: `grep -rn "sk-\|key-\|license" plugins/<name>` minus the names of secrets).
 - "Included", "free" or "unlimited" in a description when the user pays the provider.
-- A free-tier key shared among users, a proxy that spends CutPilot's credits, a "trial" that is really our account.
+- A free-tier key shared among users, a proxy that spends NodCut's credits, a "trial" that is really our account.
 - Calling a paid API without an explicit user action behind it (an install, an `open_project`, a tool the AI called for the user's request), or more than once for one request.
 - Vendoring, mirroring or patching a library whose licence depends on who the user is.
 - Deciding a licence tier for the user ("you look like a small company").

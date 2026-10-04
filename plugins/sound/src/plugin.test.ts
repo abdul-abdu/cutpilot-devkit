@@ -1,6 +1,6 @@
 /**
  * The tools through MCP (in memory) with a fake audio.cpp, setup against a local server, the
- * plugin as CutPilot starts it (needs `pnpm build`), and, with CUTPILOT_SOUND_E2E set to a data
+ * plugin as NodCut starts it (needs `pnpm build`), and, with NODCUT_SOUND_E2E set to a data
  * folder that has the runtime and models, real sounds.
  */
 import { execFileSync } from 'node:child_process';
@@ -21,7 +21,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { definePlugin, formatReport, testPlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin, formatReport, testPlugin } from '@nodcut/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import {
   MODELS,
@@ -37,7 +37,7 @@ import { threadCount } from './runner.js';
 import { wavInfo } from './wav.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
-const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(DIR, 'nodcut-plugin.json'), 'utf8'));
 const tmp = mkdtempSync(join(tmpdir(), 'cp-sound-'));
 const key = `${process.platform}-${process.arch}`;
 const exeName = process.platform === 'win32' ? 'audiocpp_cli.exe' : 'audiocpp_cli';
@@ -159,7 +159,7 @@ describe.skipIf(!RUNTIMES[key])('tools, with a fake audio.cpp', () => {
 
   test('nothing downloaded: doctor says so, generate_sound says how to set up', async () => {
     const dir = join(tmp, 'empty');
-    const c = await connect(definition, { CUTPILOT_SETTING_DATA_DIR: dir });
+    const c = await connect(definition, { NODCUT_SETTING_DATA_DIR: dir });
     const d = structured<{
       dataDir: string;
       supported: boolean;
@@ -190,7 +190,7 @@ describe.skipIf(!RUNTIMES[key])('tools, with a fake audio.cpp', () => {
   });
 
   test('the runtime but not the model: the model is what is missing', async () => {
-    const c = await connect(definition, { CUTPILOT_SETTING_DATA_DIR: dataDir('rt-only', []) });
+    const c = await connect(definition, { NODCUT_SETTING_DATA_DIR: dataDir('rt-only', []) });
     const e = errorOf(
       await c.callTool({ name: 'generate_sound', arguments: { kind: 'sfx', prompt: 'rain' } }),
     );
@@ -202,7 +202,7 @@ describe.skipIf(!RUNTIMES[key])('tools, with a fake audio.cpp', () => {
 
   test('speech: the CLI gets the language, voice and text; the wav comes back with its facts; cached by seed', async () => {
     const dir = dataDir('speech', ['speech']);
-    const c = await connect(definition, { CUTPILOT_SETTING_DATA_DIR: dir, CUTPILOT_SETTING_THREADS: '3' });
+    const c = await connect(definition, { NODCUT_SETTING_DATA_DIR: dir, NODCUT_SETTING_THREADS: '3' });
     const r = await c.callTool({
       name: 'generate_sound',
       arguments: { kind: 'speech', text: ' Привет, мир. ', language: 'ru', voice: 'M2', seed: 5 },
@@ -255,7 +255,7 @@ describe.skipIf(!RUNTIMES[key])('tools, with a fake audio.cpp', () => {
   });
 
   test('effects and music: the length goes to the CLI; stereo 44.1 kHz; the Stability credit', async () => {
-    const c = await connect(definition, { CUTPILOT_SETTING_DATA_DIR: dataDir('sfx', ['sfx', 'music']) });
+    const c = await connect(definition, { NODCUT_SETTING_DATA_DIR: dataDir('sfx', ['sfx', 'music']) });
     const s = structured<Sound>(
       await c.callTool({
         name: 'generate_sound',
@@ -279,7 +279,7 @@ describe.skipIf(!RUNTIMES[key])('tools, with a fake audio.cpp', () => {
   });
 
   test('bad input is refused with a fix: language, voice, length', async () => {
-    const c = await connect(definition, { CUTPILOT_SETTING_DATA_DIR: dataDir('bad', ['sfx', 'speech']) });
+    const c = await connect(definition, { NODCUT_SETTING_DATA_DIR: dataDir('bad', ['sfx', 'speech']) });
     const call = (a: Record<string, unknown>) =>
       c.callTool({ name: 'generate_sound', arguments: a }).then(errorOf);
     expect(await call({ kind: 'speech', text: 'Salom', language: 'uz' })).toMatchObject({
@@ -302,7 +302,7 @@ describe.skipIf(!RUNTIMES[key])('tools, with a fake audio.cpp', () => {
 
   test("a failed run: the CLI's last lines, and nothing left in the cache", async () => {
     const dir = dataDir('fail', ['speech']);
-    const c = await connect(definition, { CUTPILOT_SETTING_DATA_DIR: dir });
+    const c = await connect(definition, { NODCUT_SETTING_DATA_DIR: dir });
     const e = errorOf(
       await c.callTool({
         name: 'generate_sound',
@@ -316,7 +316,7 @@ describe.skipIf(!RUNTIMES[key])('tools, with a fake audio.cpp', () => {
 
   test('remove: one model, then everything', async () => {
     const dir = dataDir('rm', ['sfx', 'speech']);
-    const c = await connect(definition, { CUTPILOT_SETTING_DATA_DIR: dir });
+    const c = await connect(definition, { NODCUT_SETTING_DATA_DIR: dir });
     const one = structured<{ removed: string[]; models: { job: string; installed: boolean }[] }>(
       await c.callTool({ name: 'remove', arguments: { what: 'sfx' } }),
     );
@@ -406,7 +406,7 @@ describe.skipIf(!RUNTIMES[key] || process.platform === 'win32')('setup, against 
       join(dir, 'models', sfx.id, `${sfx.file}.part`),
       Buffer.from('a very small gguf').subarray(0, 5),
     );
-    const c = await connect(makeDefinition({ runtimes, models }), { CUTPILOT_SETTING_DATA_DIR: dir });
+    const c = await connect(makeDefinition({ runtimes, models }), { NODCUT_SETTING_DATA_DIR: dir });
     const r = await c.callTool({ name: 'setup', arguments: { what: 'sfx', agree: true } });
     expect(r.isError, JSON.stringify(r.structuredContent)).toBeFalsy();
     expect(ranges).toEqual(['bytes=5-']);
@@ -417,7 +417,7 @@ describe.skipIf(!RUNTIMES[key] || process.platform === 'win32')('setup, against 
   test('downloads the runtime (following a redirect) and a model, marks them, and then makes sound; refuses a wrong hash or size', async () => {
     const { runtimes, models, hits } = await serve();
     const dir = join(tmp, 'setup');
-    const c = await connect(makeDefinition({ runtimes, models }), { CUTPILOT_SETTING_DATA_DIR: dir });
+    const c = await connect(makeDefinition({ runtimes, models }), { NODCUT_SETTING_DATA_DIR: dir });
     const progress: string[] = [];
     const r = await c.callTool({ name: 'setup', arguments: { what: 'sfx', agree: true } }, undefined, {
       onprogress: (p) => progress.push(p.message ?? ''),
@@ -480,15 +480,15 @@ test('wav header: PCM facts, odd chunk sizes, not a wav', () => {
   expect(() => wavInfo(f)).toThrow(/not a wav/);
 });
 
-test('threads: half the cores within 2..8, or the setting; the data folder defaults to ~/.cutpilot/sound', () => {
+test('threads: half the cores within 2..8, or the setting; the data folder defaults to ~/.nodcut/sound', () => {
   expect(threadCount(0)).toBeGreaterThanOrEqual(2);
   expect(threadCount(0)).toBeLessThanOrEqual(8);
   expect(threadCount(6)).toBe(6);
-  expect(layout('').dir).toMatch(/[\\/]\.cutpilot[\\/]sound$/);
+  expect(layout('').dir).toMatch(/[\\/]\.nodcut[\\/]sound$/);
   expect(layout(' /x/y ').dir).toBe('/x/y');
 });
 
-describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it', () => {
+describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as NodCut starts it', () => {
   test('testPlugin: starts, offers the contract tools, lists voices; no sound without a data folder', async () => {
     const r = await testPlugin(DIR, { settings: { dataDir: join(tmp, 'harness') } });
     expect(r.ok, formatReport(r)).toBe(true);
@@ -501,10 +501,10 @@ describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it'
   });
 });
 
-const E2E = process.env.CUTPILOT_SOUND_E2E;
-describe.skipIf(!E2E)('real sounds (CUTPILOT_SOUND_E2E=<data folder with the runtime and models>)', () => {
+const E2E = process.env.NODCUT_SOUND_E2E;
+describe.skipIf(!E2E)('real sounds (NODCUT_SOUND_E2E=<data folder with the runtime and models>)', () => {
   test('speech in Russian and a sound effect, with their facts', async () => {
-    const c = await connect(definition, { CUTPILOT_SETTING_DATA_DIR: E2E });
+    const c = await connect(definition, { NODCUT_SETTING_DATA_DIR: E2E });
     const s = structured<Sound>(
       await c.callTool({
         name: 'generate_sound',

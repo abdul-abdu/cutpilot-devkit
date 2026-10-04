@@ -1,6 +1,6 @@
 /**
  * The templates as the AI sees them: each is a zod schema for its parameters, an example and its
- * lengths. The drawing is Python (python/cutpilot_manim.py, one function per template id), so
+ * lengths. The drawing is Python (python/nodcut_manim.py, one function per template id), so
  * the schemas here are the only check the parameters get before Manim runs: keep them as strict
  * as the Python expects. Pure: no files, no Manim.
  */

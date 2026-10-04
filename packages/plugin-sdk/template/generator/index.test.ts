@@ -1,6 +1,6 @@
-// `npm test` builds the plugin first: testPlugin() starts dist/index.js the way CutPilot does.
+// `npm test` builds the plugin first: testPlugin() starts dist/index.js the way NodCut does.
 import { fileURLToPath } from 'node:url';
-import { findOnPath, formatReport, testPlugin } from '@cutpilot/plugin-sdk';
+import { findOnPath, formatReport, testPlugin } from '@nodcut/plugin-sdk';
 import { expect, test } from 'vitest';
 
 const root = fileURLToPath(new URL('..', import.meta.url));

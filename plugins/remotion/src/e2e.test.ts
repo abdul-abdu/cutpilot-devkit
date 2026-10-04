@@ -2,7 +2,7 @@
  * With a real Remotion: a project made by remotion__create_project (REMOTION_E2E=1; needs Node,
  * npm and the internet) or an existing one (REMOTION_PROJECT=<folder>, a scratch copy: scenes are
  * written into it). A scene is created and checked, frame 0 previewed, one second rendered to
- * H.264 and a few frames to ProRes 4444, then the plugin is started as CutPilot starts it
+ * H.264 and a few frames to ProRes 4444, then the plugin is started as NodCut starts it
  * (needs `pnpm build`). Remotion downloads its Chrome Headless Shell on first use. Skipped otherwise.
  */
 import { execFileSync } from 'node:child_process';
@@ -12,14 +12,14 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { definePlugin, formatReport, testPlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin, formatReport, testPlugin } from '@nodcut/plugin-sdk';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { findOnPath } from './create.js';
 import { createDefinition } from './plugin.js';
 import { workDir } from './remotion.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
-const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(DIR, 'nodcut-plugin.json'), 'utf8'));
 const existing = process.env.REMOTION_PROJECT;
 const scaffold = !!process.env.REMOTION_E2E;
 const ffprobe = findOnPath('ffprobe');
@@ -67,7 +67,7 @@ describe.skipIf(!existing && !scaffold)('with a real Remotion', () => {
   const connect = async (projectDir: string) => {
     const plugin = definePlugin(
       { ...createDefinition({ stateDir: join(tmp, 'state') }), manifest },
-      { CUTPILOT_SECRET_REMOTION_LICENSE_KEY: KEY, CUTPILOT_SETTING_PROJECT_DIR: projectDir },
+      { NODCUT_SECRET_REMOTION_LICENSE_KEY: KEY, NODCUT_SETTING_PROJECT_DIR: projectDir },
     );
     const [a, b] = InMemoryTransport.createLinkedPair();
     await plugin.server.connect(a);
@@ -124,7 +124,7 @@ describe.skipIf(!existing && !scaffold)('with a real Remotion', () => {
       expect(r.check, JSON.stringify(r.check)).toMatchObject({
         ok: true,
         typescript: 'ok',
-        composition: { id: 'cutpilot-e2e-promo', width: 640, height: 360, durationInFrames: 30 },
+        composition: { id: 'nodcut-e2e-promo', width: 640, height: 360, durationInFrames: 30 },
       });
       // a type error comes back verbatim, the scene stays written
       const bad = ok<{ check: { ok: boolean; typescript: string[] } }>(
@@ -160,7 +160,7 @@ describe.skipIf(!existing && !scaffold)('with a real Remotion', () => {
         await call('render', { id: 'e2e-promo' }),
       );
       expect(existsSync(r.file)).toBe(true);
-      expect(r.file.startsWith(join(project, 'out', 'cutpilot'))).toBe(true);
+      expect(r.file.startsWith(join(project, 'out', 'nodcut'))).toBe(true);
       expect(Math.abs(r.durationMs - 1000)).toBeLessThan(100);
       if (ffprobe) {
         const info = probe(r.file);
@@ -203,7 +203,7 @@ describe.skipIf(!existing && !scaffold)('with a real Remotion', () => {
   );
 
   test.skipIf(!existsSync(join(DIR, 'dist', 'index.js')))(
-    'as CutPilot starts it',
+    'as NodCut starts it',
     async () => {
       const report = await testPlugin(DIR, {
         secrets: { REMOTION_LICENSE_KEY: KEY },

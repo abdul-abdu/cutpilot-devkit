@@ -1,5 +1,5 @@
 /** The crop path on synthetic face tracks: calm on a steady speaker, follows a move, ignores passers-by. */
-import { KeyframeSchema, ReframeTrackOutputSchema } from '@cutpilot/plugin-sdk';
+import { KeyframeSchema, ReframeTrackOutputSchema } from '@nodcut/plugin-sdk';
 import fc from 'fast-check';
 import { describe, expect, test } from 'vitest';
 import { cropSize, follow, mergeRanges, prune, type Keyframe, type Range } from './follow.js';

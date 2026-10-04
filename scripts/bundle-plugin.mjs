@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Bundle a Node plugin of this workspace into a folder that stands alone, ready for
- * `cutpilot plugin pack` (or for `cutpilot plugin install <folder>` without --link):
+ * `nodcut plugin pack` (or for `nodcut plugin install <folder>` without --link):
  *
  *   node scripts/bundle-plugin.mjs plugins/hyperframes [--out build/hyperframes]
  *
@@ -38,8 +38,8 @@ import { build } from 'esbuild';
 
 const ROOT = join(import.meta.dirname, '..');
 /** Bundled with the plugin's own code, never installed next to it. */
-const BUNDLED = [/^@cutpilot\//, /^zod(\/|$)/, /^@modelcontextprotocol\/sdk(\/|$)/];
-const COPIED = ['cutpilot-plugin.json', 'README.md', 'LICENSE', 'LICENSE.md', 'CHANGELOG.md'];
+const BUNDLED = [/^@nodcut\//, /^zod(\/|$)/, /^@modelcontextprotocol\/sdk(\/|$)/];
+const COPIED = ['nodcut-plugin.json', 'README.md', 'LICENSE', 'LICENSE.md', 'CHANGELOG.md'];
 
 /**
  * @param {string} dir the plugin folder
@@ -49,7 +49,7 @@ const COPIED = ['cutpilot-plugin.json', 'README.md', 'LICENSE', 'LICENSE.md', 'C
  */
 export async function bundlePlugin(dir, out, { log = () => {} } = {}) {
   const src = resolve(dir);
-  const manifest = JSON.parse(readFileSync(join(src, 'cutpilot-plugin.json'), 'utf8'));
+  const manifest = JSON.parse(readFileSync(join(src, 'nodcut-plugin.json'), 'utf8'));
   if (manifest.command === undefined) return copyData(src, manifest, out, log);
   const entry = manifest.args?.[0];
   if (manifest.command !== 'node' || !entry)
@@ -79,7 +79,7 @@ export async function bundlePlugin(dir, out, { log = () => {} } = {}) {
     // CommonJS dependencies inside the bundle (the MCP SDK's) require Node modules at run time;
     // an ES module has no require, so give them one (esbuild's shim looks for a global)
     banner: {
-      js: 'import { createRequire as __cutpilotRequire } from "node:module"; if (typeof globalThis.require === "undefined") globalThis.require = __cutpilotRequire(import.meta.url);',
+      js: 'import { createRequire as __nodcutRequire } from "node:module"; if (typeof globalThis.require === "undefined") globalThis.require = __nodcutRequire(import.meta.url);',
     },
     metafile: true,
     logLevel: 'silent',

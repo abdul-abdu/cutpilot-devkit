@@ -1,7 +1,7 @@
 {
-  "name": "@cutpilot/plugin-api",
+  "name": "@nodcut/plugin-api",
   "version": "0.1.0",
-  "description": "What a CutPilot plugin is: the manifest and the tool contract of each plugin kind.",
+  "description": "What a NodCut plugin is: the manifest and the tool contract of each plugin kind.",
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -27,12 +27,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
     "directory": "packages/plugin-api"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
-    "cutpilot",
+    "nodcut",
     "video",
     "mcp",
     "plugin"
@@ -41,8 +41,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/abdul-abdu/cutpilot-devkit/tree/main/packages/plugin-api#readme",
+  "homepage": "https://github.com/abdul-abdu/nodcut-devkit/tree/main/packages/plugin-api#readme",
   "bugs": {
-    "url": "https://github.com/abdul-abdu/cutpilot-devkit/issues"
+    "url": "https://github.com/abdul-abdu/nodcut-devkit/issues"
   }
 }

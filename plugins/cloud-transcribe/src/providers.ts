@@ -5,7 +5,7 @@
  */
 import { openAsBlob, statSync } from 'node:fs';
 import { basename } from 'node:path';
-import { PluginFailure } from '@cutpilot/plugin-sdk';
+import { PluginFailure } from '@nodcut/plugin-sdk';
 import { toIso1 } from './languages.js';
 import {
   ElevenLabsResponseSchema,
@@ -25,7 +25,7 @@ export interface Provider {
   origin: string;
   /** the largest file it takes, in bytes */
   maxBytes: number;
-  /** the longest audio it takes, in ms, when shorter than maxBytes of CutPilot's wav */
+  /** the longest audio it takes, in ms, when shorter than maxBytes of NodCut's wav */
   maxMs?: number;
   /** where the user gets a key */
   keysUrl: string;
@@ -54,8 +54,8 @@ export const PROVIDER: Record<ProviderId, Provider> = {
 };
 
 /** Where the user enters keys and picks the provider. */
-export const KEYS_PLACE = 'CutPilot → Plugins → Cloud transcription → Keys';
-export const SETTINGS_PLACE = 'CutPilot → Plugins → Cloud transcription → Settings';
+export const KEYS_PLACE = 'NodCut → Plugins → Cloud transcription → Keys';
+export const SETTINGS_PLACE = 'NodCut → Plugins → Cloud transcription → Settings';
 
 export interface Transport {
   fetch: typeof fetch;
@@ -69,7 +69,7 @@ export interface Transcript {
   words: Word[];
 }
 
-/** CutPilot's wav: 16 kHz mono 16-bit, so 32,000 bytes a second after a 44-byte header. */
+/** NodCut's wav: 16 kHz mono 16-bit, so 32,000 bytes a second after a 44-byte header. */
 export const WAV_BYTES_PER_SECOND = 32_000;
 export const wavMs = (bytes: number) => Math.round((Math.max(0, bytes - 44) / WAV_BYTES_PER_SECOND) * 1000);
 
@@ -169,7 +169,7 @@ function tooLarge(p: Provider, message: string): PluginFailure {
     'E_STT_FILE_TOO_LARGE',
     message,
     p.id === 'openai'
-      ? `OpenAI takes up to 25 MB, about 13 minutes of CutPilot's audio: set Provider to ElevenLabs in ${SETTINGS_PLACE}, or transcribe a shorter clip`
+      ? `OpenAI takes up to 25 MB, about 13 minutes of NodCut's audio: set Provider to ElevenLabs in ${SETTINGS_PLACE}, or transcribe a shorter clip`
       : `transcribe a shorter clip, or use the local transcriber`,
   );
 }
@@ -239,7 +239,7 @@ export async function transcribeWith(
     throw new PluginFailure(
       'E_PLUGIN_BAD_INPUT',
       `can't read the audio ${req.audio}: ${(e as Error).message}`,
-      'CutPilot passes a wav it made; try again, and update CutPilot if it keeps failing',
+      'NodCut passes a wav it made; try again, and update NodCut if it keeps failing',
     );
   }
   if (size > p.maxBytes)

@@ -1,15 +1,15 @@
 # Remotion
 
-Scenes for a CutPilot edit written in React by your AI, with **your own** [Remotion](https://www.remotion.dev) project on your Mac: an ad, a kinetic-type intro, an animated chart, a lower third. The AI writes the scene, checks it, previews frames and looks at them, fixes what it sees, and then puts the scene in the edit. CutPilot adds it to the timeline as an **insert**, an undoable edit like any other. Your video is never touched.
+Scenes for a NodCut edit written in React by your AI, with **your own** [Remotion](https://www.remotion.dev) project on your Mac: an ad, a kinetic-type intro, an animated chart, a lower third. The AI writes the scene, checks it, previews frames and looks at them, fixes what it sees, and then puts the scene in the edit. NodCut adds it to the timeline as an **insert**, an undoable edit like any other. Your video is never touched.
 
 ## Licence: bring your own Remotion
 
-> This plugin uses your own installation of Remotion, which is licensed separately by Remotion AG. CutPilot does not include or license Remotion. You are responsible for complying with Remotion’s license: it’s free for individuals and companies of up to 3 people; larger companies need a Remotion Company License — remotion.pro.
+> This plugin uses your own installation of Remotion, which is licensed separately by Remotion AG. NodCut does not include or license Remotion. You are responsible for complying with Remotion’s license: it’s free for individuals and companies of up to 3 people; larger companies need a Remotion Company License — remotion.pro.
 
 What that means in practice:
 
-- **You are Remotion's licensee, not CutPilot.** CutPilot doesn't provide, resell or cover a Remotion licence. Read [Remotion's licence](https://www.remotion.dev/docs/license) to see which one applies to you.
-- **Nothing runs until you enter your licence key** in CutPilot → Plugins → Remotion → **Keys**, as `REMOTION_LICENSE_KEY` (CutPilot keeps it in the macOS Keychain and never shows it again):
+- **You are Remotion's licensee, not NodCut.** NodCut doesn't provide, resell or cover a Remotion licence. Read [Remotion's licence](https://www.remotion.dev/docs/license) to see which one applies to you.
+- **Nothing runs until you enter your licence key** in NodCut → Plugins → Remotion → **Keys**, as `REMOTION_LICENSE_KEY` (NodCut keeps it in the macOS Keychain and never shows it again):
   - `free-license` if you qualify for the free licence (an individual, a company of up to 3 people, or a non-profit);
   - your Company License key from [remotion.pro](https://www.remotion.pro) otherwise.
 
@@ -17,13 +17,13 @@ What that means in practice:
 - **The key goes to Remotion and nowhere else.** The plugin passes it to Remotion's renderer as [`licenseKey`](https://www.remotion.dev/docs/licensing), which is how Remotion asks to be told. For each successful render Remotion sends a usage event to remotion.pro (the key, the IP address, whether it was a video or a still, and whether it was a production render). It sends no video, no code and no project data. Previews and checks are marked as development renders (`isProduction: false`), which Remotion doesn't bill. `render` and `add_insert` are production renders.
 - **Remotion is not part of this plugin.** It has no Remotion in its dependencies and none in its bundle. It loads Remotion only from your project, with `createRequire(<project>/package.json)`, so the Remotion that runs is the one you installed. A test (`src/no-bundled-remotion.test.ts`) fails the build if Remotion ever gets into the plugin's dependencies, sources or bundle.
 - **Your code stays on your Mac.** Scenes are written to, bundled from and rendered in your project folder, on your machine. Nothing is uploaded, synced or rendered anywhere else: there's no cloud or Lambda rendering.
-- **CutPilot keeps a record of each acceptance.** The first time your key is used with a project, or with a new Remotion version, CutPilot records when, which project, which Remotion version and which kind of licence (never the key). The answer then carries the notice for your AI to show you. The record is kept in `~/Library/Application Support/CutPilot/plugin-remotion/acceptances.json` on macOS.
+- **NodCut keeps a record of each acceptance.** The first time your key is used with a project, or with a new Remotion version, NodCut records when, which project, which Remotion version and which kind of licence (never the key). The answer then carries the notice for your AI to show you. The record is kept in `~/Library/Application Support/NodCut/plugin-remotion/acceptances.json` on macOS.
 
 ## Set up
 
 1. **Node.js 20+** (`brew install node`), which Remotion needs to install. A Node from nvm, fnm, Volta, asdf or mise is found too, even though an app opened from the Dock doesn't see your shell's PATH: the plugin looks in their install folders (newest version first) for a folder with `node`, `npm` and `npx` together.
 2. **A Remotion project.** Either use one you have, or ask your AI to make one: *"Create a Remotion project in ~/Videos/remotion-scenes"*. It runs Remotion's own scaffolder on your Mac (`npx create-video@latest --yes --blank --no-tailwind`), then `npm i`, then adds `@remotion/renderer` and `@remotion/bundler` at the project's Remotion version.
-3. In CutPilot → Plugins → Remotion: under **Keys**, enter your licence key (see above) and **Save**; under **Settings**, **Choose…** the project folder for **Remotion project folder**.
+3. In NodCut → Plugins → Remotion: under **Keys**, enter your licence key (see above) and **Save**; under **Settings**, **Choose…** the project folder for **Remotion project folder**.
 4. Ask your AI to run `remotion__status`. It should say `ok: true` and list your Remotion versions.
 
 What the project needs:
@@ -45,15 +45,15 @@ AI clients see these as `remotion__<tool>`.
 | `update_scene` | `id` and any of `code`, `durationInFrames`, `fps`, `width`, `height`, `defaultProps` | the same as `create_scene` |
 | `delete_scene` | `id` | `ok` |
 | `preview_frame` | `id`, `frame`, `props?`, `scale?` (default 0.5) | a **PNG image** for the AI to look at, plus the frame, its time and the size |
-| `render` | `id`, `props?`, `codec?` (`h264`/`prores`), `proresProfile?`, `transparent?`, `frameRange?` | the path of a new file in `<project>/out/cutpilot/` (never overwritten) |
+| `render` | `id`, `props?`, `codec?` (`h264`/`prores`), `proresProfile?`, `transparent?`, `frameRange?` | the path of a new file in `<project>/out/nodcut/` (never overwritten) |
 
-Because it is a `generator` plugin, it also offers the contract tools that CutPilot's own `list_templates` and `add_insert` call. Every scene is a template:
+Because it is a `generator` plugin, it also offers the contract tools that NodCut's own `list_templates` and `add_insert` call. Every scene is a template:
 - `add_insert { template: "<scene id>", params: { …props }, at }` renders the scene **at the timeline's size, frame rate and length** and puts the clip in the edit.
-- CutPilot copies the clip into its project. This is the same path html-motion's title cards take, and it's how a scene gets onto the timeline.
+- NodCut copies the clip into its project. This is the same path html-motion's title cards take, and it's how a scene gets onto the timeline.
 
 `render` is for when you want a file instead:
 - an H.264 MP4 to share;
-- with `transparent: true`, a **ProRes 4444 .mov with alpha** for overlays in another editor. CutPilot's inserts play *between* two moments of the source; it can't lay a clip *over* the footage yet.
+- with `transparent: true`, a **ProRes 4444 .mov with alpha** for overlays in another editor. NodCut's inserts play *between* two moments of the source; it can't lay a clip *over* the footage yet.
 
 The workflow the tool descriptions teach: `create_scene` → `preview_frame` at several frames, and actually look → `update_scene` to fix → `add_insert` (or `render`).
 
@@ -72,45 +72,45 @@ The AI calls these in order:
 ```
 <project>/
   src/
-    Root.tsx                 + <CutPilotCompositions /> and its import (once, with a backup)
-    cutpilot/
-      <scene id>.tsx         a scene: your AI's code, then `export const cutpilotScene = {…}` (its size, fps, length, default props)
-      index.tsx              owned by the plugin, rewritten on every change: registers each scene as <Composition id="cutpilot-<id>" …/>
+    Root.tsx                 + <NodCutCompositions /> and its import (once, with a backup)
+    nodcut/
+      <scene id>.tsx         a scene: your AI's code, then `export const nodcutScene = {…}` (its size, fps, length, default props)
+      index.tsx              owned by the plugin, rewritten on every change: registers each scene as <Composition id="nodcut-<id>" …/>
       backups/               the Root file as it was before the patch
-  out/cutpilot/              files made by `render` (out/ is in the template's .gitignore)
+  out/nodcut/              files made by `render` (out/ is in the template's .gitignore)
 ```
 
-- **Scenes appear in Remotion Studio too**, as `cutpilot-<id>`, so you can open them in `npm run dev`.
+- **Scenes appear in Remotion Studio too**, as `nodcut-<id>`, so you can open them in `npm run dev`.
 - **The plugin never touches your other files or compositions.**
-- **Scene ids** match `^[a-z0-9-]{1,64}$`. Because every scene is also a template id, they must also be kebab-case, start with a letter and be at most 40 characters. Anything that could leave `src/cutpilot` is refused.
+- **Scene ids** match `^[a-z0-9-]{1,64}$`. Because every scene is also a template id, they must also be kebab-case, start with a letter and be at most 40 characters. Anything that could leave `src/nodcut` is refused.
 - **The Root patch** happens on the first `create_scene`. It finds the entry point in this order:
   1. `Config.setEntryPoint` in `remotion.config.ts`;
   2. a `remotion studio|render|bundle <file>` script in `package.json`;
   3. Remotion's defaults (`src/index.ts`, …).
 
-  From there it follows `registerRoot(X)` to the file that defines `X`, then adds `<CutPilotCompositions />` before the closing `</>` of the fragment that component returns, plus the import, in the file's own quote style. It makes a backup first, and the AI gets the diff to show you.
+  From there it follows `registerRoot(X)` to the file that defines `X`, then adds `<NodCutCompositions />` before the closing `</>` of the fragment that component returns, plus the import, in the file's own quote style. It makes a backup first, and the AI gets the diff to show you.
 - **If the patch isn't safe, nothing is written.** That happens when there's no fragment, more than one fragment, or no `registerRoot` of a local file. The AI then gets the two lines for you to add yourself.
 
 ## How it works
 
 - **The check after each write.**
-  1. The project's own TypeScript runs with the project's own `tsconfig.json`, over the scene and `index.tsx`. Only errors in `src/cutpilot` are reported, exactly as `tsc` prints them; your other files are your business.
+  1. The project's own TypeScript runs with the project's own `tsconfig.json`, over the scene and `index.tsx`. Only errors in `src/nodcut` are reported, exactly as `tsc` prints them; your other files are your business.
   2. If that passes, Remotion's bundler bundles the project and `selectComposition` loads the scene, which is what a render does.
 
   Bundler and runtime errors also come back verbatim, so the AI can fix its own code.
 - **The bundle is cached.** It is rebuilt only when a file in `src/` or `public/` changes (by size and mtime), and it is kept in the temp folder with its fingerprint, so a restart reuses it. Previews after the first cost one Chrome frame, not a webpack run.
-- **Renders.** `renderMedia` runs with the scene's composition. For `add_insert`, the composition's width, height, fps and length are those of the timeline, so a scene should lay itself out from `useVideoConfig()`. Progress is reported throughout, so long renders aren't timed out. Cancelling in CutPilot cancels Remotion's render (`makeCancelSignal`) and removes the partial file.
-- **Off the main thread.** The plugin is its own process, which CutPilot starts next to its engine, so bundling and rendering never run on the app's main thread. Remotion starts Chrome and its compositor as further processes. Remotion jobs run one at a time, because each one uses every core.
+- **Renders.** `renderMedia` runs with the scene's composition. For `add_insert`, the composition's width, height, fps and length are those of the timeline, so a scene should lay itself out from `useVideoConfig()`. Progress is reported throughout, so long renders aren't timed out. Cancelling in NodCut cancels Remotion's render (`makeCancelSignal`) and removes the partial file.
+- **Off the main thread.** The plugin is its own process, which NodCut starts next to its engine, so bundling and rendering never run on the app's main thread. Remotion starts Chrome and its compositor as further processes. Remotion jobs run one at a time, because each one uses every core.
 - **Clips for `add_insert`** are kept in the temp folder, named by a hash of everything that affects the picture, so asking again for the same clip doesn't render it again.
 - **Third-party plugins can't use it.** Plugins can't call each other, and this one renders only from the folder the user set; no tool takes a project path to render from.
 
 ## Not in this version
 
-- No Remotion Studio or Player inside CutPilot, and no cloud or Lambda rendering.
+- No Remotion Studio or Player inside NodCut, and no cloud or Lambda rendering.
 - `remotion.config.ts` overrides (a custom webpack config, Tailwind) aren't applied: Remotion's Node APIs don't read that file. New projects are made without Tailwind for that reason.
-- CutPilot can't yet place a transparent overlay over the footage; `render { transparent: true }` makes the file for use elsewhere.
+- NodCut can't yet place a transparent overlay over the footage; `render { transparent: true }` makes the file for use elsewhere.
 - The app shows no "I understand / Cancel" dialog before first use yet. Entering the key is the act of acceptance, and the notice comes with every refusal and with the first answer for each project and Remotion version.
-- It needs CutPilot 0.2.0-beta.10 or later: the first version that passes a plugin its settings and keys. Older versions list it as needing a newer CutPilot.
+- It needs NodCut 0.2.0-beta.10 or later: the first version that passes a plugin its settings and keys. Older versions list it as needing a newer NodCut.
 
 ## Develop
 
@@ -120,10 +120,10 @@ pnpm vitest run plugins/remotion                 # unit tests and the no-bundled
 REMOTION_E2E=1 pnpm vitest run plugins/remotion/src/e2e.test.ts
                                                  # with a real Remotion: makes a project (needs npm and the internet),
                                                  # creates a scene, previews frame 0, renders 1 s of H.264 and ProRes 4444,
-                                                 # checks them with ffprobe, then runs the plugin as CutPilot starts it
+                                                 # checks them with ffprobe, then runs the plugin as NodCut starts it
 REMOTION_PROJECT=/path/to/scratch-project pnpm vitest run plugins/remotion/src/e2e.test.ts
                                                  # the same, against a project you already have (it writes a scene there)
-cutpilot plugin install plugins/remotion --link
+nodcut plugin install plugins/remotion --link
 pnpm bundle plugins/remotion                     # → build/remotion, for a copied install or the store
 ```
 

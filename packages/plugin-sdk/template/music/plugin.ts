@@ -1,10 +1,10 @@
-// A music source: CutPilot asks find_music for tracks that fit a mood, then get_music for the
+// A music source: NodCut asks find_music for tracks that fit a mood, then get_music for the
 // file of the one it picked, and mixes it under the speech. Return only music you may hand out,
 // with its license and the credit line it asks for.
 import { existsSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { PluginFailure, type PluginDefinition } from '@cutpilot/plugin-sdk';
+import { PluginFailure, type PluginDefinition } from '@nodcut/plugin-sdk';
 
 interface Track {
   id: string;
@@ -81,7 +81,7 @@ export const plugin: PluginDefinition = {
     const t = CATALOG.find((x) => x.id === id);
     if (!t)
       throw new PluginFailure('E_PLUGIN_BAD_INPUT', `no track ${id}`, 'pick an id that find_music returned');
-    // CutPilot copies the file into the project, so a temporary file is fine
+    // NodCut copies the file into the project, so a temporary file is fine
     const file = join(tmpdir(), `music-${t.id}.wav`);
     if (!existsSync(file)) toneWav(file, t.hz, t.durationMs);
     return { file, durationMs: t.durationMs, license: t.license };

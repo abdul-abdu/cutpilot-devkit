@@ -1,6 +1,6 @@
 /**
  * The fast check after a scene is written: the project's own TypeScript, with the project's own
- * tsconfig, over the scene and index.tsx. Only errors in src/cutpilot are reported (the user's
+ * tsconfig, over the scene and index.tsx. Only errors in src/nodcut are reported (the user's
  * other files are theirs); they come back as tsc prints them, for the AI to fix its own code.
  */
 import { dirname, resolve, sep } from 'node:path';
@@ -12,7 +12,7 @@ export interface TypecheckResult {
   /** false when the project has no TypeScript (a plain JS project): nothing was checked */
   ran: boolean;
   ok: boolean;
-  /** tsc's messages, `src/cutpilot/intro.tsx(4,7): error TS2322: …` */
+  /** tsc's messages, `src/nodcut/intro.tsx(4,7): error TS2322: …` */
   errors: string[];
 }
 

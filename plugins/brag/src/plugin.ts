@@ -2,7 +2,7 @@
  * The plugin: extra tools only. The AI follows /brag's method (guide) and works in a project
  * folder through the plugin, since its client may have no file access of its own:
  * start_project → write_file / add_asset (list_sounds) → check → snapshot → render. The video is
- * a file; CutPilot's own tools put it into an edit (the plugin never touches the timeline).
+ * a file; NodCut's own tools put it into an edit (the plugin never touches the timeline).
  */
 import { execFile } from 'node:child_process';
 import {
@@ -24,7 +24,7 @@ import {
   ToolContent,
   type PluginContext,
   type PluginDefinition,
-} from '@cutpilot/plugin-sdk';
+} from '@nodcut/plugin-sdk';
 import { z } from 'zod';
 import { FORMATS, GUIDE_TOPICS, HYPERFRAMES_DOCS, PAGES, starterComposition, type Format } from './guide.js';
 import {
@@ -63,7 +63,7 @@ const NO_BROWSER = () =>
   new PluginFailure(
     'E_BRAG_NO_BROWSER',
     'no Chrome to check, snapshot or render with',
-    'install Google Chrome, or set "Chrome executable" in CutPilot → Plugins → Brag',
+    'install Google Chrome, or set "Chrome executable" in NodCut → Plugins → Brag',
   );
 
 /** A render's progress line → 0..1 of the render (HyperFrames prints "… 46% Streaming frame …"). */
@@ -360,7 +360,7 @@ export const definition: PluginDefinition = {
 
     render: defineTool({
       description:
-        "Render the composition to brag.mp4 in the project (about real time or longer; progress is reported). With posterAt, the frame at that second becomes brag.jpg and is baked in as frame 0, so every platform shows it as the thumbnail: pick the strongest settled frame. Run check first. Returns the files; add brag.mp4 to the user's edit with CutPilot's own tools.",
+        "Render the composition to brag.mp4 in the project (about real time or longer; progress is reported). With posterAt, the frame at that second becomes brag.jpg and is baked in as frame 0, so every platform shows it as the thumbnail: pick the strongest settled frame. Run check first. Returns the files; add brag.mp4 to the user's edit with NodCut's own tools.",
       input: {
         project: z.string().min(1).describe('the folder start_project returned'),
         posterAt: z

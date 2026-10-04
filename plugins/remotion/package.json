@@ -1,7 +1,7 @@
 {
-  "name": "@cutpilot/plugin-generator-remotion",
+  "name": "@nodcut/plugin-generator-remotion",
   "version": "0.1.3",
-  "description": "CutPilot plugin: scenes written in React with your own Remotion install, previewed and rendered on your Mac. Remotion is not included; you bring your own Remotion licence.",
+  "description": "NodCut plugin: scenes written in React with your own Remotion install, previewed and rendered on your Mac. Remotion is not included; you bring your own Remotion licence.",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -12,17 +12,17 @@
     "build": "tsc -b"
   },
   "dependencies": {
-    "@cutpilot/plugin-sdk": "workspace:*",
+    "@nodcut/plugin-sdk": "workspace:*",
     "zod": "^4.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
     "directory": "plugins/remotion"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
-    "cutpilot",
+    "nodcut",
     "remotion",
     "motion-graphics",
     "video",

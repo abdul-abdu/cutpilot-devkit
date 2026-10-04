@@ -1,6 +1,6 @@
 /**
  * Boundaries for the devkit. Everything here is public (MIT) and must build without the private
- * CutPilot app repo, so nothing may reach outside this repo except npm packages.
+ * NodCut app repo, so nothing may reach outside this repo except npm packages.
  */
 const notTest = '(\\.test\\.ts$|/test-helpers/)';
 
@@ -41,7 +41,7 @@ module.exports = {
     {
       name: 'stay-in-repo',
       comment:
-        'Nothing reaches outside this repo (e.g. into a sibling cutpilot checkout): the devkit must build on its own.',
+        'Nothing reaches outside this repo (e.g. into a sibling nodcut checkout): the devkit must build on its own.',
       severity: 'error',
       from: { path: '^(packages|plugins)/' },
       to: { path: '^\\.\\./' },

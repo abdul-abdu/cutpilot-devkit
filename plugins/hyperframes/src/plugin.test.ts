@@ -1,4 +1,4 @@
-/** The tools through MCP (in memory), and the plugin as CutPilot starts it (needs `pnpm build`). */
+/** The tools through MCP (in memory), and the plugin as NodCut starts it (needs `pnpm build`). */
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -6,13 +6,13 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { definePlugin, testPlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin, testPlugin } from '@nodcut/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import { findChrome, findOnPath } from './hyperframes.js';
 import { definition, outputSize } from './plugin.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
-const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(DIR, 'nodcut-plugin.json'), 'utf8'));
 const ffmpeg = findOnPath('ffmpeg');
 const chrome = findChrome(undefined);
 const tmp = mkdtempSync(join(tmpdir(), 'cp-hyperframes-'));
@@ -85,7 +85,7 @@ describe('tools', () => {
   });
 
   test('a Chrome setting that points nowhere is a problem, not a fallback', async () => {
-    const c = await connect({ CUTPILOT_SETTING_BROWSER_PATH: '/nowhere/chrome' });
+    const c = await connect({ NODCUT_SETTING_BROWSER_PATH: '/nowhere/chrome' });
     const d = structured<{ chrome: string | null }>(await c.callTool({ name: 'doctor', arguments: {} }));
     expect(d.chrome).toBeNull();
   });
@@ -137,9 +137,9 @@ describe('tools', () => {
       expect(html).toContain('data-media-start="0.5"');
       expect(existsSync(join(project, 'assets/source.mp4'))).toBe(true);
       expect(existsSync(join(project, 'vendor/gsap.min.js'))).toBe(true);
-      expect(
-        JSON.parse(readFileSync(join(project, 'cutpilot-edit.json'), 'utf8')).spec.segments,
-      ).toHaveLength(2);
+      expect(JSON.parse(readFileSync(join(project, 'nodcut-edit.json'), 'utf8')).spec.segments).toHaveLength(
+        2,
+      );
     },
   );
 
@@ -198,7 +198,7 @@ describe('tools', () => {
   );
 });
 
-describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as CutPilot starts it', () => {
+describe.skipIf(!existsSync(join(DIR, 'dist/index.js')))('as NodCut starts it', () => {
   test('testPlugin passes', async () => {
     const r = await testPlugin(DIR);
     expect(r.checks.map((c) => [c.name, c.result])).toEqual([

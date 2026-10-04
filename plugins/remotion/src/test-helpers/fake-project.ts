@@ -81,16 +81,16 @@ const DIR = PROJECT_DIR;
 const calls = () => ((globalThis.__fakeRemotion ??= {})[DIR] ??= []);
 exports.bundle = async (o) => {
   calls().push({ fn: 'bundle', args: { entryPoint: o.entryPoint, outDir: o.outDir } });
-  const dir = path.join(DIR, 'src', 'cutpilot');
+  const dir = path.join(DIR, 'src', 'nodcut');
   const scenes = {};
   for (const f of fs.existsSync(dir) ? fs.readdirSync(dir) : []) {
     if (!f.endsWith('.tsx') || f === 'index.tsx') continue;
     const text = fs.readFileSync(path.join(dir, f), 'utf8');
     if (text.includes('BUNDLE_ERROR')) throw new Error('Module parse failed: Unexpected token (3:10)\\nYou may need an appropriate loader');
-    const m = /export const cutpilotScene = (.*);/.exec(text);
+    const m = /export const nodcutScene = (.*);/.exec(text);
     if (!m) continue;
     const meta = JSON.parse(m[1]);
-    scenes['cutpilot-' + f.slice(0, -4)] = { ...meta, ...(text.includes('LOAD_ERROR') ? { throws: 'ReferenceError: foo is not defined\\n    at Scene (promo.tsx:4:3)' } : {}) };
+    scenes['nodcut-' + f.slice(0, -4)] = { ...meta, ...(text.includes('LOAD_ERROR') ? { throws: 'ReferenceError: foo is not defined\\n    at Scene (promo.tsx:4:3)' } : {}) };
   }
   o.onProgress?.(50);
   fs.mkdirSync(o.outDir, { recursive: true });

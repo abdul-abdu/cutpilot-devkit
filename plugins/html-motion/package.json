@@ -1,7 +1,7 @@
 {
-  "name": "@cutpilot/plugin-generator-html-motion",
+  "name": "@nodcut/plugin-generator-html-motion",
   "version": "0.2.0",
-  "description": "CutPilot plugin: motion-graphics clips (title cards, chapters, quotes, lists, end cards) from HTML templates, rendered with headless Chrome.",
+  "description": "NodCut plugin: motion-graphics clips (title cards, chapters, quotes, lists, end cards) from HTML templates, rendered with headless Chrome.",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -12,19 +12,19 @@
     "build": "tsc -b"
   },
   "dependencies": {
-    "@cutpilot/plugin-sdk": "workspace:*",
+    "@nodcut/plugin-sdk": "workspace:*",
     "gsap": "^3.13.0",
     "hyperframes": "^0.8.80",
     "zod": "^4.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/cutpilot-devkit.git",
+    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
     "directory": "plugins/html-motion"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
   "keywords": [
-    "cutpilot",
+    "nodcut",
     "hyperframes",
     "motion-graphics",
     "video",

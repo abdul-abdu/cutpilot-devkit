@@ -1,14 +1,14 @@
-# CutPilot devkit — agent guide
+# NodCut devkit — agent guide
 
 Shared instructions for every coding agent (Claude Code, Codex, Gemini CLI, Antigravity, Cursor, Copilot, local models). `CLAUDE.md` imports this file and `GEMINI.md` is a symlink to it, so edit **this file only**.
 
 ## What this is
 
-The public, MIT-licensed half of CutPilot, the AI-first video editor: the plugin API, the plugin SDK and CutPilot's first-party plugins. A plugin is a folder with a `cutpilot-plugin.json` manifest and a command that starts an MCP server on stdio; CutPilot's engine starts it, calls its tools, validates the answers and applies them as undoable edits. **Plugins return data or files; they never edit the timeline.**
+The public, MIT-licensed half of NodCut, the AI-first video editor: the plugin API, the plugin SDK and NodCut's first-party plugins. A plugin is a folder with a `nodcut-plugin.json` manifest and a command that starts an MCP server on stdio; NodCut's engine starts it, calls its tools, validates the answers and applies them as undoable edits. **Plugins return data or files; they never edit the timeline.**
 
 - Plugin authors' guide: `docs/plugin-guide.md` (what plugins can do, a walkthrough, manifest, permissions, testing, sharing).
 - Publishing the SDK to npm: `docs/publishing-the-sdk.md` (waits for the owner's decision; the packages are `private` until then).
-- The app that hosts plugins lives in the private `cutpilot` repo, usually checked out next to this one. Its Stage 3 plugin-host spec and the tasks that drive this repo (IDs like `P3-030`, in its phase-3-plugins folder) live there.
+- The app that hosts plugins lives in the private `nodcut` repo, usually checked out next to this one. Its Stage 3 plugin-host spec and the tasks that drive this repo (IDs like `P3-030`, in its phase-3-plugins folder) live there.
 
 ## Rules
 
@@ -17,7 +17,7 @@ The public, MIT-licensed half of CutPilot, the AI-first video editor: the plugin
 - **Times** are integer milliseconds in SOURCE time; positions are fractions 0..1 of the frame. Every contract field says its unit in a comment.
 - **Errors teach.** A plugin fails with `PluginFailure(code, oneLineMessage, oneLineFix)`; the SDK, the CLI and `testPlugin()` print a fix for every failed check. Add an error code to `packages/plugin-api/src/errors.ts` rather than inventing one in a plugin.
 - **stdout is MCP.** Nothing but the protocol goes there; plugins log with `ctx.log()` (stderr).
-- **Plugins stand alone.** A plugin imports only `@cutpilot/plugin-sdk`, `@cutpilot/plugin-api` and its own npm dependencies: never another plugin, never `../`. Nothing in `packages/` imports a plugin.
+- **Plugins stand alone.** A plugin imports only `@nodcut/plugin-sdk`, `@nodcut/plugin-api` and its own npm dependencies: never another plugin, never `../`. Nothing in `packages/` imports a plugin.
 
 ## Commands
 
@@ -26,11 +26,11 @@ Node ≥ 22, pnpm (see `packageManager`). The workspace sets a minimum release a
 | Command | What |
 | --- | --- |
 | `pnpm install` | install |
-| `pnpm build` | `tsc -b`; needed before the SDK harness tests, `cutpilot-plugin`, `pnpm bundle` |
+| `pnpm build` | `tsc -b`; needed before the SDK harness tests, `nodcut-plugin`, `pnpm bundle` |
 | `pnpm check` | typecheck + lint + **format:check** + dependency rules + tests — **must pass before you say you're done**; run `pnpm format` first or it fails on whitespace |
 | `pnpm vitest run <path>` | one suite (`plugins/<name>`, `packages/plugin-sdk`) |
-| `pnpm cutpilot-plugin new <id> --kind <kind> --dir <dir>` | a new plugin that passes its tests from the start (`tools`, `transcriber`, `reframe-track`, `music`, `sound`, `generator`) |
-| `pnpm cutpilot-plugin validate <dir>` / `test <dir>` | the manifest, icon and command; then start it as CutPilot does and call its tools |
+| `pnpm nodcut-plugin new <id> --kind <kind> --dir <dir>` | a new plugin that passes its tests from the start (`tools`, `transcriber`, `reframe-track`, `music`, `sound`, `generator`) |
+| `pnpm nodcut-plugin validate <dir>` / `test <dir>` | the manifest, icon and command; then start it as NodCut does and call its tools |
 | `pnpm bundle plugins/<name> [--out build/<id>-<version>]` | a plugin as a folder that stands alone, for a copied install or the store |
 
 Tests that need the network, a model, Chrome or an API key sit behind `skipIf(!process.env.<NAME>_E2E)` or a tool check, so `pnpm check` passes on CI (macOS and Ubuntu, no network, no keys); cloud providers are tested against recorded responses.
@@ -40,7 +40,7 @@ Tests that need the network, a model, Chrome or an API key sit behind `skipIf(!p
 ```
 packages/
   plugin-api/    manifest schema, the tool contract of each kind (KIND_TOOLS), error codes, registry format, semver. zod only.
-  plugin-sdk/    definePlugin(), testPlugin(), validatePluginFolder(), scaffoldPlugin(), the cutpilot-plugin CLI;
+  plugin-sdk/    definePlugin(), testPlugin(), validatePluginFolder(), scaffoldPlugin(), the nodcut-plugin CLI;
                  examples/hello (the smallest plugin), template/ (what `new` copies), fixtures/ (plugins the tests check against)
 plugins/         first-party plugins, one folder each (see plugins/README.md); built like a third party's;
                  language-*/ are language packs (data only), checked by plugins/language-packs.test.ts
@@ -57,10 +57,10 @@ Read the matching one before starting. If your agent does not load skills automa
 
 | Skill | Use when |
 | --- | --- |
-| `cutpilot-plugin` | writing, changing, testing, bundling or installing a plugin in `plugins/`; the manifest, kinds, handlers, `testPlugin` |
-| `cutpilot-plugin-licensing` | a plugin that uses anything not free for everyone (a metered API, a licensed library such as Remotion, a model or asset with terms): the user brings their own key or licence; what to declare, write and test |
+| `nodcut-plugin` | writing, changing, testing, bundling or installing a plugin in `plugins/`; the manifest, kinds, handlers, `testPlugin` |
+| `nodcut-plugin-licensing` | a plugin that uses anything not free for everyone (a metered API, a licensed library such as Remotion, a model or asset with terms): the user brings their own key or licence; what to declare, write and test |
 
-Changing the contract itself, publishing a plugin to the store and anything about the app are done from the app repo (its skills `cutpilot-plugin-contract`, `cutpilot-plugin-publish`, `cutpilot-workspace`).
+Changing the contract itself, publishing a plugin to the store and anything about the app are done from the app repo (its skills `nodcut-plugin-contract`, `nodcut-plugin-publish`, `nodcut-workspace`).
 
 ## Git
 

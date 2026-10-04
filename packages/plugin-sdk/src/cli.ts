@@ -1,31 +1,31 @@
 /**
- * `cutpilot-plugin`: the SDK's command line.
+ * `nodcut-plugin`: the SDK's command line.
  *
- *   cutpilot-plugin new ID [--kind K] [--dir D] [--name N] [--sdk SPEC]   a new plugin folder
- *   cutpilot-plugin validate [DIR]   the manifest, icon and command, without starting the plugin
- *   cutpilot-plugin test [DIR]       start it the way CutPilot does and call its tools
+ *   nodcut-plugin new ID [--kind K] [--dir D] [--name N] [--sdk SPEC]   a new plugin folder
+ *   nodcut-plugin validate [DIR]   the manifest, icon and command, without starting the plugin
+ *   nodcut-plugin test [DIR]       start it the way NodCut does and call its tools
  *
  * Each check prints as ✓ (passed), ✗ (failed, with its fix) or – (skipped); the exit code is 1
  * when a check failed (or `new` was refused) and 2 for a usage error. The app's
- * `cutpilot plugin new|validate|test` call the same functions.
+ * `nodcut plugin new|validate|test` call the same functions.
  */
 import { readFileSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
-import { StringsSchema, type Strings } from '@cutpilot/plugin-api';
+import { StringsSchema, type Strings } from '@nodcut/plugin-api';
 import { testPlugin, type TestOptions } from './harness.js';
 import { SCAFFOLD_KINDS, ScaffoldError, scaffoldPlugin, type ScaffoldKind } from './scaffold.js';
 import { formatReport, validatePluginFolder, type TestReport } from './validate.js';
 
 export const CLI_USAGE = `usage:
-  cutpilot-plugin new ID              a new plugin folder that passes its tests from the start
+  nodcut-plugin new ID              a new plugin folder that passes its tests from the start
       --kind KIND                     ${Object.keys(SCAFFOLD_KINDS).join(', ')} (default: tools)
       --dir DIR                       where (default: ./ID); must be new or empty
-      --name NAME                     shown in CutPilot (default: the id in words)
-      --sdk SPEC                      the @cutpilot/plugin-sdk version to depend on (default: this one), or file:PATH
-  cutpilot-plugin validate [DIR]      check the manifest, icon and command without starting the plugin
-      --strings FILE                  a language pack: also say which of CutPilot's strings it lacks
-  cutpilot-plugin test [DIR]          start the plugin the way CutPilot does and call its tools
+      --name NAME                     shown in NodCut (default: the id in words)
+      --sdk SPEC                      the @nodcut/plugin-sdk version to depend on (default: this one), or file:PATH
+  nodcut-plugin validate [DIR]      check the manifest, icon and command without starting the plugin
+      --strings FILE                  a language pack: also say which of NodCut's strings it lacks
+  nodcut-plugin test [DIR]          start the plugin the way NodCut does and call its tools
       --audio FILE                    a 16 kHz mono wav for transcribe (default: a second of silence)
       --language CODE                 the language to ask for (default: en)
       --video FILE                    a video for reframe_track (skipped without one)
@@ -35,12 +35,12 @@ export const CLI_USAGE = `usage:
       --setting KEY=VALUE             a setting; repeatable
       --timeout MS                    per call (default: 60000)
       --strings FILE                  as for validate
-  cutpilot-plugin validate|test --json   the report as JSON
+  nodcut-plugin validate|test --json   the report as JSON
 DIR defaults to the current folder.`;
 
 class UsageError extends Error {}
 
-/** The strings a CutPilot version shows (its published strings.json), for --strings. */
+/** The strings a NodCut version shows (its published strings.json), for --strings. */
 function readStrings(file: string): Strings {
   let json: unknown;
   try {
@@ -49,7 +49,7 @@ function readStrings(file: string): Strings {
     throw new UsageError(`--strings ${file}: ${(e as Error).message}`);
   }
   const r = StringsSchema.safeParse(json);
-  if (!r.success) throw new UsageError(`--strings ${file} isn't a CutPilot strings.json`);
+  if (!r.success) throw new UsageError(`--strings ${file} isn't a NodCut strings.json`);
   return r.data;
 }
 
@@ -132,7 +132,7 @@ function newPlugin(args: string[], out: (line: string) => void): number {
     return 0;
   }
   const [id, ...more] = positionals;
-  if (!id) throw new UsageError('new needs the plugin id, like: cutpilot-plugin new my-titles');
+  if (!id) throw new UsageError('new needs the plugin id, like: nodcut-plugin new my-titles');
   if (more.length) throw new UsageError(`new takes one id; got ${positionals.join(' ')}`);
   const dir = resolve(values.dir ?? id);
   const sdk = values.sdk?.startsWith('file:') ? `file:${resolve(values.sdk.slice(5))}` : values.sdk;
@@ -150,8 +150,8 @@ function newPlugin(args: string[], out: (line: string) => void): number {
     out(`next:
   cd ${shown}
   npm install
-  npm test                            build, then check it the way CutPilot will
-  cutpilot plugin install . --link    in CutPilot: install it from this folder`);
+  npm test                            build, then check it the way NodCut will
+  nodcut plugin install . --link    in NodCut: install it from this folder`);
     return 0;
   } catch (e) {
     if (!(e instanceof ScaffoldError)) throw e;
@@ -160,7 +160,7 @@ function newPlugin(args: string[], out: (line: string) => void): number {
   }
 }
 
-/** Run `cutpilot-plugin <argv>`; returns the exit code. */
+/** Run `nodcut-plugin <argv>`; returns the exit code. */
 export async function pluginCli(
   argv: string[],
   out: (line: string) => void = (s) => void process.stdout.write(s + '\n'),

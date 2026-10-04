@@ -2,7 +2,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { isAbsolute, join, normalize, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PluginFailure } from '@cutpilot/plugin-sdk';
+import { PluginFailure } from '@nodcut/plugin-sdk';
 import { z } from 'zod';
 import type { Track } from './picker.js';
 
@@ -44,7 +44,7 @@ const broken = (dir: string, why: string) =>
   new PluginFailure(
     'E_MUSIC_LIBRARY',
     `the music library in ${dir} can't be read: ${why}`,
-    'reinstall the Music plugin from CutPilot → Plugins',
+    'reinstall the Music plugin from NodCut → Plugins',
   );
 
 export function loadLibrary(dir: string = LIBRARY_DIR): Library {
@@ -67,7 +67,7 @@ export function trackFile(lib: Library, t: Track): string {
     throw new PluginFailure(
       'E_MUSIC_FILE_MISSING',
       `the audio of "${t.title}" (${t.file}) is missing from the library`,
-      'pick another track with find_music, or reinstall the Music plugin from CutPilot → Plugins',
+      'pick another track with find_music, or reinstall the Music plugin from NodCut → Plugins',
     );
   return file;
 }

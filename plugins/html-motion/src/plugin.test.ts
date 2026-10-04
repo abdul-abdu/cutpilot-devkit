@@ -1,5 +1,5 @@
 /**
- * The tools through MCP (in memory), real renders, and the plugin as CutPilot starts it (needs
+ * The tools through MCP (in memory), real renders, and the plugin as NodCut starts it (needs
  * `pnpm build`). Renders need ffmpeg and a Chrome (an installed one, or one Puppeteer
  * downloaded); they are skipped only on a machine that has neither.
  */
@@ -10,14 +10,14 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { definePlugin, formatReport, testPlugin } from '@cutpilot/plugin-sdk';
+import { definePlugin, formatReport, testPlugin } from '@nodcut/plugin-sdk';
 import { afterAll, describe, expect, test } from 'vitest';
 import { definition, progressOf } from './plugin.js';
 import { compose, TEMPLATES } from './templates.js';
 import { findChrome, findOnPath, gsapPath, puppeteerBrowsers, runCli, toolchain } from './toolchain.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
-const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(DIR, 'nodcut-plugin.json'), 'utf8'));
 const ffprobe = findOnPath('ffprobe');
 const canRender = !!findOnPath('ffmpeg') && !!ffprobe && !!findChrome(undefined);
 const tmp = mkdtempSync(join(tmpdir(), 'cp-html-motion-'));
@@ -95,7 +95,7 @@ describe('tools', () => {
   });
 
   test('a Chrome setting that points nowhere is a problem, not a fallback', async () => {
-    const c = await connect({ CUTPILOT_SETTING_BROWSER_PATH: '/nowhere/chrome' });
+    const c = await connect({ NODCUT_SETTING_BROWSER_PATH: '/nowhere/chrome' });
     const d = structured<{ chrome: string | null; ok: boolean }>(
       await c.callTool({ name: 'doctor', arguments: {} }),
     );
@@ -176,7 +176,7 @@ describe.skipIf(!canRender)('renders (Chrome + ffmpeg)', () => {
   }, 120_000);
 
   test('generate renders an MP4 of the size and length asked for, and the same request again is not rendered twice', async () => {
-    const c = await connect({ CUTPILOT_SETTING_QUALITY: 'draft' });
+    const c = await connect({ NODCUT_SETTING_QUALITY: 'draft' });
     const args = {
       template: 'title-card',
       params: { title: `Render check ${process.pid}`, subtitle: 'at 16:9' },
@@ -212,7 +212,7 @@ describe.skipIf(!canRender)('renders (Chrome + ffmpeg)', () => {
   }, 180_000);
 });
 
-describe.skipIf(!existsSync(join(DIR, 'dist/index.js')) || !canRender)('as CutPilot starts it', () => {
+describe.skipIf(!existsSync(join(DIR, 'dist/index.js')) || !canRender)('as NodCut starts it', () => {
   test('testPlugin renders every template with its example', async () => {
     const r = await testPlugin(DIR, { templates: 'all', settings: { quality: 'draft' }, timeoutMs: 120_000 });
     expect(r.ok, formatReport(r)).toBe(true);

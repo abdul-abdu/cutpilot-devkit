@@ -22,9 +22,9 @@ import {
   MANIFEST_FILE,
   PluginIdSchema,
   type PluginKind,
-} from '@cutpilot/plugin-api';
+} from '@nodcut/plugin-api';
 
-/** What `cutpilot-plugin new --kind` takes: friendly names for the manifest's kinds. */
+/** What `nodcut-plugin new --kind` takes: friendly names for the manifest's kinds. */
 export const SCAFFOLD_KINDS = {
   /** extra tools only: `suggest_titles` */
   tools: null,
@@ -41,12 +41,12 @@ export interface ScaffoldOptions {
   dir: string;
   /** the manifest id: kebab-case, at most 40 characters */
   id: string;
-  /** shown in CutPilot; default: the id in words ("my-titles" → "My Titles") */
+  /** shown in NodCut; default: the id in words ("my-titles" → "My Titles") */
   name?: string;
   /** a friendly name (`music`) or a manifest kind (`asset:music`); default `tools` */
   kind?: ScaffoldKind | PluginKind;
   /**
-   * the version spec of the `@cutpilot/plugin-sdk` dependency: default `^<this SDK's version>`;
+   * the version spec of the `@nodcut/plugin-sdk` dependency: default `^<this SDK's version>`;
    * a `file:` path or a tarball to build against a local SDK before it's on npm
    */
   sdk?: string;
@@ -81,8 +81,8 @@ export const TEMPLATE_DEV_DEPENDENCIES = {
   vitest: '^5.0.1',
 };
 
-/** The engine versions a new plugin asks for: the first CutPilot that passes plugins their settings. */
-export const TEMPLATE_CUTPILOT_RANGE = '>=0.2.0-beta.10';
+/** The engine versions a new plugin asks for: the first NodCut that passes plugins their settings. */
+export const TEMPLATE_NODCUT_RANGE = '>=0.2.0-beta.10';
 
 const PKG = new URL('../', import.meta.url);
 const TEMPLATE = new URL('template/', PKG);
@@ -111,18 +111,18 @@ export function scaffoldKind(kind: string): ScaffoldKind {
 
 const DESCRIPTIONS: Record<ScaffoldKind, string> = {
   tools: 'Suggests titles for a video from its transcript.',
-  transcriber: 'Turns speech into timed words for CutPilot.',
+  transcriber: 'Turns speech into timed words for NodCut.',
   'reframe-track': 'Decides where a vertical crop should look, over time.',
-  music: 'Background music for CutPilot edits.',
+  music: 'Background music for NodCut edits.',
   sound: 'Sound effects, music and speech made from a description.',
   generator: 'Clips made from templates, at the size of the edit.',
 };
 
 const WHAT: Record<ScaffoldKind, string> = {
   tools:
-    'An extra tool, `suggest_titles`: AI clients connected to CutPilot see it as `<id>__suggest_titles` and call it with a transcript. The placeholder builds titles around the words said most; put your own logic (or a model call) in `src/plugin.ts`.',
+    'An extra tool, `suggest_titles`: AI clients connected to NodCut see it as `<id>__suggest_titles` and call it with a transcript. The placeholder builds titles around the words said most; put your own logic (or a model call) in `src/plugin.ts`.',
   transcriber:
-    'A **transcriber**: CutPilot sends a 16 kHz mono wav and gets timed words back (`transcribe`). The placeholder spreads a fixed sentence over the audio; put real speech recognition in `src/plugin.ts`.',
+    'A **transcriber**: NodCut sends a 16 kHz mono wav and gets timed words back (`transcribe`). The placeholder spreads a fixed sentence over the audio; put real speech recognition in `src/plugin.ts`.',
   'reframe-track':
     'A **reframe analyzer** (`analyzer:reframe-track`): for a vertical (or other) crop of a wider video, it says where the crop is centred over time (`reframe_track`). The placeholder keeps it centred; put your tracking in `src/plugin.ts`.',
   music:
@@ -130,29 +130,29 @@ const WHAT: Record<ScaffoldKind, string> = {
   sound:
     'A **sound maker** (`asset:sound`): `list_voices`, and `generate_sound` for an effect or music from a prompt, or speech from text. The placeholder beeps; put your model or service in `src/plugin.ts`.',
   generator:
-    'A **generator**: `list_templates` and `generate`, which renders a template to an MP4 at the size, frame rate and length CutPilot asks for. The placeholder renders a plain colour card with ffmpeg (which must be on PATH); put your renderer in `src/plugin.ts`.',
+    'A **generator**: `list_templates` and `generate`, which renders a template to an MP4 at the size, frame rate and length NodCut asks for. The placeholder renders a plain colour card with ffmpeg (which must be on PATH); put your renderer in `src/plugin.ts`.',
 };
 
 /** How the AI gets to the plugin once it's installed. */
 const USE: Record<ScaffoldKind, (id: string) => string> = {
   tools: (id) =>
-    `Then ask your AI for title ideas: it sees the tool as \`${id}__suggest_titles\` (\`cutpilot plugin list\` shows it).`,
+    `Then ask your AI for title ideas: it sees the tool as \`${id}__suggest_titles\` (\`nodcut plugin list\` shows it).`,
   transcriber: (id) =>
-    `Then ask your AI to open a video with it: CutPilot's \`open_project\` takes \`transcriber: "${id}"\`.`,
+    `Then ask your AI to open a video with it: NodCut's \`open_project\` takes \`transcriber: "${id}"\`.`,
   'reframe-track': () =>
-    "Then ask your AI for a vertical version that follows the speaker: CutPilot's `set_reframe` asks this plugin for the crop track.",
+    "Then ask your AI for a vertical version that follows the speaker: NodCut's `set_reframe` asks this plugin for the crop track.",
   music: () =>
-    "Then ask your AI for background music: CutPilot's `find_music` and `set_music` use this plugin.",
-  sound: () => 'Then ask your AI for a sound effect or a voice-over: CutPilot asks this plugin to make it.',
+    "Then ask your AI for background music: NodCut's `find_music` and `set_music` use this plugin.",
+  sound: () => 'Then ask your AI for a sound effect or a voice-over: NodCut asks this plugin to make it.',
   generator: () =>
-    "Then ask your AI for a title card: CutPilot's `list_templates` and `add_insert` use this plugin's templates.",
+    "Then ask your AI for a title card: NodCut's `list_templates` and `add_insert` use this plugin's templates.",
 };
 
 function readme(id: string, name: string, kind: ScaffoldKind): string {
   const tools = SCAFFOLD_KINDS[kind] ? Object.keys(KIND_TOOLS[SCAFFOLD_KINDS[kind]]) : ['suggest_titles'];
   return `# ${name}
 
-A [CutPilot](https://github.com/abdul-abdu/cutpilot) plugin. ${WHAT[kind]}
+A [NodCut](https://github.com/abdul-abdu/nodcut) plugin. ${WHAT[kind]}
 
 Tools: ${tools.map((t) => `\`${t}\``).join(', ')}.
 
@@ -162,21 +162,21 @@ Requirements: Node 22+.
 
 \`\`\`sh
 npm install
-npm run build        # src/ → dist/ (CutPilot runs node dist/index.js)
-npm test             # builds, then runs testPlugin(): the plugin started and called the way CutPilot does
-npx cutpilot-plugin validate .   # the manifest, icon and command, without starting anything
-npx cutpilot-plugin test .       # after a build: start it and call its tools, printed as ✓ / ✗ with fixes
+npm run build        # src/ → dist/ (NodCut runs node dist/index.js)
+npm test             # builds, then runs testPlugin(): the plugin started and called the way NodCut does
+npx nodcut-plugin validate .   # the manifest, icon and command, without starting anything
+npx nodcut-plugin test .       # after a build: start it and call its tools, printed as ✓ / ✗ with fixes
 \`\`\`
 
-- \`cutpilot-plugin.json\`: what the plugin is (id, name, version, kinds), what it may access (\`permissions\`: network hosts, secrets such as API keys, the files it reads) and its \`settings\`.
+- \`nodcut-plugin.json\`: what the plugin is (id, name, version, kinds), what it may access (\`permissions\`: network hosts, secrets such as API keys, the files it reads) and its \`settings\`.
 - \`src/plugin.ts\`: the handlers, \`src/index.ts\` starts them, \`src/index.test.ts\` tests them.
 
-## Try it in CutPilot
+## Try it in NodCut
 
 \`\`\`sh
 npm run build
-cutpilot plugin install . --link   # CutPilot runs it from this folder; rebuild to update it
-cutpilot plugin list
+nodcut plugin install . --link   # NodCut runs it from this folder; rebuild to update it
+nodcut plugin list
 \`\`\`
 
 ${USE[kind](id)}
@@ -186,12 +186,12 @@ To share it, pack it into one file:
 \`\`\`sh
 npm run build
 npm prune --omit=dev     # a package holds the folder as it is: keep only what runs
-cutpilot plugin pack     # writes ${id}-<version>.cutpilot-plugin
+nodcut plugin pack     # writes ${id}-<version>.nodcut-plugin
 \`\`\`
 
-It installs with \`cutpilot plugin install <file>\`, or CutPilot → Plugins → Install from file… (or drop it on the app). A package can't hold links, so build against an SDK installed from npm or a tarball, not a \`file:\` folder, before you pack.
+It installs with \`nodcut plugin install <file>\`, or NodCut → Plugins → Install from file… (or drop it on the app). A package can't hold links, so build against an SDK installed from npm or a tarball, not a \`file:\` folder, before you pack.
 
-See the [plugin guide](https://github.com/abdul-abdu/cutpilot-devkit/blob/main/docs/plugin-guide.md).
+See the [plugin guide](https://github.com/abdul-abdu/nodcut-devkit/blob/main/docs/plugin-guide.md).
 `;
 }
 
@@ -200,11 +200,11 @@ function agentsMd(id: string, kind: ScaffoldKind): string {
   const manifestKind = SCAFFOLD_KINDS[kind];
   const tools = manifestKind ? Object.keys(KIND_TOOLS[manifestKind]) : [];
   const kindLine = manifestKind
-    ? `Kind \`${manifestKind}\`: CutPilot calls ${tools.map((t) => `\`${t}\``).join(' and ')} and checks each answer against the contract in \`@cutpilot/plugin-api\` (\`KIND_TOOLS\`); a wrong shape is refused as \`E_PLUGIN_CONTRACT\`.`
+    ? `Kind \`${manifestKind}\`: NodCut calls ${tools.map((t) => `\`${t}\``).join(' and ')} and checks each answer against the contract in \`@nodcut/plugin-api\` (\`KIND_TOOLS\`); a wrong shape is refused as \`E_PLUGIN_CONTRACT\`.`
     : `Extra tools only: AI clients see each tool as \`${id}__<tool>\` (snake_case, at most 64 characters together). They are read-only: they return text or data and never change an edit.`;
   return `# Agent notes
 
-This folder is a CutPilot plugin: \`cutpilot-plugin.json\` (the manifest) plus an MCP server on stdio that \`src/index.ts\` starts with \`definePlugin()\` from \`@cutpilot/plugin-sdk\`. CutPilot starts it when needed, calls its tools, validates every answer and applies the result as an ordinary, undoable edit.
+This folder is a NodCut plugin: \`nodcut-plugin.json\` (the manifest) plus an MCP server on stdio that \`src/index.ts\` starts with \`definePlugin()\` from \`@nodcut/plugin-sdk\`. NodCut starts it when needed, calls its tools, validates every answer and applies the result as an ordinary, undoable edit.
 
 ${kindLine}
 
@@ -215,23 +215,23 @@ ${kindLine}
 - Never write to stdout: it carries MCP, and a stray \`console.log\` breaks the session. Log with \`ctx.log()\` (stderr).
 - Fail with \`throw new PluginFailure('E_YOUR_CODE', oneLineMessage, oneLineFix)\`: the fix names the setting, the tool to call or the thing to install. Anything else becomes a generic \`E_PLUGIN_FAILED\`.
 - Report progress during long work (\`ctx.progress(0..1, message)\`) and stop when \`ctx.signal\` aborts; a silent call is timed out.
-- Declare in the manifest only what is used: \`permissions.network\` (hosts), \`permissions.secrets\` (names the user enters in CutPilot), \`permissions.reads\`, \`settings\`. Secrets come through \`ctx.secret()\` / \`ctx.requireSecret()\`, settings through \`ctx.settings\`.
-- Files returned are absolute paths that exist; CutPilot copies what it needs.
+- Declare in the manifest only what is used: \`permissions.network\` (hosts), \`permissions.secrets\` (names the user enters in NodCut), \`permissions.reads\`, \`settings\`. Secrets come through \`ctx.secret()\` / \`ctx.requireSecret()\`, settings through \`ctx.settings\`.
+- Files returned are absolute paths that exist; NodCut copies what it needs.
 - Describe tools and every input field (\`.describe()\`, units, an example) for the weakest model that should succeed.
 
 ## Commands
 
 \`\`\`sh
-npm run build                      # src/ → dist/ (CutPilot runs node dist/index.js)
+npm run build                      # src/ → dist/ (NodCut runs node dist/index.js)
 npm test                           # build, then the tests, including testPlugin()
-npx cutpilot-plugin validate .     # the manifest, icon and command, without starting anything
-npx cutpilot-plugin test .         # start it the way CutPilot does and call its tools (--secret NAME, --setting key=value)
-cutpilot plugin install . --link   # try it in CutPilot (the app's command line); cutpilot plugin list shows its state
+npx nodcut-plugin validate .     # the manifest, icon and command, without starting anything
+npx nodcut-plugin test .         # start it the way NodCut does and call its tools (--secret NAME, --setting key=value)
+nodcut plugin install . --link   # try it in NodCut (the app's command line); nodcut plugin list shows its state
 \`\`\`
 
-Before saying a change is done: \`npm test\` green, the README updated if a tool, setting or requirement changed, and \`version\` bumped in both \`cutpilot-plugin.json\` and \`package.json\` when it is to be shared again.
+Before saying a change is done: \`npm test\` green, the README updated if a tool, setting or requirement changed, and \`version\` bumped in both \`nodcut-plugin.json\` and \`package.json\` when it is to be shared again.
 
-Guide: https://github.com/abdul-abdu/cutpilot-devkit/blob/main/docs/plugin-guide.md
+Guide: https://github.com/abdul-abdu/nodcut-devkit/blob/main/docs/plugin-guide.md
 `;
 }
 
@@ -277,7 +277,7 @@ export function scaffoldPlugin(o: ScaffoldOptions): ScaffoldResult {
       version: '0.1.0',
       description,
       contract: CONTRACT_VERSION,
-      cutpilot: TEMPLATE_CUTPILOT_RANGE,
+      nodcut: TEMPLATE_NODCUT_RANGE,
       command: 'node',
       args: ['dist/index.js'],
       kinds: manifestKind ? [manifestKind] : [],
@@ -297,9 +297,9 @@ export function scaffoldPlugin(o: ScaffoldOptions): ScaffoldResult {
       scripts: {
         build: 'tsc',
         test: 'tsc && vitest run',
-        validate: 'cutpilot-plugin validate .',
+        validate: 'nodcut-plugin validate .',
       },
-      dependencies: { '@cutpilot/plugin-sdk': o.sdk ?? `^${sdkVersion()}` },
+      dependencies: { '@nodcut/plugin-sdk': o.sdk ?? `^${sdkVersion()}` },
       devDependencies: TEMPLATE_DEV_DEPENDENCIES,
     }),
   );
@@ -326,7 +326,7 @@ export function scaffoldPlugin(o: ScaffoldOptions): ScaffoldResult {
       exclude: ['src/**/*.test.ts'],
     }),
   );
-  write('.gitignore', 'node_modules/\ndist/\n*.cutpilot-plugin\n*.tgz\n');
+  write('.gitignore', 'node_modules/\ndist/\n*.nodcut-plugin\n*.tgz\n');
   write('README.md', readme(o.id, name, kind));
   write('AGENTS.md', agentsMd(o.id, kind));
   copy(new URL('index.ts', TEMPLATE), 'src/index.ts');

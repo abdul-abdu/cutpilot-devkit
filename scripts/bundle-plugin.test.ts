@@ -24,7 +24,7 @@ test('a language pack is copied, not bundled: the files its manifest names (P3-0
   const src = join(ROOT, 'packages/plugin-sdk/fixtures/language');
   const r = await bundlePlugin(src, join(tmp, 'lang'));
   expect(r).toMatchObject({ entry: null, installed: [] });
-  expect(readdirSync(r.dir).sort()).toEqual(['cutpilot-plugin.json', 'de.json', 'de.menu.json']);
+  expect(readdirSync(r.dir).sort()).toEqual(['de.json', 'de.menu.json', 'nodcut-plugin.json']);
   expect((await testPlugin(r.dir)).ok).toBe(true);
 });
 
@@ -33,7 +33,7 @@ describe.skipIf(!existsSync(join(HYPERFRAMES, 'dist/index.js')))('bundle-plugin'
     const dir = join(tmp, 'py');
     mkdirSync(dir);
     writeFileSync(
-      join(dir, 'cutpilot-plugin.json'),
+      join(dir, 'nodcut-plugin.json'),
       JSON.stringify({ id: 'py', command: 'python3', args: ['main.py'] }),
     );
     writeFileSync(join(dir, 'package.json'), '{}');
@@ -49,7 +49,7 @@ describe.skipIf(!existsSync(join(HYPERFRAMES, 'dist/index.js')))('bundle-plugin'
       expect(r.installed).toEqual(['gsap', 'hyperframes']);
       const js = readFileSync(join(r.dir, 'dist/index.js'), 'utf8');
       expect(js).toMatch(/PluginFailure = class/); // the SDK is inside
-      expect(js).not.toMatch(/from ["']@cutpilot\//);
+      expect(js).not.toMatch(/from ["']@nodcut\//);
       expect(existsSync(join(r.dir, 'node_modules/hyperframes/bin/hyperframes.mjs'))).toBe(true);
       expect(existsSync(join(r.dir, 'node_modules/gsap/dist/gsap.min.js'))).toBe(true);
       expect(existsSync(join(r.dir, 'icon.png'))).toBe(true);

@@ -1,7 +1,7 @@
 /**
- * definePlugin(): one call turns handlers into a CutPilot plugin — an MCP server on stdio that
- * offers its kinds' contract tools, checks what goes in and out against `@cutpilot/plugin-api`,
- * and reports errors the way CutPilot does (a code, a one-line message, a one-line fix).
+ * definePlugin(): one call turns handlers into a NodCut plugin — an MCP server on stdio that
+ * offers its kinds' contract tools, checks what goes in and out against `@nodcut/plugin-api`,
+ * and reports errors the way NodCut does (a code, a one-line message, a one-line fix).
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -40,7 +40,7 @@ import {
   type ToolContract,
   type TranscribeInputSchema,
   type TranscribeOutputSchema,
-} from '@cutpilot/plugin-api';
+} from '@nodcut/plugin-api';
 import type { z } from 'zod';
 
 type Extra = RequestHandlerExtra<ServerRequest, ServerNotification>;
@@ -84,9 +84,9 @@ export interface PluginContext {
   requireSecret(name: string): string;
   /** report progress, 0..1 */
   progress(fraction: number, message?: string): void;
-  /** aborted when CutPilot cancels the call */
+  /** aborted when NodCut cancels the call */
   readonly signal: AbortSignal;
-  /** a line in CutPilot's log for this plugin (stderr; stdout belongs to MCP) */
+  /** a line in NodCut's log for this plugin (stderr; stdout belongs to MCP) */
   log(message: string): void;
 }
 
@@ -110,7 +110,7 @@ export const defineTool = <S extends z.ZodRawShape>(tool: ExtraTool<S>): ExtraTo
   tool as unknown as ExtraTool;
 
 export interface PluginDefinition {
-  /** default: `cutpilot-plugin.json` in the working directory (CutPilot starts plugins in their folder) */
+  /** default: `nodcut-plugin.json` in the working directory (NodCut starts plugins in their folder) */
   manifest?: unknown;
   /** kind `transcriber` */
   transcribe?: Handler<typeof TranscribeInputSchema, typeof TranscribeOutputSchema>;
@@ -150,7 +150,7 @@ export class PluginDefinitionError extends Error {
 export interface Plugin {
   readonly manifest: Manifest;
   readonly server: McpServer;
-  /** serve on stdin/stdout (what CutPilot expects) */
+  /** serve on stdin/stdout (what NodCut expects) */
   start(): Promise<void>;
 }
 
@@ -240,7 +240,7 @@ export function definePlugin(def: PluginDefinition, env: NodeJS.ProcessEnv = pro
         throw new PluginFailure(
           'E_PLUGIN_NEEDS_SECRET',
           `${name} hasn't been entered`,
-          `enter it in CutPilot → Plugins → ${manifest.name}`,
+          `enter it in NodCut → Plugins → ${manifest.name}`,
         );
       },
       progress(fraction, message) {
@@ -289,7 +289,7 @@ export function definePlugin(def: PluginDefinition, env: NodeJS.ProcessEnv = pro
               return failure(
                 'E_PLUGIN_BAD_INPUT',
                 `${tool}: ${issueText(a.error)}`,
-                "CutPilot sent an input this plugin can't use; update CutPilot or the plugin",
+                "NodCut sent an input this plugin can't use; update NodCut or the plugin",
               );
             const out = await handler(a.data, context(extra));
             const o = contract.output.safeParse(out);
@@ -297,7 +297,7 @@ export function definePlugin(def: PluginDefinition, env: NodeJS.ProcessEnv = pro
               return failure(
                 'E_PLUGIN_CONTRACT',
                 `${tool} returned ${issueText(o.error)}`,
-                `the plugin must return what the ${kind} contract says (see @cutpilot/plugin-api)`,
+                `the plugin must return what the ${kind} contract says (see @nodcut/plugin-api)`,
               );
             return success(o.data);
           })) as never,
@@ -317,7 +317,7 @@ export function definePlugin(def: PluginDefinition, env: NodeJS.ProcessEnv = pro
     server,
     start: async () => {
       await server.connect(new StdioServerTransport());
-      // CutPilot closes stdin when it stops the plugin, or when it goes away: don't outlive it
+      // NodCut closes stdin when it stops the plugin, or when it goes away: don't outlive it
       process.stdin.once('end', () => process.exit(0));
     },
   };

@@ -17,14 +17,14 @@ function plugin(name: string, manifest: Record<string, unknown>, body: string): 
   const dir = join(root, name);
   mkdirSync(dir, { recursive: true });
   writeFileSync(
-    join(dir, 'cutpilot-plugin.json'),
+    join(dir, 'nodcut-plugin.json'),
     JSON.stringify({
       id: name,
       name,
       version: '1.0.0',
       description: 'test',
       contract: 1,
-      cutpilot: '*',
+      nodcut: '*',
       command: 'node',
       args: ['index.mjs'],
       ...manifest,
@@ -257,7 +257,7 @@ await definePlugin({
       expect.objectContaining({
         name: 'manifest',
         result: 'fail',
-        detail: 'contract: this CutPilot speaks plugin contract 1',
+        detail: 'contract: this NodCut speaks plugin contract 1',
       }),
     ]);
   });
