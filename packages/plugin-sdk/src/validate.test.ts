@@ -68,6 +68,55 @@ describe('validatePluginFolder', () => {
     expect(validatePluginFolder(join(FIXTURES, 'bad-output')).ok).toBe(true);
   });
 
+  test('a language pack: nothing to start, each catalogue judged as CutPilot judges it (P3-067)', () => {
+    const r = validatePluginFolder(join(FIXTURES, 'language'));
+    expect(r.checks).toEqual([
+      { name: 'manifest', result: 'pass', detail: 'fixture-language 1.0.0' },
+      { name: 'command', result: 'pass', detail: 'none: data only, nothing to start' },
+      { name: 'language de', result: 'pass', detail: 'Deutsch, 5 strings' },
+    ]);
+    const strings = {
+      cutpilot: '0.3.0',
+      messages: ['Export', 'Settings', '{n} change'],
+      menu: ['File', 'Edit'],
+    };
+    const covered = validatePluginFolder(join(FIXTURES, 'language'), { strings });
+    expect(covered.ok).toBe(false);
+    expect(covered.checks.at(-1)).toEqual({
+      name: 'language de covers CutPilot 0.3.0',
+      result: 'fail',
+      detail: '2 strings missing (they show in English), like "Settings", "Edit"; 2 no longer used',
+      fix: 'translate them in de.json and de.menu.json',
+    });
+
+    const lang = (name: string, files: Record<string, string>) => {
+      const dir = folder(name, {
+        command: undefined,
+        args: undefined,
+        kinds: ['language'],
+        languages: [{ code: 'de', name: 'Deutsch', messages: 'de.json', menu: 'de.menu.json' }],
+      });
+      for (const [f, text] of Object.entries(files)) writeFileSync(join(dir, f), text);
+      return validatePluginFolder(dir).checks.at(-1);
+    };
+    expect(lang('lang-missing', { 'de.json': '{}' })).toMatchObject({
+      result: 'fail',
+      detail: "de.menu.json doesn't exist",
+    });
+    expect(lang('lang-json', { 'de.json': '{', 'de.menu.json': '{}' })).toMatchObject({
+      result: 'fail',
+      detail: expect.stringMatching(/^de\.json: /),
+    });
+    expect(
+      lang('lang-placeholder', { 'de.json': '{"Open {name}": "Öffnen"}', 'de.menu.json': '{}' }),
+    ).toEqual({
+      name: 'language de',
+      result: 'fail',
+      detail: '"Open {name}": "Öffnen" drops {name}',
+      fix: 'fix de.json and de.menu.json',
+    });
+  });
+
   test('a missing manifest, and one that is not JSON', () => {
     const empty = join(root, 'empty');
     mkdirSync(empty);

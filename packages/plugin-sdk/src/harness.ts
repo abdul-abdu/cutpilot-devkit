@@ -17,10 +17,18 @@ import {
   secretEnv,
   settingEnv,
   type Manifest,
+  type Strings,
   type Template,
 } from '@cutpilot/plugin-api';
 import type { z } from 'zod';
-import { commandCheck, manifestChecks, report, type Check, type TestReport } from './validate.js';
+import {
+  commandCheck,
+  languageChecks,
+  manifestChecks,
+  report,
+  type Check,
+  type TestReport,
+} from './validate.js';
 
 export { formatReport, type Check, type TestReport } from './validate.js';
 
@@ -44,6 +52,8 @@ export interface TestOptions {
   sound?: Record<string, unknown>;
   /** per call; default 60 s */
   timeoutMs?: number;
+  /** the strings a CutPilot version shows, to say what a language pack lacks (P3-067) */
+  strings?: Strings;
 }
 
 /** A 16 kHz mono 16-bit PCM wav of silence. */
@@ -68,6 +78,7 @@ export function silentWav(path: string, ms = 1000): string {
 
 /** How CutPilot starts a plugin's command. */
 export function resolveCommand(dir: string, m: Pick<Manifest, 'command'>): string {
+  if (m.command === undefined) throw new Error('a data-only plugin has no command to start');
   if (m.command === 'node') return process.execPath;
   return /[\\/]/.test(m.command) ? join(dir, m.command) : m.command;
 }
@@ -101,6 +112,12 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
   if (!m) return report(dir, checks);
   const add = (c: Check) => checks.push(c);
   const done = (plugin: string): TestReport => report(plugin, checks, m);
+  // a language pack is data only: CutPilot reads it and never starts it, so neither does this
+  if (m.command === undefined) {
+    add(commandCheck(dir, m));
+    checks.push(...languageChecks(dir, m, opts.strings));
+    return done(m.id);
+  }
   // a missing entry file (an unbuilt TypeScript plugin) is clearer said so than as a failed start
   const command = commandCheck(dir, m);
   if (command.result === 'fail') {
@@ -129,7 +146,7 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
         name: 'starts and answers',
         result: 'fail',
         detail: `${(e as Error).message} (stderr: ${tail()})`,
-        fix: `run "${m.command} ${m.args.join(' ')}" in ${dir} and fix what it prints`,
+        fix: `run "${[m.command, ...m.args].join(' ')}" in ${dir} and fix what it prints`,
       });
       return done(m.id);
     }

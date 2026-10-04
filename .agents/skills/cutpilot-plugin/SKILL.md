@@ -1,6 +1,6 @@
 ---
 name: cutpilot-plugin
-description: Build, change, test, bundle or install a CutPilot plugin in this devkit — a folder with a cutpilot-plugin.json manifest and an MCP server made with definePlugin() from @cutpilot/plugin-sdk (a transcriber, a reframe-track analyzer, a music or sound asset, a generator of clips, or free-form extra tools). Use whenever the task mentions a plugin, plugins/<name>, the manifest, plugin kinds, PluginFailure, testPlugin, cutpilot-plugin new|validate|test, pnpm bundle, or "cutpilot plugin install".
+description: Build, change, test, bundle or install a CutPilot plugin in this devkit — a folder with a cutpilot-plugin.json manifest and an MCP server made with definePlugin() from @cutpilot/plugin-sdk (a transcriber, a reframe-track analyzer, a music or sound asset, a generator of clips, free-form extra tools, or a language pack). Use whenever the task mentions a plugin, plugins/<name>, the manifest, plugin kinds, PluginFailure, testPlugin, cutpilot-plugin new|validate|test, pnpm bundle, or "cutpilot plugin install".
 ---
 
 # Write a CutPilot plugin
@@ -19,6 +19,7 @@ First-party plugins live in `plugins/<name>/` and are built exactly like a third
 | makes a sound effect, music or speech from a description | `asset:sound` | `listVoices`, `generateSound` | — |
 | renders clips from templates at the size asked (title cards, end cards) | `generator` | `listTemplates`, `generate` | — |
 | does something the kinds don't cover | `kinds: []` | `tools: { … }` | whatever it reads |
+| translates CutPilot's interface | `language` | none: data only, no `command` | `languages: [{ code, name, messages, menu }]`; see the plugin guide's "Language packs" and `plugins/language-ru` |
 
 Contracts are in `packages/plugin-api/src/contracts.ts` (`KIND_TOOLS`): read the input/output schema of your kind before writing the handler, because the SDK refuses any answer that doesn't match (`E_PLUGIN_CONTRACT`) and the engine refuses a plugin that doesn't offer its kind's tools. Extra tools reach AI clients as `<id>__<tool>` (`hyperframes__render`): snake_case, not a contract tool name, and the joined name at most 64 characters. A plugin can have kinds _and_ extra tools.
 

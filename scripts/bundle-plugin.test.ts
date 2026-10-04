@@ -1,5 +1,13 @@
 /** A bundled plugin stands alone: no links, and it passes the SDK harness (needs `pnpm build`). */
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,6 +19,14 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const HYPERFRAMES = join(ROOT, 'plugins/hyperframes');
 const tmp = mkdtempSync(join(tmpdir(), 'cp-bundle-'));
 afterAll(() => rmSync(tmp, { recursive: true, force: true }));
+
+test('a language pack is copied, not bundled: the files its manifest names (P3-067)', async () => {
+  const src = join(ROOT, 'packages/plugin-sdk/fixtures/language');
+  const r = await bundlePlugin(src, join(tmp, 'lang'));
+  expect(r).toMatchObject({ entry: null, installed: [] });
+  expect(readdirSync(r.dir).sort()).toEqual(['cutpilot-plugin.json', 'de.json', 'de.menu.json']);
+  expect((await testPlugin(r.dir)).ok).toBe(true);
+});
 
 describe.skipIf(!existsSync(join(HYPERFRAMES, 'dist/index.js')))('bundle-plugin', () => {
   test('refuses a plugin that is not started with node', async () => {

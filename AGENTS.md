@@ -12,7 +12,7 @@ The public, MIT-licensed half of CutPilot, the AI-first video editor: the plugin
 
 ## Rules
 
-- **This repo is public.** Never copy code, docs, task files or internal notes from the private app repo into it, and never import from it (`stay-in-repo` rule in `.dependency-cruiser.cjs`). When the app is involved, reference a task ID (`P3-030`) or a public concept, nothing more.
+- **This repo is public.** Never copy code, docs, task files or internal notes from the private app repo into it, and never import from it (`stay-in-repo` rule in `.dependency-cruiser.cjs`). When the app is involved, reference a task ID (`P3-030`) or a public concept, nothing more. The one exception, by the owner's decision: the app's interface strings are public, as `strings/strings.json` (written by the app's `pnpm strings`) and the translations in `plugins/language-*`.
 - **`packages/plugin-api` is the contract** the engine, the SDK and every published plugin build against. It imports only `zod`. A breaking change (a required field, a rename, a changed unit) bumps `CONTRACT_VERSION` in `src/manifest.ts` and orphans every published plugin until it is rebuilt, so prefer the additive shape (optional with a default, a new tool or kind next to the old one). The app repo keeps its own copy of `plugin-api` and `plugin-sdk`, synced from here: this repo is the source of truth, and a contract change is committed here first.
 - **Times** are integer milliseconds in SOURCE time; positions are fractions 0..1 of the frame. Every contract field says its unit in a comment.
 - **Errors teach.** A plugin fails with `PluginFailure(code, oneLineMessage, oneLineFix)`; the SDK, the CLI and `testPlugin()` print a fix for every failed check. Add an error code to `packages/plugin-api/src/errors.ts` rather than inventing one in a plugin.
@@ -42,7 +42,9 @@ packages/
   plugin-api/    manifest schema, the tool contract of each kind (KIND_TOOLS), error codes, registry format, semver. zod only.
   plugin-sdk/    definePlugin(), testPlugin(), validatePluginFolder(), scaffoldPlugin(), the cutpilot-plugin CLI;
                  examples/hello (the smallest plugin), template/ (what `new` copies), fixtures/ (plugins the tests check against)
-plugins/         first-party plugins, one folder each (see plugins/README.md); built like a third party's
+plugins/         first-party plugins, one folder each (see plugins/README.md); built like a third party's;
+                 language-*/ are language packs (data only), checked by plugins/language-packs.test.ts
+strings/         strings.json: every string the app shows, for language packs (written from the app)
 examples/        a plugin in Python, run with uv
 scripts/         bundle-plugin.mjs
 docs/            the plugin guide, publishing the SDK

@@ -3,4 +3,5 @@ export function bundlePlugin(
   dir: string,
   out?: string,
   options?: { log?: (line: string) => void },
-): Promise<{ dir: string; entry: string; bytes: number; installed: string[] }>;
+  /** `entry` is null for a data-only plugin (a language pack): copied, not bundled */
+): Promise<{ dir: string; entry: string | null; bytes: number; installed: string[] }>;

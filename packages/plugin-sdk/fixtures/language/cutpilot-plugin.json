@@ -1,0 +1,10 @@
+{
+  "id": "fixture-language",
+  "name": "Fixture: Deutsch",
+  "version": "1.0.0",
+  "description": "A language pack: a few of CutPilot's strings and menu labels in German.",
+  "contract": 1,
+  "cutpilot": ">=0.1",
+  "kinds": ["language"],
+  "languages": [{ "code": "de", "name": "Deutsch", "messages": "de.json", "menu": "de.menu.json" }]
+}

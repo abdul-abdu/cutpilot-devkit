@@ -76,6 +76,21 @@ describe('registry index', () => {
     expect(latestCompatible(other, '0.3.0')).toBeNull();
   });
 
+  test("a kind this CutPilot doesn't know: the catalog still reads, that version is passed over (P3-067)", () => {
+    const r = RegistryIndexSchema.safeParse(
+      index([
+        plugin(),
+        plugin({
+          id: 'teleport',
+          versions: [version('1.0.0'), version('2.0.0', { kinds: ['analyzer:teleport'], permissions: {} })],
+        }),
+      ]),
+    );
+    expect(r.success).toBe(true);
+    const p = r.data!.plugins[1] as RegistryPlugin;
+    expect(latestCompatible(p, '0.3.0')?.version).toBe('1.0.0');
+  });
+
   test('newer, URLs, and what an update asks for in addition', () => {
     expect(isNewer('1.1.0', '1.0.0')).toBe(true);
     expect(isNewer('1.0.0', '1.0.0')).toBe(false);

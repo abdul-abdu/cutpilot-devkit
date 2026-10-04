@@ -23,6 +23,7 @@ export {
   commandCheck,
   findOnPath,
   formatReport,
+  languageChecks,
   validatePluginFolder,
   type Check,
   type TestReport,

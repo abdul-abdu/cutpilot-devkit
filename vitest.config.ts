@@ -13,6 +13,7 @@ export default defineConfig({
     include: [
       'packages/*/src/**/*.test.ts',
       'plugins/*/src/**/*.test.ts',
+      'plugins/*.test.ts',
       'scripts/*.test.ts',
       'examples/*.test.ts',
     ],

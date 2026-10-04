@@ -12,6 +12,7 @@
 import { readFileSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
+import { StringsSchema, type Strings } from '@cutpilot/plugin-api';
 import { testPlugin, type TestOptions } from './harness.js';
 import { SCAFFOLD_KINDS, ScaffoldError, scaffoldPlugin, type ScaffoldKind } from './scaffold.js';
 import { formatReport, validatePluginFolder, type TestReport } from './validate.js';
@@ -23,6 +24,7 @@ export const CLI_USAGE = `usage:
       --name NAME                     shown in CutPilot (default: the id in words)
       --sdk SPEC                      the @cutpilot/plugin-sdk version to depend on (default: this one), or file:PATH
   cutpilot-plugin validate [DIR]      check the manifest, icon and command without starting the plugin
+      --strings FILE                  a language pack: also say which of CutPilot's strings it lacks
   cutpilot-plugin test [DIR]          start the plugin the way CutPilot does and call its tools
       --audio FILE                    a 16 kHz mono wav for transcribe (default: a second of silence)
       --language CODE                 the language to ask for (default: en)
@@ -32,10 +34,24 @@ export const CLI_USAGE = `usage:
       --secret NAME[=VALUE]           a secret (VALUE, or the NAME environment variable); repeatable
       --setting KEY=VALUE             a setting; repeatable
       --timeout MS                    per call (default: 60000)
+      --strings FILE                  as for validate
   cutpilot-plugin validate|test --json   the report as JSON
 DIR defaults to the current folder.`;
 
 class UsageError extends Error {}
+
+/** The strings a CutPilot version shows (its published strings.json), for --strings. */
+function readStrings(file: string): Strings {
+  let json: unknown;
+  try {
+    json = JSON.parse(readFileSync(resolve(file), 'utf8'));
+  } catch (e) {
+    throw new UsageError(`--strings ${file}: ${(e as Error).message}`);
+  }
+  const r = StringsSchema.safeParse(json);
+  if (!r.success) throw new UsageError(`--strings ${file} isn't a CutPilot strings.json`);
+  return r.data;
+}
 
 const pair = (s: string, what: string): [string, string | undefined] => {
   const i = s.indexOf('=');
@@ -62,6 +78,7 @@ function testOptions(v: Record<string, string | string[] | boolean | undefined>)
       throw new UsageError(`--sound is JSON, like '{"kind":"sfx","prompt":"a beep"}'`);
     }
   }
+  if (typeof v.strings === 'string') o.strings = readStrings(v.strings);
   if (typeof v.timeout === 'string') {
     const ms = Number(v.timeout);
     if (!Number.isFinite(ms) || ms <= 0) throw new UsageError('--timeout is a number of milliseconds');
@@ -89,6 +106,7 @@ const OPTIONS = {
   templates: { type: 'string' },
   sound: { type: 'string' },
   timeout: { type: 'string' },
+  strings: { type: 'string' },
   secret: { type: 'string', multiple: true },
   setting: { type: 'string', multiple: true },
   help: { type: 'boolean', short: 'h' },
@@ -175,9 +193,9 @@ export async function pluginCli(
     const dir = resolve(positionals[0] ?? '.');
     let r: TestReport;
     if (cmd === 'validate') {
-      const other = Object.keys(values).filter((k) => k !== 'json');
+      const other = Object.keys(values).filter((k) => k !== 'json' && k !== 'strings');
       if (other.length) throw new UsageError(`validate doesn't take --${other[0]}`);
-      r = validatePluginFolder(dir);
+      r = validatePluginFolder(dir, values.strings ? { strings: readStrings(values.strings) } : {});
     } else r = await testPlugin(dir, testOptions(values));
     if (values.json) {
       const { manifest: _manifest, ...shown } = r;

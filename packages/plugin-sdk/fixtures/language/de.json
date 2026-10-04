@@ -1,0 +1,5 @@
+{
+  "Export": "Exportieren",
+  "Open {name} again": "{name} erneut öffnen",
+  "{n} change": { "one": "{n} Änderung", "other": "{n} Änderungen" }
+}

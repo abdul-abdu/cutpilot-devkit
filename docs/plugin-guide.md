@@ -28,6 +28,8 @@ A plugin offers either or both of:
 | `asset:sound` | `sound` | `list_voices`, `generate_sound` | Sound effects, music or speech made from a description. |
 | `generator` | `generator` | `list_templates`, `generate` | Clips from templates (title cards, chapter headings, end cards) at the edit's size, inserted into the timeline. |
 
+**Language packs.** A plugin of kind `language` translates CutPilot's interface. It has no command and no tools: CutPilot reads its files and never starts it. See [Language packs](#language-packs).
+
 **Extra tools.** Any read-only tool you like: title ideas, chapter markers, a word count. CutPilot passes them on to the AI clients connected to it as `<plugin id>__<tool name>`, and passes their results back unchanged. Names are snake_case, and `<id>__<tool>` must fit in 64 characters. A plugin with no kinds and one extra tool is the simplest kind of plugin there is.
 
 ## Walkthrough: a `suggest_titles` tool
@@ -265,6 +267,40 @@ pnpm cutpilot-plugin test examples/python-plugin
 ```
 
 Without the TypeScript SDK, two things are yours to do: answer a kind's tools exactly as its contract in `@cutpilot/plugin-api` says, and report a failure as a tool error whose structured content is `{ "error": { "code", "message", "fix" } }`.
+
+## Language packs
+
+A language pack translates CutPilot's interface: every screen and message, and the menu bar. It is data only: a manifest and JSON files, no command, no permissions, no settings. CutPilot reads it when it's installed and never starts it. [`plugins/language-ru`](../plugins/language-ru) and [`plugins/language-uz`](../plugins/language-uz) are complete ones.
+
+```json
+{
+  "id": "language-de",
+  "name": "Deutsch — German",
+  "version": "1.0.0",
+  "description": "CutPilot's interface and menus in German.",
+  "contract": 1,
+  "cutpilot": ">=0.2.0-beta.15",
+  "kinds": ["language"],
+  "languages": [{ "code": "de", "name": "Deutsch", "messages": "de.json", "menu": "de.menu.json" }]
+}
+```
+
+- `code` is a language code (`de`, `pt-BR`, `uz-Cyrl`); `name` is the language's name in itself, shown in **Settings ▸ General ▸ Interface language**. A pack may hold up to 20 languages.
+- `messages` is the window's strings, keyed by the English text: `"Export…": "Exportieren…"`. `{name}` placeholders are filled in by CutPilot, so keep each one. A count is keyed by its English singular, with a form per [plural category](https://cldr.unicode.org/index/cldr-spec/plural-rules) of your language (`other` is required); its forms may leave out `{n}` ("one minute") or use it where the English key doesn't:
+  ```json
+  { "{n} change": { "one": "{n} Änderung", "other": "{n} Änderungen" } }
+  ```
+  A key may start with a context, `workspace|Review`, where one English word needs two translations; English shows the part after the bar.
+- `menu` (optional) is the menu bar's labels, `"File": "Ablage"`, the standard items (`Copy`, `Quit CutPilot`) included. Without it the menus stay English.
+- A catalogue is at most 2 MB. A string the pack doesn't have shows in English.
+
+[`strings/strings.json`](../strings/strings.json) lists every string the latest CutPilot shows. Check a pack against it:
+
+```sh
+pnpm cutpilot-plugin validate plugins/language-de --strings strings/strings.json
+```
+
+The check reads and judges the catalogues the way CutPilot does (a broken file, or a form that drops a placeholder, keeps the whole pack from loading) and names what's missing. `pnpm bundle plugins/language-de` copies the files into a package folder; there is nothing to build. `cutpilot-plugin new` doesn't make language packs yet: copy one of the two above.
 
 ## Troubleshooting
 

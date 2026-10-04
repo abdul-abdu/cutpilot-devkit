@@ -1,20 +1,25 @@
 /**
  * validatePluginFolder(): what can be checked in a plugin folder without starting it — the
- * manifest against `@cutpilot/plugin-api`, its icon, and that its command is there to run.
+ * manifest against `@cutpilot/plugin-api`, its icon, and that its command is there to run (or,
+ * for a language pack, its catalogues).
  * Fast and side-effect free, so editors and CLIs can run it on every save; `testPlugin()` starts
  * the plugin and checks the rest.
  */
 import { accessSync, constants, existsSync, readFileSync, statSync } from 'node:fs';
 import { delimiter, isAbsolute, join, relative } from 'node:path';
 import {
+  CATALOGUE_MAX_BYTES,
+  catalogueCoverage,
   ICON_MAX_BYTES,
   ICON_MAX_PX,
   ICON_MIN_PX,
   iconProblem,
   MANIFEST_FILE,
+  parseLanguagePack,
   parseManifest,
   pngSize,
   type Manifest,
+  type Strings,
 } from '@cutpilot/plugin-api';
 
 export interface Check {
@@ -123,6 +128,7 @@ const looksLikeFile = (a: string) => !a.startsWith('-') && /\.[cm]?[jt]s$|\.py$|
  */
 export function commandCheck(dir: string, m: Pick<Manifest, 'command' | 'args'>): Check {
   const name = 'command';
+  if (m.command === undefined) return { name, result: 'pass', detail: 'none: data only, nothing to start' };
   const shown = [m.command, ...m.args].join(' ');
   const inFolder = (p: string) => {
     const rel = relative(dir, join(dir, p));
@@ -183,14 +189,82 @@ export function commandCheck(dir: string, m: Pick<Manifest, 'command' | 'args'>)
   return { name, result: 'pass', detail: shown };
 }
 
+/** A catalogue file as CutPilot reads it: refused when too big or not JSON. */
+function readCatalogue(dir: string, file: string): { json?: unknown; problem?: string } {
+  try {
+    const size = statSync(join(dir, file)).size;
+    if (size > CATALOGUE_MAX_BYTES)
+      return { problem: `${file} is ${size} bytes; a catalogue is at most ${CATALOGUE_MAX_BYTES}` };
+    return { json: JSON.parse(readFileSync(join(dir, file), 'utf8')) };
+  } catch (e) {
+    const missing = (e as NodeJS.ErrnoException).code === 'ENOENT';
+    return { problem: missing ? `${file} doesn't exist` : `${file}: ${(e as Error).message}` };
+  }
+}
+
+/**
+ * A language pack's catalogues (P3-067), one check per language: read and judged the way
+ * CutPilot judges them. With `strings` (the list a CutPilot version publishes), also what each
+ * one lacks: those strings show in English.
+ */
+export function languageChecks(dir: string, m: Manifest, strings?: Strings): Check[] {
+  const checks: Check[] = [];
+  for (const l of m.languages ?? []) {
+    const name = `language ${l.code}`;
+    const messages = readCatalogue(dir, l.messages);
+    const menu = l.menu ? readCatalogue(dir, l.menu) : {};
+    const read = [messages.problem, menu.problem].filter((p): p is string => !!p);
+    const r = read.length ? null : parseLanguagePack(l, messages.json, menu.json);
+    if (!r || !r.ok) {
+      const problems = r ? r.problems : read;
+      checks.push({
+        name,
+        result: 'fail',
+        detail:
+          problems.slice(0, 5).join('; ') + (problems.length > 5 ? ` (and ${problems.length - 5} more)` : ''),
+        fix: `fix ${[l.messages, l.menu].filter(Boolean).join(' and ')}`,
+      });
+      continue;
+    }
+    const count = Object.keys(r.pack.messages).length + Object.keys(r.pack.menu).length;
+    checks.push({ name, result: 'pass', detail: `${l.name}, ${count} strings` });
+    if (!strings) continue;
+    const ui = catalogueCoverage(r.pack.messages, strings.messages);
+    const bar = catalogueCoverage(r.pack.menu, strings.menu);
+    const missing = [...ui.missing, ...(l.menu ? bar.missing : [])];
+    const unused = ui.unused.length + bar.unused.length;
+    const note = unused ? `; ${unused} no longer used` : '';
+    checks.push(
+      missing.length
+        ? {
+            name: `${name} covers CutPilot ${strings.cutpilot}`,
+            result: 'fail',
+            detail: `${missing.length} strings missing (they show in English), like ${missing
+              .slice(0, 3)
+              .map((s) => JSON.stringify(s))
+              .join(', ')}${note}`,
+            fix: `translate them in ${[l.messages, l.menu].filter(Boolean).join(' and ')}`,
+          }
+        : {
+            name: `${name} covers CutPilot ${strings.cutpilot}`,
+            result: 'pass',
+            detail: `every string${note}`,
+          },
+    );
+  }
+  return checks;
+}
+
 /**
  * Check a plugin folder without starting it: the manifest (schema, contract version, the reads
- * its kinds need), its icon, and its command. Synchronous; prints with `formatReport()`.
+ * its kinds need), its icon, and its command, or a language pack's catalogues (against
+ * `strings` when given). Synchronous; prints with `formatReport()`.
  */
-export function validatePluginFolder(dir: string): TestReport {
+export function validatePluginFolder(dir: string, opts: { strings?: Strings } = {}): TestReport {
   const { checks, manifest } = manifestChecks(dir);
   if (!manifest) return report(dir, checks);
   checks.push(commandCheck(dir, manifest));
+  checks.push(...languageChecks(dir, manifest, opts.strings));
   return report(manifest.id, checks, manifest);
 }
 

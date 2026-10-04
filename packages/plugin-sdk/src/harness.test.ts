@@ -39,6 +39,12 @@ function plugin(name: string, manifest: Record<string, unknown>, body: string): 
 
 const results = (r: TestReport) => Object.fromEntries(r.checks.map((c) => [c.name, c.result]));
 
+test('a language pack is never started: its catalogues are the test (P3-067)', async () => {
+  const r = await testPlugin(join(PKG, 'fixtures/language'));
+  expect(r.ok).toBe(true);
+  expect(results(r)).toEqual({ manifest: 'pass', command: 'pass', 'language de': 'pass' });
+});
+
 describe.skipIf(!built)('testPlugin', () => {
   test('the hello example passes', async () => {
     const r = await testPlugin(join(PKG, 'examples/hello'));

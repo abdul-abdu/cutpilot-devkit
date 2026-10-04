@@ -345,6 +345,8 @@ export const KIND_TOOLS = {
       output: GenerateSoundOutputSchema,
     },
   },
+  // data only: CutPilot reads its catalogues and never starts it (language.ts)
+  language: {},
 } as const satisfies Record<PluginKind, Record<string, ToolContract>>;
 
 /** Tool names a plugin must offer for its kinds. */

@@ -1,0 +1,18 @@
+{
+  "id": "language-ru",
+  "name": "Русский — Russian",
+  "version": "1.0.0",
+  "description": "CutPilot's interface and menus in Russian (Русский). Switch to it in Settings ▸ General ▸ Interface language.",
+  "publisher": "CutPilot",
+  "contract": 1,
+  "cutpilot": ">=0.2.0-beta.15",
+  "kinds": ["language"],
+  "languages": [
+    {
+      "code": "ru",
+      "name": "Русский",
+      "messages": "ru.json",
+      "menu": "ru.menu.json"
+    }
+  ]
+}

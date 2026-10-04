@@ -95,7 +95,7 @@ describe('manifest', () => {
     [{ cutpilot: 'soon' }, 'cutpilot: cutpilot is a semver range'],
     [
       { kinds: ['analyzer:faces'] },
-      'kinds.0: kinds are transcriber, analyzer:reframe-track, asset:music, generator, asset:sound',
+      'kinds.0: kinds are transcriber, analyzer:reframe-track, asset:music, generator, asset:sound, language',
     ],
     [
       { kinds: ['analyzer:reframe-track', 'analyzer:reframe-track'] },
@@ -145,10 +145,53 @@ describe('manifest', () => {
     expect(problems(over).join('\n')).toContain(want);
   });
 
+  test('a language plugin is data only: no command, permissions or settings (P3-067)', () => {
+    const pack = {
+      id: 'lang-de',
+      name: 'Deutsch',
+      version: '1.0.0',
+      description: 'CutPilot in German.',
+      contract: 1,
+      cutpilot: '>=0.3',
+      kinds: ['language'],
+      languages: [{ code: 'de', name: 'Deutsch', messages: 'de.json', menu: 'de.menu.json' }],
+    };
+    const ok = parseManifest(pack);
+    expect(ok.ok ? [] : ok.problems).toEqual([]);
+    expect(ok.ok && ok.manifest.command).toBeUndefined();
+    const bad = (over: Record<string, unknown>) => {
+      const r = parseManifest({ ...pack, ...over });
+      return r.ok ? '' : r.problems.join('\n');
+    };
+    expect(bad({ languages: [] })).toContain('languages: a language plugin lists its languages');
+    expect(bad({ command: 'node', args: ['dist/index.js'] })).toContain(
+      'command: a language plugin is data only: it has no command',
+    );
+    expect(bad({ kinds: ['language', 'generator'] })).toContain(
+      'kinds: a language plugin is only a language plugin',
+    );
+    expect(bad({ permissions: { network: ['x.io'], secrets: [], reads: [] } })).toContain(
+      'permissions: a language plugin asks for no permissions',
+    );
+    expect(bad({ settings: [{ key: 'x', label: 'X', type: 'string' }] })).toContain(
+      'settings: a language plugin has no settings',
+    );
+    const de = { code: 'de', name: 'Deutsch', messages: 'de.json' };
+    expect(bad({ languages: [de, de] })).toContain('languages: language de is listed twice');
+    expect(bad({ languages: [{ ...de, code: 'en' }] })).toContain('English is built in');
+    expect(bad({ languages: [{ ...de, code: 'German' }] })).toContain('language codes look like de, pt-BR');
+    expect(bad({ languages: [{ ...de, messages: 'de.po' }] })).toContain('a catalogue is a .json file');
+    expect(bad({ languages: [{ ...de, menu: '../de.json' }] })).toContain('a path inside the plugin folder');
+    // and only a language plugin has languages
+    expect(problems({ languages: [de] }).join('\n')).toContain(
+      'languages: only a language plugin has languages',
+    );
+  });
+
   test('a missing field is named', () => {
     const { command: _drop, ...rest } = base;
     const r = parseManifest(rest);
-    expect(r.ok ? [] : r.problems).toEqual([expect.stringMatching(/^command: /)]);
+    expect(r.ok ? [] : r.problems).toEqual(['command: the command that starts the plugin is missing']);
   });
 
   test('not an object at all', () => {

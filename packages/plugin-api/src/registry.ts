@@ -39,7 +39,11 @@ export const RegistryVersionSchema = z.object({
   version: z.string().regex(VERSION_RE, 'versions are semver'),
   cutpilot: z.string().refine((r) => parseRange(r) !== null, 'a semver range'),
   contract: z.number().int().positive(),
-  kinds: z.array(PluginKindSchema).default([]),
+  /**
+   * the kinds of this version; any name, so a kind added later doesn't make an older CutPilot
+   * refuse the whole catalog (P3-067): `latestCompatible` passes over a version it can't run
+   */
+  kinds: z.array(z.string().min(1).max(60)).default([]),
   permissions: PermissionsSchema.default({ network: [], secrets: [], reads: [] }),
   url: Href,
   sha256: z.string().regex(/^[0-9a-f]{64}$/, 'a lowercase hex SHA-256'),
@@ -107,11 +111,16 @@ const byVersionDesc = (a: RegistryVersion, b: RegistryVersion) =>
 /** Versions newest first. */
 export const sortedVersions = (p: RegistryPlugin): RegistryVersion[] => [...p.versions].sort(byVersionDesc);
 
-/** The newest version this engine can run (its contract and engine range), or null. */
+/** Kinds this plugin-api knows; a version with another kind is for a newer CutPilot. */
+const knownKind = (k: string) => PluginKindSchema.safeParse(k).success;
+
+/** The newest version this engine can run (its contract, engine range and kinds), or null. */
 export function latestCompatible(p: RegistryPlugin, engineVersion: string): RegistryVersion | null {
   return (
-    sortedVersions(p).find((v) => v.contract === CONTRACT_VERSION && satisfies(engineVersion, v.cutpilot)) ??
-    null
+    sortedVersions(p).find(
+      (v) =>
+        v.contract === CONTRACT_VERSION && satisfies(engineVersion, v.cutpilot) && v.kinds.every(knownKind),
+    ) ?? null
   );
 }
 

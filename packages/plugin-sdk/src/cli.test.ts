@@ -1,6 +1,7 @@
 /** The fixture plugins import the built SDK, so `test` needs `pnpm build` first (as in harness.test.ts). */
 import { spawnSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
@@ -35,6 +36,28 @@ describe('cutpilot-plugin validate', () => {
     const r = await run('validate', join(FIXTURES, 'bad-manifest'), '--json');
     expect(r.code).toBe(1);
     expect(JSON.parse(r.text)).toMatchObject({ ok: false, checks: [{ name: 'manifest', result: 'fail' }] });
+  });
+
+  test('--strings: what a language pack lacks of a CutPilot version (P3-067)', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'cp-strings-'));
+    try {
+      const file = join(dir, 'strings.json');
+      writeFileSync(
+        file,
+        JSON.stringify({ cutpilot: '0.3.0', messages: ['Export', 'Settings'], menu: ['File'] }),
+      );
+      const r = await run('validate', join(FIXTURES, 'language'), '--strings', file);
+      expect(r.code).toBe(1);
+      expect(r.text).toContain(
+        '✗ language de covers CutPilot 0.3.0 — 1 strings missing (they show in English), like "Settings"',
+      );
+      writeFileSync(file, '{"messages": []}');
+      expect((await run('validate', join(FIXTURES, 'language'), '--strings', file)).text).toMatch(
+        /^--strings .* isn't a CutPilot strings.json/,
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   test('usage errors exit 2 with the usage', async () => {

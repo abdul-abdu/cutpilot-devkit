@@ -21,9 +21,9 @@ import { PluginErrorSchema } from './errors.js';
 import { PLUGIN_KINDS } from './manifest.js';
 
 describe('kind contracts', () => {
-  test('every kind has at least one tool, and the table covers every kind', () => {
+  test('every kind but the data-only language has a tool, and the table covers every kind', () => {
     expect(Object.keys(KIND_TOOLS).sort()).toEqual([...PLUGIN_KINDS].sort());
-    for (const k of PLUGIN_KINDS) expect(contractTools([k]).length).toBeGreaterThan(0);
+    for (const k of PLUGIN_KINDS) expect(contractTools([k]).length > 0, k).toBe(k !== 'language');
     expect(contractTools(['transcriber', 'asset:music'])).toEqual(['transcribe', 'find_music', 'get_music']);
   });
 

@@ -1,6 +1,6 @@
 # First-party plugins
 
-CutPilot's own plugins, one folder each, built the way a third-party plugin is: a `cutpilot-plugin.json` manifest and an MCP server made with `@cutpilot/plugin-sdk`. They may import only `@cutpilot/plugin-sdk` and `@cutpilot/plugin-api` (`.dependency-cruiser.cjs` → `plugins-only-sdk`). They are published in the CutPilot plugin store like anyone else's and are not bundled with the app, so nothing is installed by default.
+CutPilot's own plugins, one folder each, built the way a third-party plugin is: a `cutpilot-plugin.json` manifest and an MCP server made with `@cutpilot/plugin-sdk` (or, for a language pack, catalogues and nothing to run). They may import only `@cutpilot/plugin-sdk` and `@cutpilot/plugin-api` (`.dependency-cruiser.cjs` → `plugins-only-sdk`). They are published in the CutPilot plugin store like anyone else's and are not bundled with the app, so nothing is installed by default.
 
 | Folder | npm package | Kind | Task (app repo) |
 | --- | --- | --- | --- |
@@ -12,9 +12,13 @@ CutPilot's own plugins, one folder each, built the way a third-party plugin is: 
 | `sound/` | `@cutpilot/plugin-asset-sound` | asset: sound (effects, music, speech made locally with audio.cpp) | P3-038 |
 | `remotion/` | `@cutpilot/plugin-generator-remotion` | generator: React scenes rendered with the user's own Remotion project and licence (Remotion not included) | — |
 | `manim/` | `@cutpilot/plugin-generator-manim` | generator: math and explainer animations (titles, function plots, bar charts, morphing text, LaTeX equations, scenes the AI writes in Python) rendered with Manim Community | — |
+| `language-ru/` | — | language: the interface and menus in Russian (data only) | P3-067 |
+| `language-uz/` | — | language: the interface and menus in Uzbek, Latin script (data only) | P3-067 |
 | `brag/` | `@cutpilot/plugin-tools-brag` | extra tools: /brag (latent-spaces, MIT) in CutPilot. The AI plans and writes a 15–25 s launch video, and the plugin checks, snapshots and renders it with HyperFrames (CC0 sound effects included) | — |
 
 ## Adding a plugin
+
+A language pack is only `cutpilot-plugin.json`, its catalogues and a README: no `package.json`, `tsconfig.json` or `src/`. `language-packs.test.ts` checks every `language-*` folder against `../strings/strings.json`, so a first-party pack stays complete (the plugin guide's "Language packs" has the format). Everything else:
 
 1. Create `plugins/<name>/` with `package.json` (`"name": "@cutpilot/plugin-<kind>-<name>"`, `"license": "MIT"`), `cutpilot-plugin.json`, `tsconfig.json` (extends `../../tsconfig.base.json`, references `../../packages/plugin-sdk`), `src/`, and an `icon.png` (256 px, square; keep the `icon.svg` it was drawn from next to it, so it can be redrawn).
 2. Add its `tsconfig.json` to the root `tsconfig.json` references.

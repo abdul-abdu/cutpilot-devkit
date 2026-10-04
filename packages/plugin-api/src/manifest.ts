@@ -1,5 +1,6 @@
 /** `cutpilot-plugin.json`: what a plugin is, what it needs, and how to start it. */
 import { z } from 'zod';
+import { LanguageSchema } from './language.js';
 import { parseRange, VERSION_RE } from './version.js';
 
 /** The plugin contract this package describes. The engine refuses other versions. */
@@ -19,6 +20,7 @@ export const PLUGIN_KINDS = [
   'asset:music',
   'generator',
   'asset:sound',
+  'language',
 ] as const;
 export const PluginKindSchema = z.enum(PLUGIN_KINDS, {
   error: `kinds are ${PLUGIN_KINDS.join(', ')}`,
@@ -37,6 +39,7 @@ export const KIND_READS: Record<PluginKind, readonly PluginRead[]> = {
   'asset:music': [],
   generator: [],
   'asset:sound': [],
+  language: [],
 };
 
 const HostSchema = z
@@ -104,7 +107,7 @@ export const SettingSchema = z
 export type Setting = z.infer<typeof SettingSchema>;
 
 /**
- * How to start the plugin, run in its folder. `node` means CutPilot's own Node.js (the user may
+ * How to start the plugin, run in its folder; a data-only plugin (a language pack) has none. `node` means CutPilot's own Node.js (the user may
  * not have one); another bare name is looked up on PATH (e.g. `uv`, `python3`); a path is
  * relative to the plugin folder and must stay inside it.
  */
@@ -144,11 +147,13 @@ export const ManifestSchema = z
     }),
     /** engine versions the plugin works with, e.g. ">=0.3 <1" */
     cutpilot: z.string().refine((r) => parseRange(r) !== null, 'cutpilot is a semver range, like >=0.3 <1'),
-    command: CommandSchema,
+    command: CommandSchema.optional(),
     args: z.array(z.string()).default([]),
     kinds: z.array(PluginKindSchema).default([]),
     permissions: PermissionsSchema.default({ network: [], secrets: [], reads: [] }),
     settings: z.array(SettingSchema).default([]),
+    /** what a `language` plugin translates the interface into (P3-067) */
+    languages: z.array(LanguageSchema).max(20).optional(),
   })
   .strict()
   .superRefine((m, ctx) => {
@@ -172,6 +177,23 @@ export const ManifestSchema = z
       });
     const k = dup(m.settings.map((x) => x.key));
     if (k) ctx.addIssue({ code: 'custom', message: `setting ${k} is listed twice`, path: ['settings'] });
+
+    // a language pack is data only: nothing to start, so nothing to give it
+    const language = m.kinds.includes('language');
+    const issue = (message: string, path: string[]) => ctx.addIssue({ code: 'custom', message, path });
+    if (language && !m.languages?.length) issue('a language plugin lists its languages', ['languages']);
+    if (!language && m.languages) issue('only a language plugin has languages', ['languages']);
+    const c = dup((m.languages ?? []).map((l) => l.code));
+    if (c) issue(`language ${c} is listed twice`, ['languages']);
+    if (language) {
+      if (m.kinds.length > 1) issue('a language plugin is only a language plugin', ['kinds']);
+      if (m.command !== undefined) issue('a language plugin is data only: it has no command', ['command']);
+      if (m.args.length) issue('a language plugin has no args', ['args']);
+      const p = m.permissions;
+      if (p.network.length || p.secrets.length || p.reads.length)
+        issue('a language plugin asks for no permissions', ['permissions']);
+      if (m.settings.length) issue('a language plugin has no settings', ['settings']);
+    } else if (m.command === undefined) issue('the command that starts the plugin is missing', ['command']);
   });
 export type Manifest = z.infer<typeof ManifestSchema>;
 
