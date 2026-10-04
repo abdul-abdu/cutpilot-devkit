@@ -1,7 +1,7 @@
 {
   "id": "language-uz",
   "name": "O'zbekcha — Uzbek",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "CutPilot's interface and menus in Uzbek, Latin script (O'zbekcha). Switch to it in Settings ▸ General ▸ Interface language.",
   "publisher": "CutPilot",
   "contract": 1,
