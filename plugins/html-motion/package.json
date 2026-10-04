@@ -1,6 +1,6 @@
 {
   "name": "@nodcut/plugin-generator-html-motion",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "NodCut plugin: motion-graphics clips (title cards, chapters, quotes, lists, end cards) from HTML templates, rendered with headless Chrome.",
   "type": "module",
   "private": true,
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
+    "url": "git+https://github.com/nodcut/nodcut-devkit.git",
     "directory": "plugins/html-motion"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",

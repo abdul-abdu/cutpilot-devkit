@@ -1,6 +1,6 @@
 # @nodcut/plugin-sdk
 
-Build plugins for [NodCut](https://github.com/abdul-abdu/nodcut), the AI-first video editor. A plugin is a folder with a `nodcut-plugin.json` manifest and an MCP server on stdio; this SDK makes the server and checks the plugin the way NodCut will.
+Build plugins for [NodCut](https://github.com/nodcut/nodcut), the AI-first video editor. A plugin is a folder with a `nodcut-plugin.json` manifest and an MCP server on stdio; this SDK makes the server and checks the plugin the way NodCut will.
 
 ```sh
 npx -p @nodcut/plugin-sdk nodcut-plugin new my-titles   # a working plugin to start from
@@ -13,4 +13,4 @@ cd my-titles && npm install && npm test
 - The `nodcut-plugin` command: `new`, `validate`, `test`.
 - Everything in `@nodcut/plugin-api` (the manifest schema, the contracts), and `z`, the SDK's zod.
 
-The [plugin guide](https://github.com/abdul-abdu/nodcut-devkit/blob/main/docs/plugin-guide.md) walks through building, testing and installing one. MIT licensed.
+The [plugin guide](https://github.com/nodcut/nodcut-devkit/blob/main/docs/plugin-guide.md) walks through building, testing and installing one. MIT licensed.

@@ -1,10 +1,10 @@
 {
   "id": "brag",
   "name": "Brag",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "You built it, now brag: your AI turns what you made into a 15–25 s launch video with music, motion and share copy, following /brag's method, and the plugin checks, previews and renders it with HyperFrames and a local Chrome. Includes 228 CC0 sound effects.",
   "publisher": "NodCut",
-  "homepage": "https://github.com/abdul-abdu/nodcut-devkit/tree/main/plugins/brag",
+  "homepage": "https://github.com/nodcut/nodcut-devkit/tree/main/plugins/brag",
   "icon": "icon.png",
   "contract": 1,
   "nodcut": ">=0.2.0-beta.10",

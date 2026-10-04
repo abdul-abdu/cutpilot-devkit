@@ -1,7 +1,7 @@
 {
   "id": "language-ru",
   "name": "Русский — Russian",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "NodCut's interface and menus in Russian (Русский). Switch to it in Settings ▸ General ▸ Interface language.",
   "publisher": "NodCut",
   "contract": 1,

@@ -1,6 +1,6 @@
 {
   "name": "@nodcut/plugin-stt-cloud",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "NodCut plugin: transcription in the cloud with ElevenLabs Scribe or OpenAI whisper-1, with your own API key.",
   "type": "module",
   "private": true,
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
+    "url": "git+https://github.com/nodcut/nodcut-devkit.git",
     "directory": "plugins/cloud-transcribe"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",

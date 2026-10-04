@@ -1,6 +1,6 @@
 {
   "name": "@nodcut/plugin-tools-brag",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "NodCut plugin: /brag in NodCut. Your AI turns what you built into a short launch video with brag's method; the plugin writes, checks, snapshots and renders it with HyperFrames.",
   "type": "module",
   "private": true,
@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
+    "url": "git+https://github.com/nodcut/nodcut-devkit.git",
     "directory": "plugins/brag"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",

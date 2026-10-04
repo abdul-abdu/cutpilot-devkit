@@ -1,6 +1,6 @@
 {
   "name": "@nodcut/plugin-asset-music",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NodCut plugin: background music by mood, from a small library of loops shipped inside the plugin.",
   "type": "module",
   "private": true,
@@ -25,7 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
+    "url": "git+https://github.com/nodcut/nodcut-devkit.git",
     "directory": "plugins/music"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",

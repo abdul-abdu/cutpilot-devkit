@@ -1,6 +1,6 @@
 {
   "name": "@nodcut/plugin-generator-manim",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NodCut plugin: math and explainer animations (equations, function plots, bar charts, titles, morphing text, or a scene your AI writes) rendered with Manim Community on your machine.",
   "type": "module",
   "private": true,
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
+    "url": "git+https://github.com/nodcut/nodcut-devkit.git",
     "directory": "plugins/manim"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",

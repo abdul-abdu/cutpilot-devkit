@@ -1,10 +1,10 @@
 {
   "id": "music",
   "name": "Music",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Background music for your edits, picked by mood (calm, upbeat, inspiring, corporate, dramatic, lo-fi) and length from a small library inside the plugin. Works offline; every track says its licence.",
   "publisher": "NodCut",
-  "homepage": "https://github.com/abdul-abdu/nodcut-devkit/tree/main/plugins/music",
+  "homepage": "https://github.com/nodcut/nodcut-devkit/tree/main/plugins/music",
   "icon": "icon.png",
   "contract": 1,
   "nodcut": ">=0.2.0-beta.11",

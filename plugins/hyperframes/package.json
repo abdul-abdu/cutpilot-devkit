@@ -1,6 +1,6 @@
 {
   "name": "@nodcut/plugin-render-hyperframes",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "NodCut plugin (research): an edit as a HyperFrames HTML composition, rendered to MP4 with headless Chrome.",
   "type": "module",
   "private": true,
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-abdu/nodcut-devkit.git",
+    "url": "git+https://github.com/nodcut/nodcut-devkit.git",
     "directory": "plugins/hyperframes"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",

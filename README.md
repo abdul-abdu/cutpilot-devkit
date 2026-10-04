@@ -1,6 +1,6 @@
 # NodCut devkit
 
-Everything you need to build a plugin for [NodCut](https://github.com/abdul-abdu/nodcut), the AI-first video editor: the plugin API, the SDK, and NodCut's own first-party plugins. MIT licensed.
+Everything you need to build a plugin for [NodCut](https://github.com/nodcut/nodcut), the AI-first video editor: the plugin API, the SDK, and NodCut's own first-party plugins. MIT licensed.
 
 A NodCut plugin is a folder with a `nodcut-plugin.json` manifest and a command that starts an [MCP](https://modelcontextprotocol.io) server on stdio. It can be written in any language. NodCut's engine starts the plugin when it's needed, calls its tools, validates what comes back and applies it as an ordinary, undoable edit. Plugins return data or files. They never edit the timeline themselves.
 
