@@ -28,7 +28,9 @@ import { findChrome, findOnPath } from './toolchain.js';
 
 const DIR = fileURLToPath(new URL('..', import.meta.url));
 const manifest = JSON.parse(readFileSync(join(DIR, 'cutpilot-plugin.json'), 'utf8'));
-const tmp = mkdtempSync(join(tmpdir(), 'cp-brag-'));
+// resolved: macOS's temp folder is reached through a link (/var → /private/var), and the tools
+// answer resolved paths
+const tmp = realpathSync(mkdtempSync(join(tmpdir(), 'cp-brag-')));
 
 /** A Chrome for the real runs: the plugin's own search, else a Playwright download. */
 function testChrome(): string | null {
