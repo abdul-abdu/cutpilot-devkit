@@ -64,8 +64,12 @@ export function projectDir(path: string): string {
   return realpathSync(dir);
 }
 
-/** A path inside the project, refusing anything that leaves it. */
+/**
+ * A path inside the project, refusing anything that leaves it. The answer is under the project's
+ * resolved path (macOS's temp folder, /var, is a link to /private/var).
+ */
 export function inside(project: string, rel: string): string {
+  project = realpathSync(project);
   const bad = () =>
     new PluginFailure(
       'E_PLUGIN_BAD_INPUT',
@@ -104,8 +108,9 @@ export function copyAsset(
       'pass the absolute path of an existing file (a logo, screenshot, video clip, font or audio file)',
     );
   const name = as?.trim() || from.split(/[\\/]/).pop()!;
-  const assets = join(project, 'composition', 'assets');
-  const to = inside(project, relative(project, resolve(assets, name)));
+  const root = realpathSync(project);
+  const assets = join(root, 'composition', 'assets');
+  const to = inside(root, relative(root, resolve(assets, name)));
   if (!to.startsWith(assets + sep))
     throw new PluginFailure(
       'E_PLUGIN_BAD_INPUT',
@@ -121,7 +126,7 @@ export function copyAsset(
   mkdirSync(dirname(to), { recursive: true });
   copyFileSync(from, to);
   return {
-    src: relative(join(project, 'composition'), to).split(sep).join('/'),
+    src: relative(join(root, 'composition'), to).split(sep).join('/'),
     path: to,
     bytes: statSync(to).size,
   };

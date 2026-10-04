@@ -10,6 +10,7 @@ import {
   mkdtempSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
   symlinkSync,
   writeFileSync,
@@ -209,6 +210,36 @@ describe('helpers', () => {
     const p = mkdtempSync(join(tmp, 'p-'));
     expect(inside(p, 'composition/index.html')).toBe(join(p, 'composition', 'index.html'));
     expect(() => inside(p, '..')).toThrow(/not a path inside/);
+  });
+
+  test('a project reached through a symlink (macOS /var is /private/var) works and is answered resolved', async () => {
+    const real = mkdtempSync(join(tmp, 'real-'));
+    const link = join(tmp, `link-${process.pid}`);
+    symlinkSync(real, link);
+    const p = join(link, 'p');
+    mkdirSync(p);
+    expect(inside(p, 'composition/index.html')).toBe(join(realpathSync(p), 'composition', 'index.html'));
+    expect(() => inside(p, '../x')).toThrow(/not a path inside/);
+
+    const c = await connect({ ...ENV, CUTPILOT_SETTING_OUTPUT_DIR: join(link, 'projects') });
+    const { project } = await start(c);
+    expect(project).toBe(realpathSync(project));
+    expect(
+      ok<{ written: string }>(await call(c, 'write_file', { project, path: 'a.md', content: 'a' })).written,
+    ).toBe(join(project, 'a.md'));
+    const logo = join(link, 'logo.svg');
+    writeFileSync(logo, '<svg xmlns="http://www.w3.org/2000/svg"/>');
+    expect(
+      ok(
+        await call(c, 'add_asset', {
+          project: join(link, 'projects', project.split('/').pop()!),
+          file: logo,
+        }),
+      ),
+    ).toMatchObject({
+      src: 'assets/logo.svg',
+      path: join(project, 'composition', 'assets', 'logo.svg'),
+    });
   });
 
   test("check's JSON: errors first, counted across sections", () => {

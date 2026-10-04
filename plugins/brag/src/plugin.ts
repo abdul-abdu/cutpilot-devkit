@@ -11,6 +11,7 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   renameSync,
   rmSync,
   writeFileSync,
@@ -184,11 +185,13 @@ export const definition: PluginDefinition = {
       },
       handler({ name, format, durationS }, ctx) {
         const root = projectsRoot(ctx.settings.outputDir as string);
-        const dir = newProjectDir(root, name);
+        let dir = newProjectDir(root, name);
         const { width, height } = FORMATS[format];
         const info: ProjectInfo = { name, format, width, height, fps: FPS, durationS };
         mkdirSync(join(dir, 'composition', 'vendor'), { recursive: true });
         mkdirSync(join(dir, 'composition', 'assets'), { recursive: true });
+        // the resolved path, as every other tool answers with (macOS: /var is /private/var)
+        dir = realpathSync(dir);
         writeFileSync(join(dir, MARKER), JSON.stringify(info, null, 2));
         copyFileSync(gsapPath(), join(dir, 'composition', 'vendor', 'gsap.min.js'));
         const html = starterComposition({ title: name, width, height, fps: FPS, durationS });
