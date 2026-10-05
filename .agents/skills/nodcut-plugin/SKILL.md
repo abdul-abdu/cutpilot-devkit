@@ -72,7 +72,7 @@ An icon is drawn as SVG and rendered with headless Chrome (Quick Look's `qlmanag
   "version": "0.1.0",                   // semver; same as package.json
   "description": "…what it does, ≤ 300 chars; AI clients and the store show this",
   "publisher": "NodCut",
-  "homepage": "https://github.com/nodcut/nodcut-devkit/tree/main/plugins/follow-speaker",
+  "homepage": "https://github.com/nodcut/plugins/tree/main/plugins/follow-speaker",
   "icon": "icon.png",                   // a PNG inside the folder, square, 32–256 px, ≤ 64 KB; testPlugin checks it
   "contract": 1,                        // CONTRACT_VERSION in plugin-api; the engine refuses others
   "nodcut": ">=0.2.0-beta.11",        // engine versions it works with: the first that has what the plugin needs

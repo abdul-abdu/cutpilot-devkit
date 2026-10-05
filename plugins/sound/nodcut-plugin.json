@@ -4,7 +4,7 @@
   "version": "0.1.2",
   "description": "Sound effects, music and voice-overs made on your computer from a description: Stable Audio 3 (effects and music) and Supertonic 3 (speech in 31 languages), run with audio.cpp. Downloads the runtime and the models you ask for; nothing leaves your machine.",
   "publisher": "NodCut",
-  "homepage": "https://github.com/nodcut/nodcut-devkit/tree/main/plugins/sound",
+  "homepage": "https://github.com/nodcut/plugins/tree/main/plugins/sound",
   "icon": "icon.png",
   "contract": 1,
   "nodcut": ">=0.2.0-beta.3",

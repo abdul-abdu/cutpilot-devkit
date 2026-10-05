@@ -4,7 +4,7 @@
   "version": "0.2.1",
   "description": "Motion-graphics clips for your edit: title cards, chapter headings, quotes, bullet lists and end cards, made from HTML templates at your video's size and rendered offline with a local Chrome and ffmpeg.",
   "publisher": "NodCut",
-  "homepage": "https://github.com/nodcut/nodcut-devkit/tree/main/plugins/html-motion",
+  "homepage": "https://github.com/nodcut/plugins/tree/main/plugins/html-motion",
   "icon": "icon.png",
   "contract": 1,
   "nodcut": ">=0.1",

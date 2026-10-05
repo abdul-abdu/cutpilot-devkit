@@ -27,7 +27,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nodcut/nodcut-devkit.git",
+    "url": "git+https://github.com/nodcut/plugins.git",
     "directory": "packages/plugin-api"
   },
   "author": "Abdul <abdul.abdurohiym@gmail.com>",
@@ -41,8 +41,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/nodcut/nodcut-devkit/tree/main/packages/plugin-api#readme",
+  "homepage": "https://github.com/nodcut/plugins/tree/main/packages/plugin-api#readme",
   "bugs": {
-    "url": "https://github.com/nodcut/nodcut-devkit/issues"
+    "url": "https://github.com/nodcut/plugins/issues"
   }
 }

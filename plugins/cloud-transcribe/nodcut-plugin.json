@@ -4,7 +4,7 @@
   "version": "0.2.1",
   "description": "Transcribe in the cloud with ElevenLabs Scribe (about 99 languages, Uzbek included) or OpenAI whisper-1, using your own API key. The audio of the video is uploaded to the provider you choose.",
   "publisher": "NodCut",
-  "homepage": "https://github.com/nodcut/nodcut-devkit/tree/main/plugins/cloud-transcribe",
+  "homepage": "https://github.com/nodcut/plugins/tree/main/plugins/cloud-transcribe",
   "icon": "icon.png",
   "contract": 1,
   "nodcut": ">=0.2.0-beta.11",

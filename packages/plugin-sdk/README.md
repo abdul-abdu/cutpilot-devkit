@@ -13,4 +13,4 @@ cd my-titles && npm install && npm test
 - The `nodcut-plugin` command: `new`, `validate`, `test`.
 - Everything in `@nodcut/plugin-api` (the manifest schema, the contracts), and `z`, the SDK's zod.
 
-The [plugin guide](https://github.com/nodcut/nodcut-devkit/blob/main/docs/plugin-guide.md) walks through building, testing and installing one. MIT licensed.
+The [plugin guide](https://github.com/nodcut/plugins/blob/main/docs/plugin-guide.md) walks through building, testing and installing one. MIT licensed.

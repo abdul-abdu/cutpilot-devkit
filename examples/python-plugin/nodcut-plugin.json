@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Word count, unique words, average word length and the most frequent words of a transcript. An example of a plugin written in Python.",
   "publisher": "NodCut",
-  "homepage": "https://github.com/nodcut/nodcut-devkit/tree/main/examples/python-plugin",
+  "homepage": "https://github.com/nodcut/plugins/tree/main/examples/python-plugin",
   "contract": 1,
   "nodcut": ">=0.2.0-beta.10",
   "command": "uv",

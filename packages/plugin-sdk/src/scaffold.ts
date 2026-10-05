@@ -191,7 +191,7 @@ nodcut plugin pack     # writes ${id}-<version>.nodcut-plugin
 
 It installs with \`nodcut plugin install <file>\`, or NodCut → Plugins → Install from file… (or drop it on the app). A package can't hold links, so build against an SDK installed from npm or a tarball, not a \`file:\` folder, before you pack.
 
-See the [plugin guide](https://github.com/nodcut/nodcut-devkit/blob/main/docs/plugin-guide.md).
+See the [plugin guide](https://github.com/nodcut/plugins/blob/main/docs/plugin-guide.md).
 `;
 }
 
@@ -231,7 +231,7 @@ nodcut plugin install . --link   # try it in NodCut (the app's command line); no
 
 Before saying a change is done: \`npm test\` green, the README updated if a tool, setting or requirement changed, and \`version\` bumped in both \`nodcut-plugin.json\` and \`package.json\` when it is to be shared again.
 
-Guide: https://github.com/nodcut/nodcut-devkit/blob/main/docs/plugin-guide.md
+Guide: https://github.com/nodcut/plugins/blob/main/docs/plugin-guide.md
 `;
 }
 

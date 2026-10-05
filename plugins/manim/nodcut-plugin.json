@@ -4,7 +4,7 @@
   "version": "0.1.1",
   "description": "Math and explainer animations for your edit: equations, function plots, bar charts, titles, morphing text, or a scene your AI writes in Python, rendered with Manim Community on your machine at your video's size.",
   "publisher": "NodCut",
-  "homepage": "https://github.com/nodcut/nodcut-devkit/tree/main/plugins/manim",
+  "homepage": "https://github.com/nodcut/plugins/tree/main/plugins/manim",
   "icon": "icon.png",
   "contract": 1,
   "nodcut": ">=0.2.0-beta.10",
