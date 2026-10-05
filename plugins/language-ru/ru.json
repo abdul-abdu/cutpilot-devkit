@@ -1600,7 +1600,6 @@
   "Joined at {time}": "Соединено в {time}",
   "Join at playhead": "Соединить у курсора",
   "Join pieces here": "Соединить части здесь",
-  "Split here": "Разделить здесь",
   "No split at the playhead": "У курсора нет разделения",
   "No split in this timeline": "В этом таймлайне нет разделений"
 }
