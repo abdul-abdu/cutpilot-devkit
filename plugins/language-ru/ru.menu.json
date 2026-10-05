@@ -138,5 +138,16 @@
   "Hide Others": "Скрыть остальные",
   "Show All": "Показать все",
   "Quit NodCut": "Завершить NodCut",
-  "Quit": "Выход"
+  "Quit": "Выход",
+  "Add Marker": "Добавить маркер",
+  "Add Marker and Write a Note…": "Добавить маркер с заметкой…",
+  "Delete Marker": "Удалить маркер",
+  "Mute Music": "Заглушить музыку",
+  "Mute Recording": "Заглушить запись",
+  "Next Marker": "Следующий маркер",
+  "Previous Marker": "Предыдущий маркер",
+  "Trim End to Playhead": "Подрезать конец до курсора",
+  "Trim Start to Playhead": "Подрезать начало до курсора",
+  "Split at Playhead": "Разделить у курсора",
+  "Join at Playhead": "Соединить у курсора"
 }
