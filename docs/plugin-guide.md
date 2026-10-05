@@ -47,7 +47,7 @@ npx -p @nodcut/plugin-sdk nodcut-plugin new my-titles
 > **Until the SDK is on npm**, use a checkout of this repository instead. In the checkout run `pnpm install && pnpm build`, then, from the folder where you want the plugin:
 >
 > ```sh
-> node ~/nodcut-devkit/packages/plugin-sdk/dist/bin.js new my-titles --sdk file:$HOME/nodcut-devkit/packages/plugin-sdk
+> node ~/plugins/packages/plugin-sdk/dist/bin.js new my-titles --sdk file:$HOME/plugins/packages/plugin-sdk
 > ```
 >
 > `--sdk` makes the new plugin depend on your checkout instead of the npm release. Use the path of your checkout.
@@ -313,6 +313,6 @@ The check reads and judges the catalogues the way NodCut does (a broken file, or
 | `this plugin can't start: kind transcriber needs a transcribe handler` (in the log) | The manifest's `kinds` and the handlers passed to `definePlugin()` disagree. |
 | `– … needs EXAMPLE_API_KEY` | Pass the secret to `test`: `--secret EXAMPLE_API_KEY`. |
 | `– command — uv isn't on PATH here` | Install the program, and say in your README that users need it. NodCut also looks in the usual package-manager folders (Homebrew's among them), since an app started from the Dock gets a short PATH. |
-| `npm install` fails on `@nodcut/plugin-sdk` | Until the SDK is on npm, point the dependency at a checkout: `--sdk file:/path/to/nodcut-devkit/packages/plugin-sdk` when creating the plugin, or edit `package.json`. |
+| `npm install` fails on `@nodcut/plugin-sdk` | Until the SDK is on npm, point the dependency at a checkout: `--sdk file:/path/to/plugins/packages/plugin-sdk` when creating the plugin, or edit `package.json`. |
 | The AI doesn't see your extra tool | `nodcut plugin list` shows whether the plugin is installed, switched on and approved, and its tools. Your AI client may need to reconnect to NodCut to see new tools. |
 | `nodcut plugin pack`: links can't go in a plugin package | Replace the `file:` SDK with one from npm or a tarball, then `npm prune --omit=dev`. |

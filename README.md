@@ -48,11 +48,11 @@ The private app repo is usually checked out next to this one and keeps its own c
 ```
 nodcut-repo/
   nodcut/          # the app (private)
-  nodcut-devkit/   # this repo
+  plugins/         # this repo
 ```
 
 - If you change a contract, commit it here first, then sync and update the app. Breaking changes to a contract bump `CONTRACT_VERSION` in `packages/plugin-api/src/manifest.ts`.
-- The app's registry entries point at `../nodcut-devkit/build/<id>-<version>` for the store, and its agent evals use `plugins/music` from here, so keep the two folders siblings with these names.
+- The app's registry entries point at `../plugins/build/<id>-<version>` for the store, and its agent evals use `plugins/music` from here, so keep the two folders siblings with these names.
 
 ## Rules
 
