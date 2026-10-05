@@ -118,7 +118,7 @@ and run the tests again:
 
 ```sh
 npm test
-npx nodcut-plugin test .
+npm run test:plugin
 ```
 
 ```
@@ -211,11 +211,11 @@ Anything else that's thrown becomes `E_PLUGIN_FAILED`, with the stack in the log
 
 ## Testing
 
-Two commands come with the SDK (`npx nodcut-plugin …` in a plugin that depends on it):
+Two commands come with the SDK, as scripts in a plugin made by `nodcut-plugin new` (run them through `npm run`, which uses the SDK in `node_modules`; a bare `npx nodcut-plugin` would download a package of that name from the registry when the SDK isn't installed):
 
 ```sh
-npx nodcut-plugin validate .   # the manifest, its icon and its command, without starting anything
-npx nodcut-plugin test .       # start it the way NodCut does and call its tools
+npm run validate      # nodcut-plugin validate .: the manifest, its icon and its command, without starting anything
+npm run test:plugin   # nodcut-plugin test .: start it the way NodCut does and call its tools
 ```
 
 Each prints one line per check, `✓` passed, `✗` failed with the fix under it, `–` skipped, and exits with 1 when a check failed. `--json` prints the report as JSON. NodCut's own `nodcut plugin validate` and `nodcut plugin test` run the same checks.

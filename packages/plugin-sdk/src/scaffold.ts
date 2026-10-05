@@ -164,8 +164,8 @@ Requirements: Node 22+.
 npm install
 npm run build        # src/ → dist/ (NodCut runs node dist/index.js)
 npm test             # builds, then runs testPlugin(): the plugin started and called the way NodCut does
-npx nodcut-plugin validate .   # the manifest, icon and command, without starting anything
-npx nodcut-plugin test .       # after a build: start it and call its tools, printed as ✓ / ✗ with fixes
+npm run validate     # the manifest, icon and command, without starting anything
+npm run test:plugin  # after a build: start it and call its tools, printed as ✓ / ✗ with fixes
 \`\`\`
 
 - \`nodcut-plugin.json\`: what the plugin is (id, name, version, kinds), what it may access (\`permissions\`: network hosts, secrets such as API keys, the files it reads) and its \`settings\`.
@@ -224,8 +224,8 @@ ${kindLine}
 \`\`\`sh
 npm run build                      # src/ → dist/ (NodCut runs node dist/index.js)
 npm test                           # build, then the tests, including testPlugin()
-npx nodcut-plugin validate .     # the manifest, icon and command, without starting anything
-npx nodcut-plugin test .         # start it the way NodCut does and call its tools (--secret NAME, --setting key=value)
+npm run validate                   # the manifest, icon and command, without starting anything
+npm run test:plugin                # start it the way NodCut does and call its tools (add -- --secret NAME, -- --setting key=value)
 nodcut plugin install . --link   # try it in NodCut (the app's command line); nodcut plugin list shows its state
 \`\`\`
 
@@ -297,7 +297,10 @@ export function scaffoldPlugin(o: ScaffoldOptions): ScaffoldResult {
       scripts: {
         build: 'tsc',
         test: 'tsc && vitest run',
+        // through npm run, never `npx nodcut-plugin`: without the SDK installed, npx would fetch
+        // whatever package of that name the public registry has
         validate: 'nodcut-plugin validate .',
+        'test:plugin': 'nodcut-plugin test .',
       },
       dependencies: { '@nodcut/plugin-sdk': o.sdk ?? `^${sdkVersion()}` },
       devDependencies: TEMPLATE_DEV_DEPENDENCIES,

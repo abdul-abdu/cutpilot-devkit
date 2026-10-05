@@ -67,6 +67,14 @@ describe('scaffoldPlugin', () => {
     const agents = readFileSync(join(r.dir, 'AGENTS.md'), 'utf8');
     expect(agents).toContain('never edits the timeline');
     expect(agents).toContain('my-titles__<tool>');
+    // the SDK's checks run through npm scripts: a bare `npx nodcut-plugin` would fetch whatever the
+    // public registry calls nodcut-plugin when the SDK isn't installed (an agent runs it unprompted)
+    expect(pkg.scripts).toMatchObject({
+      validate: 'nodcut-plugin validate .',
+      'test:plugin': 'nodcut-plugin test .',
+    });
+    for (const f of ['README.md', 'AGENTS.md'])
+      expect(readFileSync(join(r.dir, f), 'utf8'), f).not.toMatch(/npx nodcut-plugin/);
   });
 
   test("each kind's manifest is valid and asks for what its kind reads", () => {
