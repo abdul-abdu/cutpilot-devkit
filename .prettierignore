@@ -5,3 +5,5 @@ pnpm-lock.yaml
 *.md
 build
 .venv
+# vendored unchanged from cloudflare/security-audit-skill
+.agents/skills/security-audit

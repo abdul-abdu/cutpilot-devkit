@@ -4,7 +4,14 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/.venv/**', 'coverage/**'],
+    ignores: [
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/.venv/**',
+      'coverage/**',
+      // vendored unchanged from cloudflare/security-audit-skill
+      '.agents/skills/security-audit/**',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
