@@ -61,7 +61,7 @@ Read the matching one before starting. If your agent does not load skills automa
 | `nodcut-plugin-licensing` | a plugin that uses anything not free for everyone (a metered API, a licensed library such as Remotion, a model or asset with terms): the user brings their own key or licence; what to declare, write and test |
 | `security-audit` | a security question, a focused vulnerability review, or a full audit or pen test of the code (Cloudflare's skill, vendored unchanged with its MIT licence); a full audit writes its report outside the repo |
 
-Changing the contract itself, publishing a plugin to the store and anything about the app are done from the app repo (its skills `nodcut-plugin-contract`, `nodcut-plugin-publish`, `nodcut-workspace`).
+Changing the contract itself, publishing a plugin to the store and anything about the app are done from the app repo (its skills `nodcut-plugin-contract`, `nodcut-plugin-publish`, `nodcut-workspace`). Work driven by the app's task files follows its `nodcut-work-task`, and every agent follows its `nodcut-guardrails` here too: never discard uncommitted work that isn't yours, weaken a check, or push, publish or call a paid service unless the user asked. An agent started in the parent folder sees those skills.
 
 ## Git
 
