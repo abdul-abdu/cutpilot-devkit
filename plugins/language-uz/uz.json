@@ -1674,5 +1674,24 @@
   "Shadow": "Soya",
   "Split cards": "Yonma-yon kartalar",
   "The speaker blurred behind the pictures": "Rasmlar ortida xiralashgan so'zlovchi",
-  "Your own": "O'zingizniki"
+  "Your own": "O'zingizniki",
+  "Ask": "So'rash",
+  "Ask your AI about the range…": "Oraliq haqida AI dan so'rash…",
+  "Ask your AI about this range": "Bu oraliq haqida AI dan so'rash",
+  "Ask your AI about this range…": "Bu oraliq haqida AI dan so'rash…",
+  "Asked your AI about {range}": "{range} haqida AI dan so'raldi",
+  "B-roll “{label}”": "B-roll „{label}“",
+  "Copy, then paste it into your AI app": "Nusxalang, so'ng AI ilovangizga qo'ying",
+  "In this range: {list}.": "Bu oraliqda: {list}.",
+  "In {video} (timeline {timeline}), source time {range} s ({from}–{to})": "{video} da (taymlayn {timeline}), manba vaqti {range} s ({from}–{to})",
+  "Send to the chat": "Chatga yuborish",
+  "change #{n} ({what}, by {who})": "#{n}-o'zgarish ({what}, muallif: {who})",
+  "insert “{label}”": "qo'shimcha „{label}“",
+  "music “{title}” under it": "ostida „{title}“ musiqasi",
+  "no transcribed words": "transkripsiyada so'z yo'q",
+  "words {words} (“{text}”)": "{words} so'zlar („{text}“)",
+  "{n} long pause": {
+    "one": "{n} ta uzun pauza",
+    "other": "{n} ta uzun pauza"
+  }
 }

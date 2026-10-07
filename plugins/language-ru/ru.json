@@ -1808,5 +1808,26 @@
   "Shadow": "Тень",
   "Split cards": "Карточки рядом",
   "The speaker blurred behind the pictures": "Размытый говорящий за картинками",
-  "Your own": "Свой"
+  "Your own": "Свой",
+  "Ask": "Спросить",
+  "Ask your AI about the range…": "Спросить ИИ о диапазоне…",
+  "Ask your AI about this range": "Спросить ИИ об этом диапазоне",
+  "Ask your AI about this range…": "Спросить ИИ об этом диапазоне…",
+  "Asked your AI about {range}": "Вопрос ИИ о {range} задан",
+  "B-roll “{label}”": "перебивка «{label}»",
+  "Copy, then paste it into your AI app": "Скопировать, затем вставить в приложение ИИ",
+  "In this range: {list}.": "В этом диапазоне: {list}.",
+  "In {video} (timeline {timeline}), source time {range} s ({from}–{to})": "В {video} (таймлайн {timeline}), время исходника {range} с ({from}–{to})",
+  "Send to the chat": "Отправить в чат",
+  "change #{n} ({what}, by {who})": "правка №{n} ({what}, автор: {who})",
+  "insert “{label}”": "вставка «{label}»",
+  "music “{title}” under it": "под ним музыка «{title}»",
+  "no transcribed words": "слов в расшифровке нет",
+  "words {words} (“{text}”)": "слова {words} («{text}»)",
+  "{n} long pause": {
+    "one": "{n} длинная пауза",
+    "few": "{n} длинные паузы",
+    "many": "{n} длинных пауз",
+    "other": "{n} длинные паузы"
+  }
 }
