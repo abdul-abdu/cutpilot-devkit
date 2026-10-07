@@ -1725,5 +1725,32 @@
   "Selected insert": "Tanlangan qo'shimcha",
   "Play what was cut": "Kesilganini ijro etish",
   "Play around the edge": "Chet atrofini ijro etish",
-  "Deselect edge": "Chet tanlovini bekor qilish"
+  "Deselect edge": "Chet tanlovini bekor qilish",
+  "Add scene": "Sahna qo'shish",
+  "Added scene “{title}”": "«{title}» sahnasi qo'shildi",
+  "Close scenes": "Sahnalarni yopish",
+  "Copied the chapters. Paste them into the video’s description.": "Boblar nusxalandi. Ularni video tavsifiga joylang.",
+  "Copy chapters": "Boblarni nusxalash",
+  "For YouTube chapters, start a scene at the very beginning.": "YouTube boblari uchun sahnani eng boshidan boshlang.",
+  "Next scene": "Keyingi sahna",
+  "No scenes yet. Put the caret where one starts and press {key}, or ask your AI to split the video into chapters.": "Hozircha sahna yo'q. Kursorni sahna boshlanadigan joyga qo'yib, {key} ni bosing yoki AI'dan videoni boblarga bo'lishni so'rang.",
+  "Play the scene “{title}”": "«{title}» sahnasini ijro etish",
+  "Previous scene": "Oldingi sahna",
+  "Remove the scene “{title}”": "«{title}» sahnasini olib tashlash",
+  "Removed scene “{title}”": "«{title}» sahnasi olib tashlandi",
+  "Rename the scene “{title}”": "«{title}» sahnasini qayta nomlash",
+  "Renamed a scene": "Sahna qayta nomlandi",
+  "Renamed scene “{old}” to “{title}”": "«{old}» sahnasi «{title}» deb qayta nomlandi",
+  "Renamed the scene “{title}”": "Sahna qayta nomlandi: «{title}»",
+  "Scene": "Sahna",
+  "Scene title": "Sahna nomi",
+  "Scene {n}": "Sahna {n}",
+  "Scene {n}: {title}": "Sahna {n}: {title}",
+  "Scenes": "Sahnalar",
+  "Selected scene": "Tanlangan sahna",
+  "The video’s scenes, to go through and copy as chapters": "Video sahnalari: istalganiga o'tish va boblar sifatida nusxalash",
+  "{n} scene": {
+    "one": "{n} ta sahna",
+    "other": "{n} ta sahna"
+  }
 }
