@@ -27,6 +27,7 @@ A plugin offers either or both of:
 | `asset:music` | `music` | `find_music`, `get_music` | Background music, mixed under the speech. |
 | `asset:sound` | `sound` | `list_voices`, `generate_sound` | Sound effects, music or speech made from a description. |
 | `generator` | `generator` | `list_templates`, `generate` | Clips from templates (title cards, chapter headings, end cards) at the edit's size, inserted into the timeline. |
+| `asset:footage` | `footage` | `find_footage`, `get_footage` | Stock pictures and videos shown over the narration (B-roll). Search first, download only what the user picked. |
 
 **Language packs.** A plugin of kind `language` translates NodCut's interface. It has no command and no tools: NodCut reads its files and never starts it. See [Language packs](#language-packs).
 
@@ -186,6 +187,15 @@ Settings are what the user can change in the plugin's page in NodCut:
 Types are `string`, `number`, `boolean`, `choice` (with `choices`) and `folder` (a string holding an absolute path; NodCut offers a folder picker). The plugin gets each as `NODCUT_SETTING_<KEY IN UPPER SNAKE CASE>` (`tone` → `NODCUT_SETTING_TONE`); in a handler, `ctx.settings.tone` already holds the value, or the default.
 
 A plugin starts with nothing else from the user's environment: just `PATH`, `HOME`, `LANG`, `TMPDIR`, and what it declared.
+
+## Footage providers
+
+A footage provider (`asset:footage`) has two steps, and keeping them apart is the point:
+
+- **`find_footage`** searches. It takes a `query` in words, optionally `kind` (`image` or `video`), `orientation`, `minDurationMs` (videos at least as long as the narration a shot covers), `page` and `limit` (at most 30). It returns candidates and downloads nothing big: each has the provider's own `id`, `kind`, the original's `width` and `height` in pixels, `durationMs` for a video (in milliseconds; a picture has none), a `thumbnail` URL to show while choosing, the item's page `sourceUrl`, the `creator` and `creatorUrl` when known, the `provider`'s name, and the media's rights: `license`, `licenseUrl` and the `attribution` line to show where the licence asks for one. `nextPage` says there are more.
+- **`get_footage`** downloads the one the user picked (`id` and `kind`, with `maxWidth`/`maxHeight`: the largest size worth fetching) and returns the local `file` with the same size, source and rights. NodCut copies the file into the project, so a temporary file is fine.
+
+The rights are the media's, not your code's: an MIT-licensed plugin can hand out footage under a stock licence, and that licence and credit travel with the shot through review and export. URLs are `http(s)` only. A paid or metered service follows the bring-your-own-key rule: declare the key in `permissions.secrets`, the hosts in `permissions.network`, read the key with `ctx.requireSecret`, and give the user a free `test_key` tool. A footage plugin's `nodcut` range starts above the last NodCut that doesn't know the kind (`>0.2.0-beta.16`); the manifest check says so.
 
 ## Writing handlers
 

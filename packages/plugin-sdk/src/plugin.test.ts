@@ -69,6 +69,13 @@ describe('definePlugin checks the definition against the manifest', () => {
     expect(
       problemsOf({ manifest: manifest({ kinds: ['asset:sound'] }), listVoices: () => ({ voices: [] }) }),
     ).toEqual(['kind asset:sound needs a generateSound handler']);
+    // a footage provider needs both: search and retrieval (BR1-062)
+    expect(
+      problemsOf({
+        manifest: manifest({ kinds: ['asset:footage'], nodcut: '>0.2.0-beta.16', permissions: {} }),
+        findFootage: () => ({ items: [] }),
+      }),
+    ).toEqual(['kind asset:footage needs a getFootage handler']);
     expect(
       problemsOf({
         manifest: manifest({ kinds: [] }),

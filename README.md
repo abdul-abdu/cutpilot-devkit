@@ -14,7 +14,7 @@ A plugin may ship an icon: `"icon": "icon.png"` in the manifest names a PNG insi
 
 | Path | npm package | What it is |
 | --- | --- | --- |
-| `packages/plugin-api` | `@nodcut/plugin-api` | The manifest schema, the tool contract of each plugin kind (`transcriber`, `analyzer`, `asset:music`, `asset:sound`, `generator`), the `language` kind's catalogue format, error codes, the registry index format. Depends on `zod` only. |
+| `packages/plugin-api` | `@nodcut/plugin-api` | The manifest schema, the tool contract of each plugin kind (`transcriber`, `analyzer`, `asset:music`, `asset:sound`, `generator`, `asset:footage`), the `language` kind's catalogue format, error codes, the registry index format. Depends on `zod` only. |
 | `packages/plugin-sdk` | `@nodcut/plugin-sdk` | `definePlugin()` (an MCP server with the contracts wired in), `validatePluginFolder()` (the manifest, icon and command, without starting anything), `testPlugin()` (checks a plugin folder the way NodCut will), `scaffoldPlugin()` (a new plugin folder of any kind that passes its tests from the start), and the `nodcut-plugin` command (`new`, `validate`, `test`) that prints each check with a fix for each failure. An extra tool returns text, an object, or a `ToolContent` of MCP content blocks (e.g. `imageBlock(png, 'image/png')` for an image the AI looks at). |
 | `packages/plugin-sdk/examples/hello` | — | The smallest plugin: one extra tool. |
 | `packages/plugin-sdk/template` | — | What `nodcut-plugin new` copies: a `definePlugin()` with placeholder logic and a test, per kind. |
@@ -52,6 +52,7 @@ nodcut-repo/
 ```
 
 - If you change a contract, commit it here first, then sync and update the app. Breaking changes to a contract bump `CONTRACT_VERSION` in `packages/plugin-api/src/manifest.ts`.
+- **New kind `asset:footage` (BR1-061):** stock pictures and videos, `find_footage` (bounded search, nothing downloaded) and `get_footage` (the picked item as a local file), with the media's source and rights. It is additive: `CONTRACT_VERSION` stays 1 and existing plugins are untouched. A footage plugin's `nodcut` range must start above `0.2.0-beta.16`, the last NodCut without the kind; `nodcut-plugin new --kind footage` writes one that does, with an offline placeholder catalogue.
 - The app's registry entries point at `../plugins/build/<id>-<version>` for the store, and its agent evals use `plugins/music` from here, so keep the two folders siblings with these names.
 
 ## Rules

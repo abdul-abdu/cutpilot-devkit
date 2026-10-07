@@ -149,5 +149,9 @@
   "Trim End to Playhead": "Oxirini kursorgacha qirqish",
   "Trim Start to Playhead": "Boshini kursorgacha qirqish",
   "Split at Playhead": "Kursorda bo'lish",
-  "Join at Playhead": "Kursorda birlashtirish"
+  "Join at Playhead": "Kursorda birlashtirish",
+  "Add B-roll…": "B-roll qo'shish…",
+  "B-roll": "B-roll",
+  "Remove B-roll": "B-rollni o'chirish",
+  "Add B-roll from Link…": "Havoladan B-roll qo'shish…"
 }

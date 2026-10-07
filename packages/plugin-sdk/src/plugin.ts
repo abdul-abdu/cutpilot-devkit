@@ -21,6 +21,10 @@ import {
   parseManifest,
   secretEnv,
   settingEnv,
+  type FindFootageInputSchema,
+  type FindFootageOutputSchema,
+  type GetFootageInputSchema,
+  type GetFootageOutputSchema,
   type FindMusicInputSchema,
   type FindMusicOutputSchema,
   type GenerateInputSchema,
@@ -125,6 +129,9 @@ export interface PluginDefinition {
   /** kind `asset:sound` */
   listVoices?: Handler<typeof ListVoicesInputSchema, typeof ListVoicesOutputSchema>;
   generateSound?: Handler<typeof GenerateSoundInputSchema, typeof GenerateSoundOutputSchema>;
+  /** kind `asset:footage`: search without downloading, then fetch the one picked (BR1-062) */
+  findFootage?: Handler<typeof FindFootageInputSchema, typeof FindFootageOutputSchema>;
+  getFootage?: Handler<typeof GetFootageInputSchema, typeof GetFootageOutputSchema>;
   /** free-form read-only tools; AI clients see them as `<plugin id>__<name>` */
   tools?: Record<string, ExtraTool>;
 }
@@ -139,6 +146,8 @@ const HANDLER_FOR: Record<string, keyof PluginDefinition> = {
   generate: 'generate',
   list_voices: 'listVoices',
   generate_sound: 'generateSound',
+  find_footage: 'findFootage',
+  get_footage: 'getFootage',
 };
 
 export class PluginDefinitionError extends Error {

@@ -119,6 +119,107 @@ export const GetMusicOutputSchema = z.object({
   attribution: z.string().min(1).optional(),
 });
 
+// ── asset: footage ───────────────────────────────────────────────────────────
+// A footage provider finds stock pictures and videos (BR1-061). Searching is bounded and
+// downloads nothing big: candidates carry a thumbnail URL, the provider's page and the media's
+// rights. Only a candidate the user picked is retrieved, as a local file with the same rights.
+// The rights are the media's (what may be done with the picture), not the plugin's code licence.
+
+export const FOOTAGE_KINDS = ['image', 'video'] as const;
+export const FootageKindSchema = z.enum(FOOTAGE_KINDS);
+
+const WebUrl = z.url({ protocol: /^https?$/, error: 'an http(s) URL' });
+
+export const FindFootageInputSchema = z.object({
+  /** what to look for, in words, e.g. "hands typing on a laptop" */
+  query: z.string().min(1).max(200),
+  /** only pictures or only videos; both when left out */
+  kind: FootageKindSchema.optional(),
+  /** the shape the output needs, so a provider can prefer it */
+  orientation: z.enum(['landscape', 'portrait', 'square']).optional(),
+  /** videos at least this long, in ms (the narration a shot covers) */
+  minDurationMs: Ms.optional(),
+  /** 1-based page of results */
+  page: z.number().int().min(1).max(100).optional(),
+  /** at most this many candidates (a provider may return fewer) */
+  limit: z.number().int().min(1).max(30).optional(),
+});
+
+/** What may be done with a picture or video, and the credit to show. */
+export const FootageRightsSchema = z.object({
+  /** the media's licence by name, e.g. "Pexels License" */
+  license: z.string().min(1).max(200),
+  /** where its terms are */
+  licenseUrl: WebUrl.optional(),
+  /** the credit line to show where the licence asks for one, e.g. "Video by Ana on Pexels" */
+  attribution: z.string().min(1).max(300).optional(),
+});
+
+const Provenance = z.object({
+  /** the provider's name as people know it, e.g. "Pexels" */
+  provider: z.string().min(1).max(60),
+  /** the provider's page for this item, where people can see it and its creator */
+  sourceUrl: WebUrl,
+  creator: z.string().min(1).max(200).optional(),
+  creatorUrl: WebUrl.optional(),
+});
+
+const Px = z.number().int().positive().max(16384);
+const kindDuration = (
+  x: { kind: 'image' | 'video'; durationMs?: number | undefined },
+  ctx: z.RefinementCtx,
+) => {
+  if (x.kind === 'video' && !x.durationMs)
+    ctx.addIssue({ code: 'custom', message: 'a video has a durationMs', path: ['durationMs'] });
+  if (x.kind === 'image' && x.durationMs !== undefined)
+    ctx.addIssue({ code: 'custom', message: 'a picture has no durationMs', path: ['durationMs'] });
+};
+
+export const FootageCandidateSchema = z
+  .object({
+    /** the provider's own id for it, passed back to get_footage */
+    id: z.string().min(1).max(200),
+    kind: FootageKindSchema,
+    /** the original's size */
+    width: Px,
+    height: Px,
+    /** videos only, in ms */
+    durationMs: Ms.optional(),
+    /** a small preview image to show while choosing (not downloaded by the engine) */
+    thumbnail: WebUrl,
+  })
+  .extend(Provenance.shape)
+  .extend(FootageRightsSchema.shape)
+  .superRefine(kindDuration);
+export type FootageCandidate = z.infer<typeof FootageCandidateSchema>;
+
+export const FindFootageOutputSchema = z.object({
+  items: z.array(FootageCandidateSchema).max(30),
+  /** the next page to ask for, when there is one */
+  nextPage: z.number().int().min(2).max(100).optional(),
+});
+
+export const GetFootageInputSchema = z.object({
+  id: z.string().min(1).max(200),
+  kind: FootageKindSchema,
+  /** the largest size worth downloading (the output canvas); the provider picks a file that covers it */
+  maxWidth: Px.optional(),
+  maxHeight: Px.optional(),
+});
+
+export const GetFootageOutputSchema = z
+  .object({
+    /** absolute path of the downloaded picture or video, which the engine copies into the project */
+    file: Path,
+    kind: FootageKindSchema,
+    width: Px,
+    height: Px,
+    durationMs: Ms.optional(),
+  })
+  .extend(Provenance.shape)
+  .extend(FootageRightsSchema.shape)
+  .superRefine(kindDuration);
+
 // ── generator ────────────────────────────────────────────────────────────────
 // A generator makes a clip from a template: a title card, a chapter heading, an end card. The
 // engine asks for it at the timeline's output size and puts it in the edit as an insert (a
@@ -343,6 +444,19 @@ export const KIND_TOOLS = {
       description: 'Make a sound effect or music from a prompt, or speech from text; returns an audio file.',
       input: GenerateSoundInputSchema,
       output: GenerateSoundOutputSchema,
+    },
+  },
+  'asset:footage': {
+    find_footage: {
+      description:
+        'Stock pictures and videos that match a query: candidates with a thumbnail, source page and rights; nothing is downloaded.',
+      input: FindFootageInputSchema,
+      output: FindFootageOutputSchema,
+    },
+    get_footage: {
+      description: 'Download one chosen candidate as a local file, with its source and rights.',
+      input: GetFootageInputSchema,
+      output: GetFootageOutputSchema,
     },
   },
   // data only: NodCut reads its catalogues and never starts it (language.ts)

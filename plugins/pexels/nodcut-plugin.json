@@ -1,0 +1,17 @@
+{
+  "id": "pexels",
+  "name": "Pexels stock footage",
+  "version": "0.1.0",
+  "description": "Search Pexels photos and videos for B-roll and download only the one you pick, with your own free Pexels API key. Your search words go to Pexels; credit lines come with every item.",
+  "publisher": "NodCut",
+  "homepage": "https://github.com/nodcut/plugins/tree/main/plugins/pexels",
+  "contract": 1,
+  "nodcut": ">0.2.0-beta.16",
+  "command": "node",
+  "args": ["dist/index.js"],
+  "kinds": ["asset:footage"],
+  "permissions": {
+    "network": ["api.pexels.com", "images.pexels.com", "videos.pexels.com"],
+    "secrets": ["PEXELS_API_KEY"]
+  }
+}

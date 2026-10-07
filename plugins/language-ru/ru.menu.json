@@ -149,5 +149,9 @@
   "Trim End to Playhead": "Подрезать конец до курсора",
   "Trim Start to Playhead": "Подрезать начало до курсора",
   "Split at Playhead": "Разделить у курсора",
-  "Join at Playhead": "Соединить у курсора"
+  "Join at Playhead": "Соединить у курсора",
+  "Add B-roll…": "Добавить перебивку…",
+  "B-roll": "Перебивки",
+  "Remove B-roll": "Удалить перебивку",
+  "Add B-roll from Link…": "Добавить перебивку по ссылке…"
 }

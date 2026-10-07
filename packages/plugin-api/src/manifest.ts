@@ -1,7 +1,7 @@
 /** `nodcut-plugin.json`: what a plugin is, what it needs, and how to start it. */
 import { z } from 'zod';
 import { LanguageSchema } from './language.js';
-import { parseRange, VERSION_RE } from './version.js';
+import { parseRange, satisfies, VERSION_RE } from './version.js';
 
 /** The plugin contract this package describes. The engine refuses other versions. */
 export const CONTRACT_VERSION = 1;
@@ -21,6 +21,7 @@ export const PLUGIN_KINDS = [
   'generator',
   'asset:sound',
   'language',
+  'asset:footage',
 ] as const;
 export const PluginKindSchema = z.enum(PLUGIN_KINDS, {
   error: `kinds are ${PLUGIN_KINDS.join(', ')}`,
@@ -40,6 +41,18 @@ export const KIND_READS: Record<PluginKind, readonly PluginRead[]> = {
   generator: [],
   'asset:sound': [],
   language: [],
+  'asset:footage': [],
+};
+
+/**
+ * Kinds an older NodCut doesn't know, with a version its range must start above (BR1-061), so an
+ * older engine never sees a kind it can't call. It is the release before the one that was current
+ * when the kind was added: a development engine reports that current release's number while it
+ * already knows the kind, and that release itself refuses the unknown kind when it reads the
+ * manifest, so it can't call it by mistake either.
+ */
+export const KIND_UNKNOWN_UNTIL: Partial<Record<PluginKind, string>> = {
+  'asset:footage': '0.2.0-beta.16',
 };
 
 const HostSchema = z
@@ -175,6 +188,15 @@ export const ManifestSchema = z
         message: `secret ${s} is listed twice`,
         path: ['permissions', 'secrets'],
       });
+    for (const kind of m.kinds) {
+      const old = KIND_UNKNOWN_UNTIL[kind];
+      if (old && parseRange(m.nodcut) && satisfies(old, m.nodcut))
+        ctx.addIssue({
+          code: 'custom',
+          message: `NodCut ${old} and older don't know ${kind}: start the nodcut range above it, like >${old}`,
+          path: ['nodcut'],
+        });
+    }
     const k = dup(m.settings.map((x) => x.key));
     if (k) ctx.addIssue({ code: 'custom', message: `setting ${k} is listed twice`, path: ['settings'] });
 

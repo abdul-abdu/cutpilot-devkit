@@ -95,7 +95,7 @@ describe('manifest', () => {
     [{ nodcut: 'soon' }, 'nodcut: nodcut is a semver range'],
     [
       { kinds: ['analyzer:faces'] },
-      'kinds.0: kinds are transcriber, analyzer:reframe-track, asset:music, generator, asset:sound, language',
+      'kinds.0: kinds are transcriber, analyzer:reframe-track, asset:music, generator, asset:sound, language, asset:footage',
     ],
     [
       { kinds: ['analyzer:reframe-track', 'analyzer:reframe-track'] },
@@ -219,5 +219,35 @@ describe('manifest', () => {
     expect(settingEnv('provider')).toBe('NODCUT_SETTING_PROVIDER');
     expect(settingEnv('sampleFps')).toBe('NODCUT_SETTING_SAMPLE_FPS');
     expect(secretEnv('ELEVENLABS_API_KEY')).toBe('NODCUT_SECRET_ELEVENLABS_API_KEY');
+  });
+});
+
+describe('a footage provider (BR1-061)', () => {
+  const footage = {
+    id: 'stock',
+    name: 'Stock footage',
+    version: '1.0.0',
+    description: 'Stock pictures and videos with your own key.',
+    contract: 1,
+    nodcut: '>0.2.0-beta.16',
+    command: 'node',
+    args: ['dist/index.js'],
+    kinds: ['asset:footage'],
+    permissions: { network: ['api.example.com'], secrets: ['EXAMPLE_API_KEY'] },
+  };
+  test('is valid with an engine range above the last NodCut that does not know the kind', () => {
+    const r = parseManifest(footage);
+    expect(r.ok ? [] : r.problems).toEqual([]);
+    expect(parseManifest({ ...footage, nodcut: '>=0.3' }).ok).toBe(true);
+  });
+  test('an engine range that admits an older NodCut is refused with the fix', () => {
+    // 0.2.0-beta.16 is below 0.2.0, so >=0.2 already excludes it; >=0.1 does not
+    expect(parseManifest({ ...footage, nodcut: '>=0.2' }).ok).toBe(true);
+    const r = parseManifest({ ...footage, nodcut: '>=0.1' });
+    expect(r.ok ? [] : r.problems).toEqual([
+      "nodcut: NodCut 0.2.0-beta.16 and older don't know asset:footage: start the nodcut range above it, like >0.2.0-beta.16",
+    ]);
+    // existing kinds are unaffected by the rule
+    expect(parseManifest({ ...footage, kinds: ['asset:music'], nodcut: '>=0.1' }).ok).toBe(true);
   });
 });

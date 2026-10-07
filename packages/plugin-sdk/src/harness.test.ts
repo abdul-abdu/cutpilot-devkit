@@ -121,6 +121,35 @@ await definePlugin({ findMusic: () => ({ tracks: [track] }), getMusic: () => ({ 
     });
   });
 
+  test('footage: a search, then the first candidate fetched; the file must exist (BR1-062)', async () => {
+    const dir = plugin(
+      'stock',
+      { kinds: ['asset:footage'], nodcut: '>0.2.0-beta.16' },
+      `const item = { id: 'v1', kind: 'video', width: 1920, height: 1080, durationMs: 8000, thumbnail: 'https://example.com/v1.jpg', provider: 'Example', sourceUrl: 'https://example.com/v1', license: 'CC0' };
+await definePlugin({
+  findFootage: ({ query }) => ({ items: query === 'test' ? [item] : [] }),
+  getFootage: ({ id, kind }) => ({ file: '/nonexistent/' + id + '.mp4', kind, width: 1920, height: 1080, durationMs: 8000, provider: 'Example', sourceUrl: 'https://example.com/v1', license: 'CC0' }),
+}).start();`,
+    );
+    expect(results(await testPlugin(dir))).toMatchObject({
+      'find_footage answers per contract': 'pass',
+      'get_footage answers per contract': 'pass',
+      'get_footage file exists': 'fail',
+    });
+    // a candidate without its rights fails the contract check, before anything is downloaded
+    const bad = plugin(
+      'stock-bad',
+      { kinds: ['asset:footage'], nodcut: '>0.2.0-beta.16' },
+      `await definePlugin({
+  findFootage: () => ({ items: [{ id: 'v1', kind: 'video', width: 1920, height: 1080, durationMs: 8000, thumbnail: 'https://example.com/v1.jpg', provider: 'Example', sourceUrl: 'https://example.com/v1' }] }),
+  getFootage: () => { throw new Error('never called'); },
+}).start();`,
+    );
+    const r = await testPlugin(bad);
+    expect(results(r)['find_footage answers per contract']).toBe('fail');
+    expect(Object.keys(results(r))).not.toContain('get_footage answers per contract');
+  });
+
   test('sound: voices listed; a sound only when asked for, and its file must exist', async () => {
     const dir = plugin(
       'sounds',

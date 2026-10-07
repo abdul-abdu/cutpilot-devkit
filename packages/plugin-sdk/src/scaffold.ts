@@ -19,6 +19,7 @@ import {
   CONTRACT_VERSION,
   KIND_READS,
   KIND_TOOLS,
+  KIND_UNKNOWN_UNTIL,
   MANIFEST_FILE,
   PluginIdSchema,
   type PluginKind,
@@ -33,6 +34,7 @@ export const SCAFFOLD_KINDS = {
   music: 'asset:music',
   sound: 'asset:sound',
   generator: 'generator',
+  footage: 'asset:footage',
 } as const satisfies Record<string, PluginKind | null>;
 export type ScaffoldKind = keyof typeof SCAFFOLD_KINDS;
 
@@ -84,6 +86,12 @@ export const TEMPLATE_DEV_DEPENDENCIES = {
 /** The engine versions a new plugin asks for: the first NodCut that passes plugins their settings. */
 export const TEMPLATE_NODCUT_RANGE = '>=0.2.0-beta.10';
 
+/** The engine range a new plugin starts with: above the last NodCut that doesn't know its kind. */
+export function templateNodcutRange(kind: PluginKind | null): string {
+  const old = kind ? KIND_UNKNOWN_UNTIL[kind] : undefined;
+  return old ? `>${old}` : TEMPLATE_NODCUT_RANGE;
+}
+
 const PKG = new URL('../', import.meta.url);
 const TEMPLATE = new URL('template/', PKG);
 
@@ -116,6 +124,7 @@ const DESCRIPTIONS: Record<ScaffoldKind, string> = {
   music: 'Background music for NodCut edits.',
   sound: 'Sound effects, music and speech made from a description.',
   generator: 'Clips made from templates, at the size of the edit.',
+  footage: 'Stock pictures and videos to show over the narration.',
 };
 
 const WHAT: Record<ScaffoldKind, string> = {
@@ -131,6 +140,8 @@ const WHAT: Record<ScaffoldKind, string> = {
     'A **sound maker** (`asset:sound`): `list_voices`, and `generate_sound` for an effect or music from a prompt, or speech from text. The placeholder beeps; put your model or service in `src/plugin.ts`.',
   generator:
     'A **generator**: `list_templates` and `generate`, which renders a template to an MP4 at the size, frame rate and length NodCut asks for. The placeholder renders a plain colour card with ffmpeg (which must be on PATH); put your renderer in `src/plugin.ts`.',
+  footage:
+    "A **footage provider** (`asset:footage`): `find_footage` searches a catalogue and returns candidates (a thumbnail URL, the item's page, its size, length and the media's licence and credit) without downloading anything; `get_footage` downloads the one the user picked and returns the local file with the same source and rights. The placeholder catalogue is offline: a generated picture; put your provider's search and download in `src/plugin.ts`, declare its hosts in `permissions.network` and its key in `permissions.secrets`, and read the key with `ctx.requireSecret`.",
 };
 
 /** How the AI gets to the plugin once it's installed. */
@@ -146,6 +157,8 @@ const USE: Record<ScaffoldKind, (id: string) => string> = {
   sound: () => 'Then ask your AI for a sound effect or a voice-over: NodCut asks this plugin to make it.',
   generator: () =>
     "Then ask your AI for a title card: NodCut's `list_templates` and `add_insert` use this plugin's templates.",
+  footage: () =>
+    'Then ask your AI for stock footage over a passage: NodCut searches with this plugin and downloads only what you pick.',
 };
 
 function readme(id: string, name: string, kind: ScaffoldKind): string {
@@ -277,7 +290,7 @@ export function scaffoldPlugin(o: ScaffoldOptions): ScaffoldResult {
       version: '0.1.0',
       description,
       contract: CONTRACT_VERSION,
-      nodcut: TEMPLATE_NODCUT_RANGE,
+      nodcut: templateNodcutRange(manifestKind ?? null),
       command: 'node',
       args: ['dist/index.js'],
       kinds: manifestKind ? [manifestKind] : [],

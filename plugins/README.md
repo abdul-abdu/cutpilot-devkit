@@ -5,6 +5,7 @@ NodCut's own plugins, one folder each, built the way a third-party plugin is: a 
 | Folder | npm package | Kind | Task (app repo) |
 | --- | --- | --- | --- |
 | `cloud-transcribe/` | `@nodcut/plugin-stt-cloud` | transcriber (ElevenLabs Scribe or OpenAI whisper-1, with the user's key; `test_key`) | P3-030, P3-031 |
+| `pexels/` | `@nodcut/plugin-pexels` | asset:footage (Pexels photos and videos as B-roll, with the user's key; `test_key`; stub-tested until live use is approved) | BR1-064, BR1-065 |
 | `follow-speaker/` | `@nodcut/plugin-analyze-follow-speaker` | analyzer: reframe-track (a crop that follows the main speaker; Apple Vision via a Swift helper, macOS only) | P3-032, P3-033 |
 | `music/` | `@nodcut/plugin-asset-music` | asset: music (background music by mood and length, from a library of loops inside the plugin; placeholder tracks for now) | P3-034 |
 | `hyperframes/` | `@nodcut/plugin-render-hyperframes` | extra tools only (research) | — |

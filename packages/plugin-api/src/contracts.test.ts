@@ -4,6 +4,11 @@ import {
   CONTRACT_TOOL_NAMES,
   contractTools,
   extraToolProblem,
+  FindFootageInputSchema,
+  FindFootageOutputSchema,
+  FootageCandidateSchema,
+  GetFootageInputSchema,
+  GetFootageOutputSchema,
   FindMusicOutputSchema,
   GenerateSoundInputSchema,
   GenerateSoundOutputSchema,
@@ -183,4 +188,72 @@ test('plugin errors: a code, one-line message and fix', () => {
   );
   expect(PluginErrorSchema.safeParse({ code: 'bad', message: 'm', fix: 'f' }).success).toBe(false);
   expect(PluginErrorSchema.safeParse({ code: 'E_X', message: 'm' }).success).toBe(false);
+});
+
+describe('asset:footage (BR1-061)', () => {
+  const candidate = {
+    id: '123',
+    kind: 'video' as const,
+    width: 1920,
+    height: 1080,
+    durationMs: 12_000,
+    thumbnail: 'https://images.example.com/123.jpg',
+    provider: 'Example Stock',
+    sourceUrl: 'https://example.com/video/123',
+    creator: 'Ana',
+    creatorUrl: 'https://example.com/@ana',
+    license: 'Example License',
+    licenseUrl: 'https://example.com/license',
+    attribution: 'Video by Ana on Example Stock',
+  };
+
+  test('find_footage and get_footage are the kind’s tools', () => {
+    expect(contractTools(['asset:footage'])).toEqual(['find_footage', 'get_footage']);
+    expect(CONTRACT_TOOL_NAMES.has('find_footage')).toBe(true);
+  });
+
+  test('a bounded search: a query, an optional kind and shape, at most 30 per page', () => {
+    expect(
+      FindFootageInputSchema.safeParse({
+        query: 'hands typing',
+        kind: 'video',
+        orientation: 'portrait',
+        minDurationMs: 4000,
+        limit: 10,
+      }).success,
+    ).toBe(true);
+    expect(FindFootageInputSchema.safeParse({ query: '' }).success).toBe(false);
+    expect(FindFootageInputSchema.safeParse({ query: 'x', limit: 31 }).success).toBe(false);
+    expect(FindFootageInputSchema.safeParse({ query: 'x', page: 0 }).success).toBe(false);
+  });
+
+  test('candidates: stills and videos with thumbnail, source page and rights', () => {
+    expect(FindFootageOutputSchema.safeParse({ items: [candidate], nextPage: 2 }).success).toBe(true);
+    const still = { ...candidate, id: 'p1', kind: 'image', durationMs: undefined };
+    expect(FootageCandidateSchema.safeParse(still).success).toBe(true);
+    const problems = (x: unknown) =>
+      FootageCandidateSchema.safeParse(x).error?.issues.map((i) => i.message) ?? [];
+    expect(problems({ ...candidate, durationMs: undefined })).toContain('a video has a durationMs');
+    expect(problems({ ...still, durationMs: 3000 })).toContain('a picture has no durationMs');
+    expect(problems({ ...candidate, license: undefined }).length).toBeGreaterThan(0);
+    expect(problems({ ...candidate, sourceUrl: 'javascript:alert(1)' }).length).toBeGreaterThan(0);
+    expect(problems({ ...candidate, thumbnail: 'file:///etc/passwd' }).length).toBeGreaterThan(0);
+    expect(problems({ ...candidate, id: '' }).length).toBeGreaterThan(0);
+    expect(problems({ ...candidate, width: 0 }).length).toBeGreaterThan(0);
+    expect(
+      FindFootageOutputSchema.safeParse({ items: Array.from({ length: 31 }, () => candidate) }).success,
+    ).toBe(false);
+  });
+
+  test('retrieval: a local file with the same provenance and rights', () => {
+    const { thumbnail: _t, id: _i, ...rest } = candidate;
+    expect(
+      GetFootageInputSchema.safeParse({ id: '123', kind: 'video', maxWidth: 1080, maxHeight: 1920 }).success,
+    ).toBe(true);
+    expect(GetFootageOutputSchema.safeParse({ file: '/tmp/x/123.mp4', ...rest }).success).toBe(true);
+    expect(GetFootageOutputSchema.safeParse({ file: '/tmp/x/123.mp4', ...rest, license: '' }).success).toBe(
+      false,
+    );
+    expect(GetFootageOutputSchema.safeParse({ file: '', ...rest }).success).toBe(false);
+  });
 });

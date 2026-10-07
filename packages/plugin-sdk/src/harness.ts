@@ -266,6 +266,32 @@ export async function testPlugin(dir: string, opts: TestOptions = {}): Promise<T
           });
       }
     }
+    if (m.kinds.includes('asset:footage')) {
+      // a search, then the first candidate fetched: the fixture's own data, never a real provider
+      const contract = KIND_TOOLS['asset:footage'];
+      const found = await call('find_footage', { query: 'test', limit: 3 }, contract.find_footage.output);
+      const first = (found?.items as { id: string; kind: 'image' | 'video' }[] | undefined)?.[0];
+      if (found && !first)
+        add({
+          name: 'find_footage finds something for a query',
+          result: 'fail',
+          fix: 'return at least one candidate for a plain query such as "test"',
+        });
+      if (first) {
+        const got = await call(
+          'get_footage',
+          { id: first.id, kind: first.kind, maxWidth: 640, maxHeight: 360 },
+          contract.get_footage.output,
+        );
+        if (got && !existsSync(String(got.file)))
+          add({
+            name: 'get_footage file exists',
+            result: 'fail',
+            detail: String(got.file),
+            fix: 'return an absolute path to an existing file',
+          });
+      }
+    }
     if (m.kinds.includes('generator')) {
       const contract = KIND_TOOLS.generator;
       const listed = await call('list_templates', {}, contract.list_templates.output);
