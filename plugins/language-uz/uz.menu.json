@@ -164,5 +164,20 @@
   "Add B-roll from Link…": "Havoladan B-roll qo'shish…",
   "Ask Your AI About the Range…": "Oraliq haqida AI dan so'rash…",
   "Move Earlier": "Oldinroqqa ko'chirish",
-  "Move Later": "Keyinroqqa ko'chirish"
+  "Move Later": "Keyinroqqa ko'chirish",
+  "Add Image…": "Rasm qo'shish…",
+  "Add Layer…": "Qatlam qo'shish…",
+  "Add Logo Throughout…": "Butun videoga logotip qo'shish…",
+  "Add Lower Third": "Ism plashkasini qo'shish",
+  "Add Text": "Matn qo'shish",
+  "Add Title": "Sarlavha qo'shish",
+  "Add Video…": "Video qo'shish…",
+  "Edit Text": "Matnni tahrirlash",
+  "End a Word Earlier": "Bir so'z oldin tugatish",
+  "End a Word Later": "Bir so'z keyin tugatish",
+  "Layer": "Qatlam",
+  "Move Down a Lane": "Bir yo'lak pastga",
+  "Move Up a Lane": "Bir yo'lak yuqoriga",
+  "Remove Layer": "Qatlamni o'chirish",
+  "Show Layers in Transcript": "Matnda qatlamlarni ko'rsatish"
 }
