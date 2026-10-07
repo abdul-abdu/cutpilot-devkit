@@ -1693,5 +1693,17 @@
   "{n} long pause": {
     "one": "{n} ta uzun pauza",
     "other": "{n} ta uzun pauza"
-  }
+  },
+  "It already plays first": "Bu allaqachon eng boshida",
+  "It already plays last": "Bu allaqachon eng oxirida",
+  "Move earlier": "Oldinroqqa ko'chirish",
+  "Move later": "Keyinroqqa ko'chirish",
+  "Moved part of the video": "Videoning bir qismi ko'chirildi",
+  "Moved {n} word": {
+    "one": "Ko'chirildi: {n} ta so'z",
+    "other": "Ko'chirildi: {n} ta so'z"
+  },
+  "Moved {sec} s": "Ko'chirildi: {sec} s",
+  "Moved “{text}”": "«{text}» ko'chirildi",
+  "The edit is one piece": "Montaj bitta bo'lakdan iborat"
 }
