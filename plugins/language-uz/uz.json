@@ -1705,5 +1705,7 @@
   },
   "Moved {sec} s": "Ko'chirildi: {sec} s",
   "Moved “{text}”": "«{text}» ko'chirildi",
-  "The edit is one piece": "Montaj bitta bo'lakdan iborat"
+  "The edit is one piece": "Montaj bitta bo'lakdan iborat",
+  "Moved “{label}”": "«{label}» ko'chirildi",
+  "“{label}” is now {time}": "«{label}» endi {time}"
 }

@@ -1843,5 +1843,7 @@
   },
   "Moved {sec} s": "Перемещено {sec} с",
   "Moved “{text}”": "Перемещено «{text}»",
-  "The edit is one piece": "Монтаж состоит из одной части"
+  "The edit is one piece": "Монтаж состоит из одной части",
+  "Moved “{label}”": "Перемещено «{label}»",
+  "“{label}” is now {time}": "«{label}» теперь {time}"
 }
