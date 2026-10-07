@@ -1711,5 +1711,19 @@
   "Taller Timeline": "Taymlaynni balandroq qilish",
   "Shorter Timeline": "Taymlaynni pastroq qilish",
   "Expand Timeline": "Taymlaynni yoyish",
-  "Expand timeline": "Taymlaynni yoyish"
+  "Expand timeline": "Taymlaynni yoyish",
+  "Piece": "Bo'lak",
+  "Cut part": "Kesilgan qism",
+  "Cut start": "Kesim boshi",
+  "Cut end": "Kesim oxiri",
+  "Insert": "Qo'shimcha",
+  "{name} selected, {length}": "Tanlandi: {name}, {length}",
+  "{name} selected, at {time}": "Tanlandi: {name}, vaqti {time}",
+  "Selected piece": "Tanlangan bo'lak",
+  "Selected cut part": "Tanlangan kesilgan qism",
+  "Selected edge": "Tanlangan chet",
+  "Selected insert": "Tanlangan qo'shimcha",
+  "Play what was cut": "Kesilganini ijro etish",
+  "Play around the edge": "Chet atrofini ijro etish",
+  "Deselect edge": "Chet tanlovini bekor qilish"
 }

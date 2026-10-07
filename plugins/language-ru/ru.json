@@ -1849,5 +1849,19 @@
   "Taller Timeline": "Таймлайн выше",
   "Shorter Timeline": "Таймлайн ниже",
   "Expand Timeline": "Развернуть таймлайн",
-  "Expand timeline": "Развернуть таймлайн"
+  "Expand timeline": "Развернуть таймлайн",
+  "Piece": "Часть",
+  "Cut part": "Вырезанная часть",
+  "Cut start": "Начало выреза",
+  "Cut end": "Конец выреза",
+  "Insert": "Вставка",
+  "{name} selected, {length}": "Выбрано: {name}, {length}",
+  "{name} selected, at {time}": "Выбрано: {name}, на {time}",
+  "Selected piece": "Выбранная часть",
+  "Selected cut part": "Выбранная вырезанная часть",
+  "Selected edge": "Выбранный край",
+  "Selected insert": "Выбранная вставка",
+  "Play what was cut": "Воспроизвести вырезанное",
+  "Play around the edge": "Воспроизвести около края",
+  "Deselect edge": "Снять выбор края"
 }
