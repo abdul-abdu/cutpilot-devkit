@@ -1707,5 +1707,9 @@
   "Moved “{text}”": "«{text}» ko'chirildi",
   "The edit is one piece": "Montaj bitta bo'lakdan iborat",
   "Moved “{label}”": "«{label}» ko'chirildi",
-  "“{label}” is now {time}": "«{label}» endi {time}"
+  "“{label}” is now {time}": "«{label}» endi {time}",
+  "Taller Timeline": "Taymlaynni balandroq qilish",
+  "Shorter Timeline": "Taymlaynni pastroq qilish",
+  "Expand Timeline": "Taymlaynni yoyish",
+  "Expand timeline": "Taymlaynni yoyish"
 }
