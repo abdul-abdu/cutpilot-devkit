@@ -1,0 +1,4 @@
+node_modules/
+dist/
+*.nodcut-plugin
+*.tgz

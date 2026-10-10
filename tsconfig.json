@@ -12,6 +12,7 @@
     { "path": "plugins/pexels" },
     { "path": "plugins/follow-speaker" },
     { "path": "plugins/manim" },
-    { "path": "plugins/brag" }
+    { "path": "plugins/brag" },
+    { "path": "plugins/ic-light" }
   ]
 }

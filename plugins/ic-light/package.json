@@ -1,0 +1,32 @@
+{
+  "name": "@nodcut/plugin-tools-ic-light",
+  "version": "0.1.0",
+  "description": "Local IC-Light relighting through the user's own ComfyUI, with frame previews and experimental video processing.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "files": [
+    "dist",
+    "nodcut-plugin.json",
+    "icon.png",
+    "README.md"
+  ],
+  "dependencies": {
+    "@nodcut/plugin-sdk": "workspace:*",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nodcut/plugins.git",
+    "directory": "plugins/ic-light"
+  }
+}

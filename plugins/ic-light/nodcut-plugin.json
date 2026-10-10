@@ -1,0 +1,35 @@
+{
+  "id": "ic-light",
+  "name": "IC-Light",
+  "version": "0.1.0",
+  "description": "Relight frames and experimental video clips locally with your own ComfyUI and IC-Light SD1.5 models. Video can flicker; preview first. ComfyUI and model downloads are not included.",
+  "publisher": "NodCut",
+  "homepage": "https://github.com/nodcut/plugins/tree/main/plugins/ic-light",
+  "icon": "icon.png",
+  "contract": 1,
+  "nodcut": ">=0.2.0-beta.10",
+  "command": "node",
+  "args": ["dist/index.js"],
+  "kinds": [],
+  "permissions": { "network": ["localhost"], "secrets": [], "reads": ["source"] },
+  "settings": [
+    {
+      "key": "comfyUrl",
+      "label": "ComfyUI URL (local HTTP only)",
+      "type": "string",
+      "default": "http://localhost:8188"
+    },
+    { "key": "checkpoint", "label": "SD1.5 checkpoint (name from doctor)", "type": "string", "default": "" },
+    {
+      "key": "icLightModel",
+      "label": "Converted IC-Light foreground model",
+      "type": "string",
+      "default": "iclight_sd15_fc_unet_ldm.safetensors"
+    },
+    { "key": "dataDir", "label": "Data folder", "type": "folder", "default": "" },
+    { "key": "ffmpegPath", "label": "FFmpeg path (blank: find one)", "type": "string", "default": "" },
+    { "key": "ffprobePath", "label": "FFprobe path (blank: find one)", "type": "string", "default": "" },
+    { "key": "frameTimeoutSeconds", "label": "Frame timeout seconds", "type": "number", "default": 1200 },
+    { "key": "maxVideoSeconds", "label": "Maximum video seconds", "type": "number", "default": 10 }
+  ]
+}

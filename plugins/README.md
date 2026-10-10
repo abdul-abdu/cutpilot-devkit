@@ -16,6 +16,7 @@ NodCut's own plugins, one folder each, built the way a third-party plugin is: a 
 | `language-ru/` | — | language: the interface and menus in Russian (data only) | P3-067 |
 | `language-uz/` | — | language: the interface and menus in Uzbek, Latin script (data only) | P3-067 |
 | `brag/` | `@nodcut/plugin-tools-brag` | extra tools: /brag (latent-spaces, MIT) in NodCut. The AI plans and writes a 15–25 s launch video, and the plugin checks, snapshots and renders it with HyperFrames (CC0 sound effects included) | — |
+| `ic-light/` | `@nodcut/plugin-tools-ic-light` | extra tools: local IC-Light previews and experimental video relighting with the user's own ComfyUI and models | — |
 
 ## Adding a plugin
 
