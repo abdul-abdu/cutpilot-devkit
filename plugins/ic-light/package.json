@@ -1,6 +1,6 @@
 {
   "name": "@nodcut/plugin-tools-ic-light",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local IC-Light relighting through the user's own ComfyUI, with frame previews and experimental video processing.",
   "type": "module",
   "private": true,
